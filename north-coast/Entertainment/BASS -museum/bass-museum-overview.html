@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BASS MUSEUM — Project Overview</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=IBM+Plex+Mono:wght@400;700&display=swap');
+
+:root {
+  --gold: #F0B429;
+  --gold-2: #C8920A;
+  --gold-dim: rgba(240,180,41,0.1);
+  --gold-mid: rgba(240,180,41,0.4);
+  --black: #070707;
+  --dark: #0e0e0e;
+  --mid: #181818;
+  --panel: #131313;
+  --border: rgba(255,255,255,0.07);
+  --border-gold: rgba(240,180,41,0.25);
+  --text: rgba(255,255,255,0.85);
+  --dim: rgba(255,255,255,0.3);
+  --faint: rgba(255,255,255,0.1);
+  --font-disp: 'Bebas Neue', sans-serif;
+  --font-serif: 'Libre Baskerville', serif;
+  --font-mono: 'IBM Plex Mono', monospace;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--black);
+  color: var(--text);
+  font-family: var(--font-serif);
+  font-size: 16px;
+  line-height: 1.7;
+  overflow-x: hidden;
+}
+
+/* ─── NOISE OVERLAY ─── */
+body::before {
+  content: '';
+  position: fixed; inset: 0; z-index: 0; pointer-events: none;
+  opacity: 0.025;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 200px;
+}
+
+/* ─── NAV ─── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 3rem;
+  height: 56px;
+  background: rgba(7,7,7,0.92);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+}
+.nav-brand {
+  font-family: var(--font-disp); font-size: 1.25rem;
+  letter-spacing: 0.12em; color: var(--gold);
+}
+.nav-links {
+  display: flex; gap: 0.25rem;
+}
+.nav-link {
+  font-family: var(--font-mono); font-size: 0.55rem;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--dim); padding: 0.35rem 0.7rem;
+  cursor: pointer; border: 1px solid transparent;
+  transition: color 0.2s, border-color 0.2s;
+  text-decoration: none;
+}
+.nav-link:hover { color: var(--gold); border-color: var(--border-gold); }
+.nav-tag {
+  font-family: var(--font-mono); font-size: 0.5rem;
+  letter-spacing: 0.1em; color: var(--dim);
+  border: 1px solid var(--border);
+  padding: 0.25rem 0.6rem;
+}
+
+/* ─── HERO ─── */
+.hero {
+  position: relative; min-height: 100vh;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  text-align: center; padding: 6rem 2rem 4rem;
+  overflow: hidden;
+}
+.hero-pulse {
+  position: absolute; inset: 0; z-index: 0;
+  background:
+    radial-gradient(ellipse 60% 50% at 50% 60%, rgba(240,180,41,0.06) 0%, transparent 70%),
+    radial-gradient(ellipse 30% 20% at 50% 50%, rgba(240,180,41,0.04) 0%, transparent 60%);
+}
+.hero-rings {
+  position: absolute; inset: 0; z-index: 0;
+  display: flex; align-items: center; justify-content: center;
+}
+.ring {
+  position: absolute; border-radius: 50%;
+  border: 1px solid rgba(240,180,41,0.06);
+  animation: ripple 6s linear infinite;
+}
+.ring:nth-child(1) { width: 300px; height: 300px; animation-delay: 0s; }
+.ring:nth-child(2) { width: 500px; height: 500px; animation-delay: 1.5s; }
+.ring:nth-child(3) { width: 700px; height: 700px; animation-delay: 3s; }
+.ring:nth-child(4) { width: 900px; height: 900px; animation-delay: 4.5s; }
+@keyframes ripple {
+  0%   { opacity: 0; transform: scale(0.8); }
+  30%  { opacity: 1; }
+  100% { opacity: 0; transform: scale(1.2); }
+}
+.hero-eyebrow {
+  font-family: var(--font-mono); font-size: 0.6rem;
+  letter-spacing: 0.3em; color: var(--gold);
+  text-transform: uppercase; z-index: 1; margin-bottom: 1.5rem;
+  animation: fadeUp 1s 0.2s both;
+}
+.hero-title {
+  font-family: var(--font-disp); font-size: clamp(6rem, 18vw, 14rem);
+  line-height: 0.85; letter-spacing: 0.03em; z-index: 1;
+  animation: fadeUp 1s 0.4s both;
+}
+.hero-title .sub { color: var(--gold); }
+.hero-tagline {
+  font-family: var(--font-serif); font-style: italic;
+  font-size: clamp(1rem, 2.5vw, 1.3rem);
+  color: var(--dim); z-index: 1; margin-top: 2rem;
+  animation: fadeUp 1s 0.6s both;
+}
+.hero-pills {
+  display: flex; flex-wrap: wrap; gap: 0.75rem;
+  justify-content: center; margin-top: 2.5rem; z-index: 1;
+  animation: fadeUp 1s 0.8s both;
+}
+.pill {
+  border: 1px solid var(--border-gold); color: var(--gold);
+  font-family: var(--font-mono); font-size: 0.55rem;
+  letter-spacing: 0.15em; padding: 0.4rem 1rem;
+  text-transform: uppercase;
+}
+.hero-scroll {
+  position: absolute; bottom: 2.5rem; left: 50%; transform: translateX(-50%);
+  font-family: var(--font-mono); font-size: 0.5rem; letter-spacing: 0.2em;
+  color: var(--faint); z-index: 1; animation: bounce 2s ease-in-out infinite;
+}
+@keyframes bounce { 0%,100%{transform:translateX(-50%) translateY(0)} 50%{transform:translateX(-50%) translateY(6px)} }
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ─── SECTION LAYOUT ─── */
+section { position: relative; z-index: 1; }
+
+.section-inner {
+  max-width: 1100px; margin: 0 auto;
+  padding: 5rem 3rem;
+}
+.section-inner.wide { max-width: 1300px; }
+
+.section-label {
+  font-family: var(--font-mono); font-size: 0.55rem;
+  letter-spacing: 0.25em; color: var(--gold);
+  text-transform: uppercase; margin-bottom: 0.75rem;
+}
+.section-title {
+  font-family: var(--font-disp); font-size: clamp(2.5rem, 6vw, 5rem);
+  line-height: 0.92; letter-spacing: 0.02em; margin-bottom: 1.5rem;
+}
+.section-body {
+  font-size: 1rem; line-height: 1.8; color: rgba(255,255,255,0.65);
+  max-width: 640px;
+}
+.gold-rule {
+  width: 48px; height: 2px; background: var(--gold); margin: 1.25rem 0;
+}
+
+/* ─── DIVIDER ─── */
+.divider {
+  border: none; border-top: 1px solid var(--border);
+  margin: 0;
+}
+
+/* ─── VISION SECTION ─── */
+#vision { background: var(--dark); }
+.vision-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: center;
+}
+.vision-stats { display: flex; flex-direction: column; gap: 2rem; }
+.stat-block { border-left: 2px solid var(--gold); padding-left: 1.5rem; }
+.stat-num {
+  font-family: var(--font-disp); font-size: 3.5rem; color: var(--gold);
+  line-height: 1; letter-spacing: 0.02em;
+}
+.stat-label {
+  font-family: var(--font-mono); font-size: 0.55rem;
+  letter-spacing: 0.15em; color: var(--dim); text-transform: uppercase; margin-top: 0.3rem;
+}
+
+/* ─── PILLARS ─── */
+#pillars { background: var(--black); }
+.pillars-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; margin-top: 3rem;
+}
+.pillar {
+  background: var(--panel); padding: 2.5rem 2rem;
+  border-top: 2px solid var(--gold); position: relative;
+  transition: background 0.3s;
+}
+.pillar:hover { background: var(--mid); }
+.pillar-num {
+  font-family: var(--font-disp); font-size: 4rem; color: var(--gold-mid);
+  line-height: 1; margin-bottom: 0.5rem;
+}
+.pillar-title {
+  font-family: var(--font-disp); font-size: 1.8rem; margin-bottom: 1rem;
+  letter-spacing: 0.03em;
+}
+.pillar-body { font-size: 0.9rem; line-height: 1.75; color: rgba(255,255,255,0.6); }
+
+/* ─── SITE / MAP ─── */
+#site { background: var(--dark); }
+.site-grid { display: grid; grid-template-columns: 1fr 1.4fr; gap: 4rem; align-items: center; }
+.site-map-wrap { position: relative; }
+.site-map-svg { width: 100%; border: 1px solid var(--border-gold); }
+.map-legend {
+  display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 1rem;
+}
+.legend-item {
+  display: flex; align-items: center; gap: 0.4rem;
+  font-family: var(--font-mono); font-size: 0.5rem;
+  letter-spacing: 0.1em; color: var(--dim);
+}
+.legend-dot { width: 8px; height: 8px; border-radius: 1px; flex-shrink: 0; }
+
+/* ─── MUSEUM ─── */
+#museum { background: var(--black); }
+.floors { display: flex; flex-direction: column; gap: 2px; margin-top: 3rem; }
+.floor-row {
+  display: grid; grid-template-columns: 100px 1fr; gap: 2px;
+}
+.floor-label {
+  background: var(--gold); color: var(--black);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  padding: 1.5rem 1rem; text-align: center;
+}
+.floor-num { font-family: var(--font-disp); font-size: 2rem; line-height: 1; }
+.floor-sub { font-family: var(--font-mono); font-size: 0.45rem; letter-spacing: 0.12em; margin-top: 0.2rem; }
+.floor-exhibits { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; }
+.exhibit {
+  background: var(--panel); padding: 1.5rem;
+  transition: background 0.25s;
+}
+.exhibit:hover { background: var(--mid); }
+.exhibit-name {
+  font-family: var(--font-disp); font-size: 1.1rem; letter-spacing: 0.03em;
+  color: var(--gold); margin-bottom: 0.5rem;
+}
+.exhibit-desc { font-size: 0.8rem; line-height: 1.6; color: rgba(255,255,255,0.55); }
+
+/* ─── IMPACT ─── */
+#impact { background: var(--dark); }
+.impact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: start; }
+.bar-chart { margin-top: 1rem; display: flex; flex-direction: column; gap: 1.5rem; }
+.bar-item {}
+.bar-label-row { display: flex; justify-content: space-between; margin-bottom: 0.4rem; }
+.bar-label { font-family: var(--font-mono); font-size: 0.55rem; letter-spacing: 0.1em; color: var(--dim); text-transform: uppercase; }
+.bar-val { font-family: var(--font-mono); font-size: 0.55rem; color: var(--gold); }
+.bar-track { height: 4px; background: rgba(255,255,255,0.05); border-radius: 2px; overflow: hidden; }
+.bar-fill { height: 100%; background: var(--gold); border-radius: 2px; width: 0; transition: width 1.4s cubic-bezier(0.4,0,0.2,1); }
+
+/* ─── EVENTS ─── */
+#events { background: var(--black); }
+.events-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; margin-top: 3rem; }
+.event-card {
+  background: var(--panel); padding: 2.5rem 2rem;
+  border-top: 2px solid var(--border-gold);
+  transition: background 0.25s;
+}
+.event-card:hover { background: var(--mid); }
+.event-tag {
+  font-family: var(--font-mono); font-size: 0.5rem;
+  letter-spacing: 0.15em; color: var(--gold);
+  text-transform: uppercase; margin-bottom: 0.75rem;
+}
+.event-title { font-family: var(--font-disp); font-size: 1.8rem; letter-spacing: 0.03em; margin-bottom: 0.75rem; }
+.event-body { font-size: 0.88rem; line-height: 1.7; color: rgba(255,255,255,0.6); }
+.event-meta {
+  margin-top: 1.25rem; display: flex; gap: 1rem; flex-wrap: wrap;
+}
+.event-chip {
+  font-family: var(--font-mono); font-size: 0.5rem; letter-spacing: 0.1em;
+  border: 1px solid var(--border); color: var(--dim); padding: 0.3rem 0.6rem;
+  text-transform: uppercase;
+}
+
+/* ─── PARTNERSHIP ─── */
+#partnership { background: var(--dark); }
+.partners-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 2px; margin-top: 3rem; }
+.partner-card {
+  background: var(--panel); padding: 2rem 1.75rem;
+  border-left: 2px solid var(--border-gold);
+  transition: background 0.25s;
+}
+.partner-card:hover { background: var(--mid); }
+.partner-name { font-family: var(--font-disp); font-size: 1.4rem; letter-spacing: 0.03em; margin-bottom: 0.5rem; }
+.partner-role {
+  font-family: var(--font-mono); font-size: 0.5rem; letter-spacing: 0.12em;
+  color: var(--gold); text-transform: uppercase; margin-bottom: 0.75rem;
+}
+.partner-body { font-size: 0.82rem; line-height: 1.65; color: rgba(255,255,255,0.55); }
+
+/* ─── CLOSE ─── */
+#close {
+  position: relative; overflow: hidden;
+  background: var(--black);
+  min-height: 60vh;
+  display: flex; align-items: center; justify-content: center; text-align: center;
+}
+.close-glow {
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse 60% 70% at 50% 80%, rgba(240,180,41,0.07) 0%, transparent 70%);
+}
+.close-inner { position: relative; z-index: 1; padding: 5rem 2rem; }
+.close-title {
+  font-family: var(--font-disp); font-size: clamp(4rem,12vw,9rem);
+  line-height: 0.88; letter-spacing: 0.03em; margin-bottom: 2rem;
+}
+.close-body {
+  font-family: var(--font-serif); font-style: italic;
+  font-size: 1.1rem; color: rgba(255,255,255,0.55);
+  max-width: 560px; margin: 0 auto; line-height: 1.75;
+}
+.close-org {
+  font-family: var(--font-mono); font-size: 0.6rem;
+  letter-spacing: 0.25em; color: var(--gold);
+  text-transform: uppercase; margin-top: 2.5rem;
+}
+
+/* ─── TABS (for museum floors toggle) ─── */
+.tab-bar { display: flex; gap: 2px; margin-bottom: 2px; }
+.tab-btn {
+  flex: 1; background: var(--panel); border: none;
+  font-family: var(--font-mono); font-size: 0.55rem;
+  letter-spacing: 0.12em; color: var(--dim);
+  padding: 0.7rem 1rem; cursor: pointer;
+  text-transform: uppercase; transition: background 0.2s, color 0.2s;
+  border-top: 2px solid transparent;
+}
+.tab-btn.active { background: var(--mid); color: var(--gold); border-top-color: var(--gold); }
+
+/* ─── ACCORDION (for impact details) ─── */
+.accordion { display: flex; flex-direction: column; gap: 2px; }
+.acc-item { background: var(--panel); }
+.acc-header {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 1rem 1.5rem; cursor: pointer;
+  font-family: var(--font-disp); font-size: 1.1rem; letter-spacing: 0.03em;
+  transition: background 0.2s;
+}
+.acc-header:hover { background: var(--mid); }
+.acc-arrow { color: var(--gold); font-size: 0.8rem; transition: transform 0.3s; }
+.acc-item.open .acc-arrow { transform: rotate(180deg); }
+.acc-body {
+  max-height: 0; overflow: hidden;
+  transition: max-height 0.4s ease;
+  font-size: 0.88rem; line-height: 1.7; color: rgba(255,255,255,0.6);
+}
+.acc-body-inner { padding: 0 1.5rem 1.25rem; }
+
+/* ─── RESPONSIVE ─── */
+@media (max-width: 768px) {
+  .vision-grid, .site-grid, .impact-grid, .events-grid { grid-template-columns: 1fr; }
+  .pillars-grid { grid-template-columns: 1fr; }
+  .floor-exhibits { grid-template-columns: 1fr; }
+  .partners-grid { grid-template-columns: 1fr; }
+  .nav-links { display: none; }
+  .section-inner { padding: 3rem 1.5rem; }
+  .floor-row { grid-template-columns: 60px 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- ─── NAV ─── -->
+<nav>
+  <div class="nav-brand">BASS MUSEUM</div>
+  <div class="nav-links">
+    <a class="nav-link" href="#vision">Vision</a>
+    <a class="nav-link" href="#pillars">Program</a>
+    <a class="nav-link" href="#site">Site</a>
+    <a class="nav-link" href="#museum">Museum</a>
+    <a class="nav-link" href="#impact">Impact</a>
+    <a class="nav-link" href="#events">Events</a>
+    <a class="nav-link" href="#partnership">Partners</a>
+  </div>
+  <div class="nav-tag">Cleveland, Ohio</div>
+</nav>
+
+<!-- ─── HERO ─── -->
+<section class="hero">
+  <div class="hero-pulse"></div>
+  <div class="hero-rings">
+    <div class="ring"></div>
+    <div class="ring"></div>
+    <div class="ring"></div>
+    <div class="ring"></div>
+  </div>
+  <div class="hero-eyebrow">The FixOurStreets216 Project — A Proposal for the City of Cleveland</div>
+  <div class="hero-title">BASS<br><span class="sub">MUSEUM</span></div>
+  <div class="hero-tagline">Bass Music Festival &amp; Cultural Experience — Mall C, Cleveland</div>
+  <div class="hero-pills">
+    <div class="pill">5,000 Attendees</div>
+    <div class="pill">12 Events / Year</div>
+    <div class="pill">Mall C Civic Center</div>
+    <div class="pill">$2M+ Annual Impact</div>
+    <div class="pill">Cleveland, Ohio</div>
+  </div>
+  <div class="hero-scroll">↓ scroll to explore</div>
+</section>
+
+<hr class="divider">
+
+<!-- ─── VISION ─── -->
+<section id="vision">
+  <div class="section-inner">
+    <div class="vision-grid">
+      <div>
+        <div class="section-label">The Vision</div>
+        <div class="section-title">Cleveland<br>Owns<br><span style="color:var(--gold)">The Bass</span></div>
+        <div class="gold-rule"></div>
+        <div class="section-body">
+          What if Cleveland owned bass culture? Not borrowed it. Not watched from the sidelines. Owned it.<br><br>
+          BASS Museum is a permanent annual event that plants Cleveland at the center of a global bass music movement — bringing five thousand people to the Civic Center every time the doors open.<br><br>
+          This is not a one-time festival. It is a civic institution built on Mall C, rooted in the neighborhoods, and powered by sub-bass — designed to compound in cultural value and economic return year after year.
+        </div>
+      </div>
+      <div class="vision-stats">
+        <div class="stat-block">
+          <div class="stat-num">12</div>
+          <div class="stat-label">Events per year</div>
+        </div>
+        <div class="stat-block">
+          <div class="stat-num">5,000</div>
+          <div class="stat-label">Attendees per event</div>
+        </div>
+        <div class="stat-block">
+          <div class="stat-num">$2M+</div>
+          <div class="stat-label">Annual direct economic impact</div>
+        </div>
+        <div class="stat-block">
+          <div class="stat-num">5M</div>
+          <div class="stat-label">Annual media impressions</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ─── PILLARS ─── -->
+<section id="pillars">
+  <div class="section-inner">
+    <div class="section-label">The Program</div>
+    <div class="section-title">Three <span style="color:var(--gold)">Pillars</span></div>
+    <div class="section-body">Every BASS Museum event is built on three interlocking pillars that together make it unlike anything else on the civic calendar.</div>
+  </div>
+  <div class="section-inner wide" style="padding-top:0">
+    <div class="pillars-grid">
+      <div class="pillar">
+        <div class="pillar-num">01</div>
+        <div class="pillar-title">Live Sound</div>
+        <div class="pillar-body">World-class bass music artists. Sub-bass rigs that redefine what a Cleveland festival sounds like. Curated from underground to headliner — every event a different lineup, one consistent standard of sonic excellence. Cardioid-array sub systems engineered for outdoor civic space. The kind of sound most cities only hear in arenas.</div>
+      </div>
+      <div class="pillar">
+        <div class="pillar-num">02</div>
+        <div class="pillar-title">Science of Bass</div>
+        <div class="pillar-body">Interactive exhibits on acoustics, psychoacoustics, and the physics of low-frequency sound — education embedded in the live experience. The Science of Bass Museum lives inside every event: portable versions of the haptic chamber, waveform gallery, and bass-in-nature installations activate the footprint between sets. The museum is the event. The event is the museum.</div>
+      </div>
+      <div class="pillar">
+        <div class="pillar-num">03</div>
+        <div class="pillar-title">Cultural Roots</div>
+        <div class="pillar-body">Cleveland's contribution to bass-driven music — from blues and gospel to funk, hip-hop, and electronic — honored, documented, and celebrated live. Rotating curatorial focus spotlights a different chapter of Cleveland's sonic history at each event. This is not just a concert. It is a cultural institution with an editorial point of view.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ─── SITE ─── -->
+<section id="site">
+  <div class="section-inner wide">
+    <div class="site-grid">
+      <div>
+        <div class="section-label">The Site</div>
+        <div class="section-title">Mall C —<br>Cleveland's<br><span style="color:var(--gold)">Civic Stage</span></div>
+        <div class="gold-rule"></div>
+        <div class="section-body">
+          Mall C (Strawbridge Plaza) is one of Cleveland's most underutilized civic assets. Designed for gathering. Built for scale. Located at the heart of downtown, surrounded by the infrastructure of a major American city — transit, hotels, restaurants, parking, and institutions.<br><br>
+          BASS Museum activates this space across five defined zones: a main stage at the heart anchored by a world-class sub-bass rig, the Bass Museum Gallery, a vendor village of 40+ local businesses, a community stage for emerging artists, and sponsor activation areas spanning the full footprint.<br><br>
+          Five thousand people. In the civic center. Celebrating Cleveland.
+        </div>
+        <div class="map-legend" style="margin-top:1.5rem">
+          <div class="legend-item"><div class="legend-dot" style="background:rgba(240,180,41,0.7)"></div>Main Stage</div>
+          <div class="legend-item"><div class="legend-dot" style="background:rgba(240,180,41,0.3)"></div>Bass Museum Gallery</div>
+          <div class="legend-item"><div class="legend-dot" style="background:rgba(255,255,255,0.15)"></div>Community Stage</div>
+          <div class="legend-item"><div class="legend-dot" style="background:rgba(255,255,255,0.08)"></div>Vendor Village</div>
+          <div class="legend-item"><div class="legend-dot" style="background:rgba(240,180,41,0.12)"></div>Sponsor / VIP Zones</div>
+        </div>
+      </div>
+      <div class="site-map-wrap">
+        <svg class="site-map-svg" viewBox="0 0 540 400" xmlns="http://www.w3.org/2000/svg">
+          <rect width="540" height="400" fill="#0c0c0c"/>
+          <!-- Park boundary -->
+          <rect x="20" y="20" width="500" height="360" fill="#0f0f0f" stroke="rgba(240,180,41,0.2)" stroke-width="1"/>
+          <!-- Main Stage -->
+          <rect x="170" y="28" width="200" height="80" rx="4" fill="rgba(240,180,41,0.22)" stroke="#F0B429" stroke-width="1.5"/>
+          <text x="270" y="62" text-anchor="middle" font-family="'Bebas Neue',sans-serif" font-size="14" fill="#F0B429">MAIN STAGE</text>
+          <text x="270" y="79" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="7" fill="rgba(240,180,41,0.6)">Sub-Bass Rig · Headliner · Cardioid Array</text>
+          <!-- FOH -->
+          <rect x="220" y="120" width="100" height="28" rx="3" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.12)" stroke-width="1"/>
+          <text x="270" y="138" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="7" fill="rgba(255,255,255,0.4)">FOH MIX POSITION</text>
+          <!-- Bass Museum Gallery -->
+          <rect x="28" y="28" width="125" height="130" rx="4" fill="rgba(240,180,41,0.07)" stroke="rgba(240,180,41,0.3)" stroke-width="1"/>
+          <text x="90" y="85" text-anchor="middle" font-family="'Bebas Neue',sans-serif" font-size="13" fill="rgba(240,180,41,0.8)">BASS MUSEUM</text>
+          <text x="90" y="101" text-anchor="middle" font-family="'Bebas Neue',sans-serif" font-size="13" fill="rgba(240,180,41,0.8)">GALLERY</text>
+          <text x="90" y="116" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="6.5" fill="rgba(240,180,41,0.45)">Interactive Exhibits</text>
+          <!-- Community Stage -->
+          <rect x="390" y="28" width="130" height="80" rx="4" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+          <text x="455" y="63" text-anchor="middle" font-family="'Bebas Neue',sans-serif" font-size="12" fill="rgba(255,255,255,0.45)">COMMUNITY</text>
+          <text x="455" y="78" text-anchor="middle" font-family="'Bebas Neue',sans-serif" font-size="12" fill="rgba(255,255,255,0.45)">STAGE</text>
+          <!-- Vendor Village -->
+          <rect x="28" y="172" width="484" height="60" rx="3" fill="rgba(255,255,255,0.03)" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+          <text x="270" y="197" text-anchor="middle" font-family="'Bebas Neue',sans-serif" font-size="12" fill="rgba(255,255,255,0.35)">VENDOR VILLAGE — 40+ LOCAL BUSINESSES · FOOD · MARKET</text>
+          <text x="270" y="213" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="6" fill="rgba(255,255,255,0.2)">Curated Cleveland vendors · No national chains</text>
+          <!-- Sponsor / VIP Zones -->
+          <rect x="28" y="246" width="150" height="120" rx="3" fill="rgba(240,180,41,0.04)" stroke="rgba(240,180,41,0.12)" stroke-width="1"/>
+          <text x="103" y="300" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="7" fill="rgba(240,180,41,0.4)">SPONSOR</text>
+          <text x="103" y="313" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="7" fill="rgba(240,180,41,0.4)">ACTIVATION A</text>
+          <rect x="195" y="246" width="150" height="120" rx="3" fill="rgba(240,180,41,0.06)" stroke="rgba(240,180,41,0.18)" stroke-width="1"/>
+          <text x="270" y="300" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="7" fill="rgba(240,180,41,0.55)">VIP EXPERIENCE</text>
+          <text x="270" y="313" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="7" fill="rgba(240,180,41,0.55)">ZONE</text>
+          <rect x="362" y="246" width="150" height="120" rx="3" fill="rgba(240,180,41,0.04)" stroke="rgba(240,180,41,0.12)" stroke-width="1"/>
+          <text x="437" y="300" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="7" fill="rgba(240,180,41,0.4)">SPONSOR</text>
+          <text x="437" y="313" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="7" fill="rgba(240,180,41,0.4)">ACTIVATION B</text>
+          <!-- Labels -->
+          <text x="520" y="395" text-anchor="end" font-family="'IBM Plex Mono',monospace" font-size="6" fill="rgba(255,255,255,0.12)">N ↑</text>
+          <text x="28" y="395" font-family="'IBM Plex Mono',monospace" font-size="6" fill="rgba(255,255,255,0.1)">MALL C · STRAWBRIDGE PLAZA · CLEVELAND CIVIC CENTER</text>
+        </svg>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ─── SCIENCE OF BASS MUSEUM ─── -->
+<section id="museum">
+  <div class="section-inner">
+    <div class="section-label">The World's First</div>
+    <div class="section-title">Science of<br><span style="color:var(--gold)">Bass Museum</span></div>
+    <div class="gold-rule"></div>
+    <div class="section-body">
+      No museum anywhere in the world has claimed bass as its subject. The science of low-frequency sound touches everything — nature, the human body, music history, engineering, and culture. Cleveland is the only city that can tell this story with complete authority.<br><br>
+      A joint venture between the Rock &amp; Roll Hall of Fame, the Great Lakes Science Center, and a world-class audio equipment partner. Three floors. Three experiences.
+    </div>
+  </div>
+
+  <div class="section-inner wide" style="padding-top:0">
+    <div class="floors">
+      <!-- Floor 3 -->
+      <div class="floor-row">
+        <div class="floor-label">
+          <div class="floor-num">3</div>
+          <div class="floor-sub">MAKE IT</div>
+        </div>
+        <div class="floor-exhibits">
+          <div class="exhibit">
+            <div class="exhibit-name">The Recording Lab</div>
+            <div class="exhibit-desc">A fully working recording studio open to students, community members, and school groups. Real equipment, real credentials, real careers launched. Tied to CMSD and Tri-C workforce pipelines.</div>
+          </div>
+          <div class="exhibit">
+            <div class="exhibit-name">Bass Engineering Lab</div>
+            <div class="exhibit-desc">Hands-on exploration of how speakers, amplifiers, and sound systems actually work — from circuit boards to concert-scale systems. Build your own speaker. Tune your own subwoofer.</div>
+          </div>
+          <div class="exhibit">
+            <div class="exhibit-name">Audio Partner Innovation Suite</div>
+            <div class="exhibit-desc">A permanent 8,000 sq ft gallery co-designed with our world-class audio equipment partner — showing cutting-edge sound technology in action. Industry demos, product showcases, immersive listening rooms.</div>
+          </div>
+        </div>
+      </div>
+      <!-- Floor 2 -->
+      <div class="floor-row">
+        <div class="floor-label" style="background:var(--gold-2)">
+          <div class="floor-num">2</div>
+          <div class="floor-sub">HEAR IT</div>
+        </div>
+        <div class="floor-exhibits">
+          <div class="exhibit">
+            <div class="exhibit-name">Bass in Nature</div>
+            <div class="exhibit-desc">Whale song, earthquake rumble, Lake Erie acoustics, thunder. The natural world is full of bass. Visitors listen through bone-conduction headphones to feel what they're hearing — and learn why low frequencies travel farther and carry more energy.</div>
+          </div>
+          <div class="exhibit">
+            <div class="exhibit-name">Bass in Culture</div>
+            <div class="exhibit-desc">From African talking drums to New Orleans tuba to hip-hop's 808 drum machine. A musicological journey across centuries and continents, with listening stations, rare recordings, and the story of how bass became the backbone of modern music.</div>
+          </div>
+          <div class="exhibit">
+            <div class="exhibit-name">Cleveland Artists Wing</div>
+            <div class="exhibit-desc">Rotating exhibits celebrating Northeast Ohio's contributions to bass-heavy music — from funk, gospel, and soul to industrial, electronic, and hip-hop. The city's own voice, amplified.</div>
+          </div>
+        </div>
+      </div>
+      <!-- Floor 1 -->
+      <div class="floor-row">
+        <div class="floor-label" style="background:rgba(240,180,41,0.5); color:rgba(255,255,255,0.9)">
+          <div class="floor-num">1</div>
+          <div class="floor-sub">FEEL IT</div>
+        </div>
+        <div class="floor-exhibits">
+          <div class="exhibit">
+            <div class="exhibit-name">The Haptic Chamber</div>
+            <div class="exhibit-desc">A sealed room where visitors feel subsonic frequencies (20–80 Hz) through the floor, walls, and air — experiencing bass before they hear it. The signature exhibit. Nothing else like it in any museum in the world.</div>
+          </div>
+          <div class="exhibit">
+            <div class="exhibit-name">Waveform Gallery</div>
+            <div class="exhibit-desc">Walk-through visualizations of sound waves, frequency, and resonance. See how bass behaves differently from treble in the human body and built environment. Real-time wave physics rendered at human scale.</div>
+          </div>
+          <div class="exhibit">
+            <div class="exhibit-name">Bass in the Body</div>
+            <div class="exhibit-desc">The science of how low-frequency sound interacts with human physiology — heart rate, bone conduction, the vestibular system, crowd psychology, and why bass feels the way it feels at a live show.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ─── IMPACT ─── -->
+<section id="impact">
+  <div class="section-inner">
+    <div class="impact-grid">
+      <div>
+        <div class="section-label">City Impact</div>
+        <div class="section-title">The Numbers<br>Are <span style="color:var(--gold)">Clear</span></div>
+        <div class="gold-rule"></div>
+        <div class="section-body">
+          For the City of Cleveland and its sponsors, BASS Museum delivers measurable returns — modeled on comparable bass and electronic music festivals in peer cities, applied to Cleveland's existing infrastructure and visitor base.<br><br>
+          The investment case is clear. The civic case is compelling. The cultural moment is now.
+        </div>
+        <div style="margin-top:2rem">
+          <div class="accordion" id="acc">
+            <div class="acc-item">
+              <div class="acc-header" onclick="toggleAcc(this)">
+                1,200 Hotel Nights Per Event <span class="acc-arrow">▼</span>
+              </div>
+              <div class="acc-body">
+                <div class="acc-body-inner">Based on a 30% out-of-town attendee rate at 5,000 capacity — conservative modeling against comparables like Day Zero Detroit and Movement Electronic Music Festival. Nights filled at downtown Cleveland hotels within a 1-mile radius of Mall C.</div>
+              </div>
+            </div>
+            <div class="acc-item">
+              <div class="acc-header" onclick="toggleAcc(this)">
+                40+ Local Vendors On-Site <span class="acc-arrow">▼</span>
+              </div>
+              <div class="acc-body">
+                <div class="acc-body-inner">The vendor village is curated — no national chains, no franchises. All 40+ vendor slots reserved for Cleveland-based small businesses: food, drink, merchandise, art, and craft. Priority given to businesses from underserved neighborhoods.</div>
+              </div>
+            </div>
+            <div class="acc-item">
+              <div class="acc-header" onclick="toggleAcc(this)">
+                200 Jobs Created <span class="acc-arrow">▼</span>
+              </div>
+              <div class="acc-body">
+                <div class="acc-body-inner">Across production, hospitality, security, logistics, vendor staffing, and event operations — per-event employment equivalent to a mid-sized concert with the add-on of museum and vendor staffing layers unique to BASS Museum's format.</div>
+              </div>
+            </div>
+            <div class="acc-item">
+              <div class="acc-header" onclick="toggleAcc(this)">
+                5M Annual Media Impressions <span class="acc-arrow">▼</span>
+              </div>
+              <div class="acc-body">
+                <div class="acc-body-inner">Organic social reach + press coverage + sponsor amplification + artist promo across 12 events. Bass music has one of the most engaged online fan bases in live music — cross-platform reach compounds significantly with a recurring-event model.</div>
+              </div>
+            </div>
+            <div class="acc-item">
+              <div class="acc-header" onclick="toggleAcc(this)">
+                $2M+ Annual Direct Local Spending <span class="acc-arrow">▼</span>
+              </div>
+              <div class="acc-body">
+                <div class="acc-body-inner">Ticket revenue retained locally, vendor sales, hotel spend, restaurant and bar spend within the event radius. Does not include secondary economic activity or multiplier effects from repeat visitation and tourism growth year-over-year.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="section-label" style="margin-bottom:1.25rem">At a Glance</div>
+        <div class="bar-chart" id="bar-chart">
+          <div class="bar-item">
+            <div class="bar-label-row"><span class="bar-label">Hotel Nights / Event</span><span class="bar-val">1,200</span></div>
+            <div class="bar-track"><div class="bar-fill" data-pct="72"></div></div>
+          </div>
+          <div class="bar-item">
+            <div class="bar-label-row"><span class="bar-label">Local Vendors On-Site</span><span class="bar-val">40+</span></div>
+            <div class="bar-track"><div class="bar-fill" data-pct="48"></div></div>
+          </div>
+          <div class="bar-item">
+            <div class="bar-label-row"><span class="bar-label">Jobs Created / Event</span><span class="bar-val">200</span></div>
+            <div class="bar-track"><div class="bar-fill" data-pct="55"></div></div>
+          </div>
+          <div class="bar-item">
+            <div class="bar-label-row"><span class="bar-label">Annual Media Impressions</span><span class="bar-val">5M</span></div>
+            <div class="bar-track"><div class="bar-fill" data-pct="90"></div></div>
+          </div>
+          <div class="bar-item">
+            <div class="bar-label-row"><span class="bar-label">Annual Local Spending</span><span class="bar-val">$2M+</span></div>
+            <div class="bar-track"><div class="bar-fill" data-pct="83"></div></div>
+          </div>
+          <div class="bar-item">
+            <div class="bar-label-row"><span class="bar-label">Events Per Year</span><span class="bar-val">12</span></div>
+            <div class="bar-track"><div class="bar-fill" data-pct="100"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ─── EVENTS ─── -->
+<section id="events">
+  <div class="section-inner">
+    <div class="section-label">Signature Programming</div>
+    <div class="section-title">Annual <span style="color:var(--gold)">Events</span></div>
+    <div class="section-body">Beyond the monthly BASS Museum events, two signature annual gatherings elevate the program to national and industry significance — cementing Cleveland's position as the music capital of the Midwest.</div>
+  </div>
+  <div class="section-inner wide" style="padding-top:0">
+    <div class="events-grid">
+      <div class="event-card">
+        <div class="event-tag">March · Annual</div>
+        <div class="event-title">Midwest Music Conference</div>
+        <div class="event-body">
+          A credentialed industry conference held at the Huntington Convention Center — two days of programming across six tracks: Business, Technology, Culture, Education, Policy, and Innovation. Modeled on Miami's Winter Music Conference.<br><br>
+          Brings together artists, engineers, promoters, label executives, educators, and civic leaders from across the region and beyond. Press-credentialed. Speaker submissions open six months out.
+        </div>
+        <div class="event-meta">
+          <div class="event-chip">Huntington Convention Center</div>
+          <div class="event-chip">6 Programming Tracks</div>
+          <div class="event-chip">Industry Credentialed</div>
+        </div>
+      </div>
+      <div class="event-card">
+        <div class="event-tag">August · Annual</div>
+        <div class="event-title">Great Lakes Music Gathering</div>
+        <div class="event-body">
+          A public-facing two-day lakefront event anchored at the North Coast Village — science presentations and keynotes on Friday at the Great Lakes Science Center, followed by a full multi-stage music festival on Saturday, closing with fireworks over Lake Erie.<br><br>
+          The civic face of the entire BASS Museum enterprise — open, free or low-cost, family-oriented by day and full-spectrum by night. Peak single-day attendance projected at 15,000–20,000.
+        </div>
+        <div class="event-meta">
+          <div class="event-chip">North Coast Village</div>
+          <div class="event-chip">Great Lakes Science Center</div>
+          <div class="event-chip">Lake Erie Fireworks</div>
+          <div class="event-chip">Multi-Stage</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ─── PARTNERSHIP ─── -->
+<section id="partnership">
+  <div class="section-inner">
+    <div class="section-label">Founding Partnership</div>
+    <div class="section-title">Built <span style="color:var(--gold)">Together</span></div>
+    <div class="gold-rule"></div>
+    <div class="section-body">
+      The Science of Bass Museum is structured as a joint venture between three founding institutions — each bringing irreplaceable credibility, infrastructure, and audience to the table. No single institution could tell this story alone.
+    </div>
+  </div>
+  <div class="section-inner wide" style="padding-top:0">
+    <div class="partners-grid">
+      <div class="partner-card">
+        <div class="partner-name">Rock &amp; Roll Hall of Fame</div>
+        <div class="partner-role">Cultural Authority &amp; Programming</div>
+        <div class="partner-body">The world's preeminent institution for the preservation and celebration of rock history. Brings curatorial expertise, national audience, existing education programs, and the annual Induction Ceremony — which BASS Museum positions to return permanently to Cleveland.</div>
+      </div>
+      <div class="partner-card">
+        <div class="partner-name">Great Lakes Science Center</div>
+        <div class="partner-role">Scientific Credibility &amp; STEM Pipeline</div>
+        <div class="partner-body">Cleveland's premier science institution and NASA Glenn regional visitor center. Brings exhibition design expertise, STEM education infrastructure, school district relationships, and the scientific framework that makes the Bass Museum a legitimate science destination — not just a music venue.</div>
+      </div>
+      <div class="partner-card">
+        <div class="partner-name">Audio Equipment Partner</div>
+        <div class="partner-role">Technology &amp; Innovation Suite</div>
+        <div class="partner-body">A world-class professional audio manufacturer whose systems set the global standard for sub-bass reproduction. Brings cutting-edge technology, the 8,000 sq ft Innovation Suite, live system design expertise, and the industry credibility that makes the Bass Engineering Lab a real training ground — not a display case.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ─── CLOSE ─── -->
+<section id="close">
+  <div class="close-glow"></div>
+  <div class="close-inner">
+    <div style="font-family:var(--font-mono);font-size:0.55rem;letter-spacing:0.25em;color:var(--gold);margin-bottom:1.5rem;text-transform:uppercase">Cleveland is Ready</div>
+    <div class="close-title">Feel<br><span style="color:var(--gold)">The Bass</span></div>
+    <div class="close-body">
+      The venue is here. The community is here. The infrastructure is here. The moment is here.<br><br>
+      BASS Museum is the city's next great civic cultural event — built on Mall C, rooted in the neighborhoods, powered by sub-bass.
+    </div>
+    <div class="close-org">The FixOurStreets216 Project · Cleveland, Ohio</div>
+  </div>
+</section>
+
+<script>
+// ─── INTERSECTION OBSERVER for bar chart ───
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.querySelectorAll('.bar-fill').forEach(bar => {
+        setTimeout(() => { bar.style.width = bar.dataset.pct + '%'; }, 200);
+      });
+      observer.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.3 });
+
+const chart = document.getElementById('bar-chart');
+if (chart) observer.observe(chart);
+
+// ─── ACCORDION ───
+function toggleAcc(header) {
+  const item = header.parentElement;
+  const body = item.querySelector('.acc-body');
+  const isOpen = item.classList.contains('open');
+  // close all
+  document.querySelectorAll('.acc-item').forEach(i => {
+    i.classList.remove('open');
+    i.querySelector('.acc-body').style.maxHeight = '0';
+  });
+  // open this one if it was closed
+  if (!isOpen) {
+    item.classList.add('open');
+    body.style.maxHeight = body.scrollHeight + 'px';
+  }
+}
+
+// ─── NAV ACTIVE STATE ───
+const sections = document.querySelectorAll('section[id]');
+const navLinks = document.querySelectorAll('.nav-link');
+const io = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      navLinks.forEach(l => l.classList.remove('active'));
+      const link = document.querySelector(`.nav-link[href="#${e.target.id}"]`);
+      if (link) link.style.color = 'var(--gold)';
+      navLinks.forEach(l => {
+        if (l.getAttribute('href') !== `#${e.target.id}`) l.style.color = '';
+      });
+    }
+  });
+}, { threshold: 0.4 });
+sections.forEach(s => io.observe(s));
+</script>
+</body>
+</html>

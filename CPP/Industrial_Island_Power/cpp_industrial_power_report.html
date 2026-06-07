@@ -1,0 +1,1130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CPP Industrial Power Division — Strategic Brief</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy:       #0a1628;
+    --navy-mid:   #112240;
+    --navy-light: #1c3355;
+    --gold:       #c9a84c;
+    --gold-light: #e8c97a;
+    --gold-pale:  #f5e9c8;
+    --slate:      #8da0b8;
+    --white:      #f8f9fb;
+    --off-white:  #eef1f5;
+    --text:       #1a2a3a;
+    --text-light: #4a607a;
+    --border:     rgba(201,168,76,0.25);
+    --rule:       rgba(201,168,76,0.15);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--navy);
+    color: var(--white);
+    line-height: 1.7;
+    font-size: 15px;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ── COVER ── */
+  .cover {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    padding: 80px 80px 60px;
+    background: linear-gradient(160deg, #0a1628 0%, #112240 55%, #0d1f38 100%);
+  }
+
+  .cover::before {
+    content: '';
+    position: absolute;
+    top: -200px; right: -200px;
+    width: 700px; height: 700px;
+    background: radial-gradient(circle, rgba(201,168,76,0.08) 0%, transparent 65%);
+    pointer-events: none;
+  }
+
+  .cover::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  }
+
+  .cover-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    gap: 60px;
+    max-width: 1200px;
+  }
+
+  .cover-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .cover-label::before {
+    content: '';
+    width: 32px;
+    height: 1px;
+    background: var(--gold);
+    display: inline-block;
+  }
+
+  .cover h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(36px, 5vw, 58px);
+    font-weight: 700;
+    line-height: 1.1;
+    color: var(--white);
+    margin-bottom: 20px;
+  }
+
+  .cover h1 em {
+    font-style: italic;
+    color: var(--gold-light);
+  }
+
+  .cover-sub {
+    font-size: 16px;
+    color: var(--slate);
+    font-weight: 300;
+    max-width: 440px;
+    margin-bottom: 40px;
+    line-height: 1.6;
+  }
+
+  .cover-meta {
+    display: flex;
+    gap: 32px;
+  }
+
+  .cover-meta-item {
+    border-left: 2px solid var(--gold);
+    padding-left: 14px;
+  }
+
+  .cover-meta-item .label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--slate);
+    margin-bottom: 4px;
+  }
+
+  .cover-meta-item .value {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--white);
+  }
+
+  /* Right side stats panel */
+  .cover-stats {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    position: relative;
+  }
+
+  .stat-card {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--gold);
+    padding: 20px 24px;
+    position: relative;
+    transition: background 0.3s;
+  }
+
+  .stat-card:hover { background: rgba(255,255,255,0.05); }
+
+  .stat-card .stat-val {
+    font-family: 'Playfair Display', serif;
+    font-size: 36px;
+    font-weight: 700;
+    color: var(--gold-light);
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .stat-card .stat-label {
+    font-size: 12px;
+    color: var(--slate);
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .stat-card .stat-note {
+    font-size: 11px;
+    color: rgba(141,160,184,0.6);
+    margin-top: 2px;
+  }
+
+  /* ── LAYOUT ── */
+  .page {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 80px;
+  }
+
+  /* ── SECTION ── */
+  section {
+    padding: 80px 0;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  section:last-child { border-bottom: none; }
+
+  .section-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 32px;
+    margin-bottom: 52px;
+  }
+
+  .section-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    color: var(--gold);
+    padding-top: 6px;
+    min-width: 32px;
+  }
+
+  .section-title-block h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 30px;
+    font-weight: 700;
+    color: var(--white);
+    margin-bottom: 8px;
+  }
+
+  .section-title-block p {
+    font-size: 14px;
+    color: var(--slate);
+    max-width: 560px;
+  }
+
+  /* ── DIVIDER ── */
+  .gold-rule {
+    width: 48px;
+    height: 2px;
+    background: var(--gold);
+    margin: 16px 0 24px;
+  }
+
+  /* ── SPEC BLOCK ── */
+  .spec-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    margin-bottom: 40px;
+  }
+
+  .spec-cell {
+    background: var(--navy-mid);
+    padding: 28px 24px;
+  }
+
+  .spec-cell .key {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 8px;
+  }
+
+  .spec-cell .val {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px;
+    color: var(--white);
+    line-height: 1.1;
+    margin-bottom: 4px;
+  }
+
+  .spec-cell .desc {
+    font-size: 12px;
+    color: var(--slate);
+    line-height: 1.5;
+  }
+
+  /* ── BODY TEXT ── */
+  .body-text {
+    font-size: 15px;
+    color: rgba(248,249,251,0.85);
+    line-height: 1.8;
+    max-width: 800px;
+    margin-bottom: 28px;
+  }
+
+  .body-text strong {
+    color: var(--white);
+    font-weight: 600;
+  }
+
+  /* ── CALLOUT ── */
+  .callout {
+    border-left: 3px solid var(--gold);
+    background: rgba(201,168,76,0.06);
+    padding: 20px 28px;
+    margin: 32px 0;
+    max-width: 800px;
+  }
+
+  .callout p {
+    font-size: 15px;
+    color: var(--gold-pale);
+    line-height: 1.7;
+    font-style: italic;
+  }
+
+  /* ── LAYER CARDS ── */
+  .layer-cards {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+
+  .layer-card {
+    border: 1px solid var(--border);
+    background: rgba(255,255,255,0.02);
+    padding: 28px;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.3s, background 0.3s;
+  }
+
+  .layer-card:hover {
+    border-color: rgba(201,168,76,0.5);
+    background: rgba(255,255,255,0.04);
+  }
+
+  .layer-card::before {
+    content: attr(data-num);
+    position: absolute;
+    top: 16px; right: 20px;
+    font-family: 'Playfair Display', serif;
+    font-size: 72px;
+    font-weight: 700;
+    color: rgba(201,168,76,0.06);
+    line-height: 1;
+  }
+
+  .layer-card .layer-tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 10px;
+  }
+
+  .layer-card h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 19px;
+    color: var(--white);
+    margin-bottom: 12px;
+    line-height: 1.3;
+  }
+
+  .layer-card p {
+    font-size: 13.5px;
+    color: var(--slate);
+    line-height: 1.7;
+  }
+
+  .layer-card .layer-highlight {
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid var(--rule);
+    font-size: 13px;
+    color: var(--gold-pale);
+    font-style: italic;
+  }
+
+  /* ── TABLE ── */
+  .data-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 32px 0;
+  }
+
+  .data-table thead tr {
+    border-bottom: 2px solid var(--gold);
+  }
+
+  .data-table th {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--gold);
+    padding: 12px 16px;
+    text-align: left;
+    font-weight: 500;
+  }
+
+  .data-table td {
+    padding: 14px 16px;
+    font-size: 13.5px;
+    color: rgba(248,249,251,0.8);
+    border-bottom: 1px solid var(--rule);
+    vertical-align: top;
+    line-height: 1.5;
+  }
+
+  .data-table tr:hover td { background: rgba(255,255,255,0.02); }
+
+  .data-table td:first-child {
+    color: var(--white);
+    font-weight: 500;
+    white-space: nowrap;
+  }
+
+  .data-table td:last-child { color: var(--slate); }
+
+  /* ── LEGAL CARDS ── */
+  .legal-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-bottom: 40px;
+  }
+
+  .legal-card {
+    border: 1px solid var(--border);
+    background: rgba(255,255,255,0.02);
+    padding: 24px;
+  }
+
+  .legal-card .lc-tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 12px;
+  }
+
+  .legal-card h4 {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--white);
+    margin-bottom: 10px;
+    line-height: 1.4;
+  }
+
+  .legal-card p {
+    font-size: 13px;
+    color: var(--slate);
+    line-height: 1.6;
+  }
+
+  /* ── AUTHORIZATION TABLE ── */
+  .auth-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 32px 0;
+    font-size: 13.5px;
+  }
+
+  .auth-table th {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+    color: var(--gold);
+    padding: 10px 16px;
+    text-align: left;
+    border-bottom: 1px solid var(--gold);
+    background: rgba(201,168,76,0.05);
+  }
+
+  .auth-table td {
+    padding: 13px 16px;
+    border-bottom: 1px solid var(--rule);
+    color: rgba(248,249,251,0.8);
+    vertical-align: top;
+  }
+
+  .auth-table td:first-child { color: var(--white); font-weight: 500; }
+  .auth-table td:nth-child(2) { color: var(--gold-pale); }
+  .auth-table tr:hover td { background: rgba(255,255,255,0.02); }
+
+  /* badge */
+  .badge {
+    display: inline-block;
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 3px 9px;
+    border: 1px solid currentColor;
+    border-radius: 2px;
+  }
+  .badge-gold { color: var(--gold); }
+  .badge-slate { color: var(--slate); }
+  .badge-green { color: #5bb88a; }
+
+  /* ── OUTCOME STRIP ── */
+  .outcome-strip {
+    background: linear-gradient(90deg, rgba(201,168,76,0.1) 0%, rgba(201,168,76,0.04) 100%);
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--gold);
+    padding: 36px 40px;
+    margin-top: 48px;
+  }
+
+  .outcome-strip h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 20px;
+    color: var(--white);
+    margin-bottom: 20px;
+  }
+
+  .outcome-list {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  .outcome-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    font-size: 13.5px;
+    color: rgba(248,249,251,0.8);
+    line-height: 1.6;
+  }
+
+  .outcome-item::before {
+    content: '→';
+    color: var(--gold);
+    font-size: 13px;
+    flex-shrink: 0;
+    margin-top: 2px;
+    font-weight: 600;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    padding: 40px 80px;
+    border-top: 1px solid var(--rule);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 100%;
+  }
+
+  footer .footer-brand {
+    font-family: 'Playfair Display', serif;
+    font-size: 16px;
+    color: var(--gold);
+    letter-spacing: 0.02em;
+  }
+
+  footer .footer-meta {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--slate);
+  }
+
+  /* ── NAV ── */
+  .toc-nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(10,22,40,0.96);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--rule);
+    padding: 0 80px;
+    display: flex;
+    align-items: center;
+    gap: 32px;
+    height: 52px;
+  }
+
+  .toc-nav a {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+    color: var(--slate);
+    text-decoration: none;
+    transition: color 0.2s;
+    white-space: nowrap;
+  }
+
+  .toc-nav a:hover { color: var(--gold); }
+
+  .toc-nav .nav-logo {
+    color: var(--gold);
+    font-size: 11px;
+    margin-right: 8px;
+    letter-spacing: 0.08em;
+    white-space: nowrap;
+  }
+
+  .nav-sep {
+    width: 1px;
+    height: 20px;
+    background: var(--rule);
+    flex-shrink: 0;
+  }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .cover-label { animation: fadeUp 0.6s ease both; }
+  .cover h1    { animation: fadeUp 0.6s 0.1s ease both; }
+  .cover-sub   { animation: fadeUp 0.6s 0.2s ease both; }
+  .cover-meta  { animation: fadeUp 0.6s 0.3s ease both; }
+  .cover-stats { animation: fadeUp 0.7s 0.2s ease both; }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 960px) {
+    .cover { padding: 60px 32px; }
+    .cover-grid { grid-template-columns: 1fr; }
+    .cover-stats { display: none; }
+    .page { padding: 0 32px; }
+    .toc-nav { padding: 0 32px; gap: 16px; overflow-x: auto; }
+    .spec-grid { grid-template-columns: 1fr 1fr; }
+    .layer-cards { grid-template-columns: 1fr; }
+    .legal-grid { grid-template-columns: 1fr; }
+    .outcome-list { grid-template-columns: 1fr; }
+    footer { flex-direction: column; gap: 12px; padding: 32px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- COVER -->
+<div class="cover">
+  <div class="cover-grid">
+    <div>
+      <div class="cover-label">Strategic Infrastructure Brief</div>
+      <h1>Cleveland Public Power<br><em>Industrial Power Division</em></h1>
+      <p class="cover-sub">A framework for deploying the GE Vernova 7HA.03 gas turbine to power a 300 MW hyperscale data center and establish CPP as a vertically integrated municipal generation authority.</p>
+      <div class="cover-meta">
+        <div class="cover-meta-item">
+          <div class="label">Classification</div>
+          <div class="value">Confidential</div>
+        </div>
+        <div class="cover-meta-item">
+          <div class="label">Jurisdiction</div>
+          <div class="value">City of Cleveland</div>
+        </div>
+        <div class="cover-meta-item">
+          <div class="label">Prepared</div>
+          <div class="value">2026</div>
+        </div>
+      </div>
+    </div>
+    <div class="cover-stats">
+      <div class="stat-card">
+        <div class="stat-val">430 MW</div>
+        <div class="stat-label">7HA.03 Simple Cycle Output</div>
+        <div class="stat-note">130 MW surplus above 300 MW data center load</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-val">63.9%</div>
+        <div class="stat-label">Combined Cycle Efficiency</div>
+        <div class="stat-note">Highest in class — 640 MW in 1×1 CC configuration</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-val">75 MW/min</div>
+        <div class="stat-label">Validated Ramp Rate</div>
+        <div class="stat-note">PJM ancillary services eligible; hot restart &lt;30 min</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-val">50%</div>
+        <div class="stat-label">Hydrogen Co-Fire Capable</div>
+        <div class="stat-note">Technology pathway to 100% H₂ — OEPA-compliant DLN2.6e combustor</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- STICKY NAV -->
+<nav class="toc-nav">
+  <span class="nav-logo">CPP · IPD</span>
+  <div class="nav-sep"></div>
+  <a href="#turbine">I. The Machine</a>
+  <a href="#grid">II. CPP Grid</a>
+  <a href="#architecture">III. Upgrade Architecture</a>
+  <a href="#division">IV. Industrial Division</a>
+  <a href="#legal">V. Legal Framework</a>
+  <a href="#authorization">VI. Authorization Path</a>
+  <a href="#outcomes">VII. Strategic Outcomes</a>
+</nav>
+
+<div class="page">
+
+  <!-- SECTION I: TURBINE -->
+  <section id="turbine">
+    <div class="section-header">
+      <div class="section-num">I.</div>
+      <div class="section-title-block">
+        <h2>The Machine: GE Vernova 7HA.03</h2>
+        <div class="gold-rule"></div>
+        <p>The 7HA.03 is the highest-output 60 Hz gas turbine in GE Vernova's HA fleet — purpose-built for applications where capacity, ramp speed, and fuel flexibility must coexist.</p>
+      </div>
+    </div>
+
+    <div class="spec-grid">
+      <div class="spec-cell">
+        <div class="key">Simple Cycle Output</div>
+        <div class="val">430 MW</div>
+        <div class="desc">Net plant, ISO conditions, natural gas fuel. 130 MW headroom above 300 MW data center peak draw.</div>
+      </div>
+      <div class="spec-cell">
+        <div class="key">Combined Cycle 1×1</div>
+        <div class="val">640 MW</div>
+        <div class="desc">CC configuration at &gt;63.9% net efficiency — most cost-effective fuel-to-electricity conversion available at 60 Hz.</div>
+      </div>
+      <div class="spec-cell">
+        <div class="key">Ramp Rate</div>
+        <div class="val">75 MW/min</div>
+        <div class="desc">Validated at GE Vernova's Test Stand 7, Greenville SC. Hot restart from zero to full power in under 30 minutes.</div>
+      </div>
+      <div class="spec-cell">
+        <div class="key">SC Net Efficiency</div>
+        <div class="val">43.3%</div>
+        <div class="desc">Simple cycle LHV. SC Heat Rate: 7,884 Btu/kWh — lowest in class for 60 Hz heavy-duty turbines.</div>
+      </div>
+      <div class="spec-cell">
+        <div class="key">Hydrogen Capability</div>
+        <div class="val">50% H₂</div>
+        <div class="desc">Current co-fire rating by volume. Technology pathway to 100% hydrogen with DLN2.6e combustion system.</div>
+      </div>
+      <div class="spec-cell">
+        <div class="key">NOx Emissions</div>
+        <div class="val">&lt;2.5 ppm</div>
+        <div class="desc">Demonstrated at FPL Dania Beach (world's first 7HA.03 commercial plant). Compliant at 15%–100% load. CO &lt;9 ppm.</div>
+      </div>
+    </div>
+
+    <p class="body-text">
+      The 7HA.03's fuel flexibility encompasses shale gas, high-ethane blends, hydrogen blends, #2 diesel, and crude oils — critical for a municipal utility where contractual fuel diversification is a board-level risk management requirement. The world's first commercial 7HA.03 plant, FPL's Dania Beach Clean Energy Center, entered commercial operation on June 1, 2022 — providing a fully validated operational reference point for regulatory and financing purposes.
+    </p>
+
+    <div class="callout">
+      <p>A 300 MW hyperscale data center operating on simple cycle alone leaves 130 MW of dispatchable surplus — enough to serve CPP's existing industrial customer base or generate net PJM wholesale revenue exceeding $30–50M annually at current capacity pricing.</p>
+    </div>
+
+    <p class="body-text">
+      For CPP's specific use case, <strong>simple cycle is the recommended initial configuration</strong>: faster deployment (18–24 months vs. 36+ for CCGT), smaller physical footprint for urban industrial sites, and elimination of HRSG, steam turbine, and cooling tower complexity. The combined cycle pathway remains available as a Phase 2 expansion if the data center scales beyond 300 MW or CPP pursues PJM merchant market participation at scale.
+    </p>
+  </section>
+
+  <!-- SECTION II: CPP GRID -->
+  <section id="grid">
+    <div class="section-header">
+      <div class="section-num">II.</div>
+      <div class="section-title-block">
+        <h2>CPP Grid: The Structural Starting Point</h2>
+        <div class="gold-rule"></div>
+        <p>Understanding CPP's current system architecture is essential to identifying where the 7HA.03 connects and how it changes CPP's market position.</p>
+      </div>
+    </div>
+
+    <div class="spec-grid" style="grid-template-columns: repeat(4,1fr);">
+      <div class="spec-cell">
+        <div class="key">System Rating</div>
+        <div class="val">300 MW</div>
+        <div class="desc">Largest municipally owned electric utility in Ohio.</div>
+      </div>
+      <div class="spec-cell">
+        <div class="key">Customers</div>
+        <div class="val">74,000</div>
+        <div class="desc">Residential, commercial, and industrial within Cleveland city limits.</div>
+      </div>
+      <div class="spec-cell">
+        <div class="key">Interconnections</div>
+        <div class="val">3 × 138 kV</div>
+        <div class="desc">Regional grid access via three 138 kV ties. 36 substations fed from this backbone.</div>
+      </div>
+      <div class="spec-cell">
+        <div class="key">Distribution Voltages</div>
+        <div class="val">69 / 13.8 kV</div>
+        <div class="desc">Also 11.5 kV and 2,300 V depending on substation. Large industrial served at 138 kV primary.</div>
+      </div>
+    </div>
+
+    <p class="body-text">
+      CPP currently supplements its three 138 kV purchased power interconnections with three combustion turbine generating units and ten diesel generators distributed across its network — providing limited peaking capacity but no meaningful baseload generation. The utility is structurally a <strong>price-taker</strong>: exposed to PJM wholesale market volatility on every megawatt it purchases.
+    </p>
+
+    <p class="body-text">
+      A 300 MW hyperscale data center would effectively <strong>double CPP's current system load</strong> — making a substation upgrade alone insufficient without a co-located generation asset. The 7HA.03 resolves this gap exactly. CPP's Optional Large Industrial rate tier already anticipates customers with 10 MW+ demand served at 138,000 volts primary — a 300 MW customer is 30× that threshold, requiring a purpose-built generation-to-load interconnect structure.
+    </p>
+
+    <div class="callout">
+      <p>CPP's three existing 138 kV interconnections provide a significant head start on PJM interconnection study requirements. The new generation plant injects at 138 kV, aligning with the existing transmission loop rather than requiring new transmission infrastructure across Cuyahoga County.</p>
+    </div>
+
+    <p class="body-text"><strong>Highest-probability substation upgrade sites:</strong></p>
+
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Site</th>
+          <th>Rationale</th>
+          <th>Considerations</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>South Marginal / Lakefront Industrial</td>
+          <td>Existing CPP South Marginal Substation. Lake Erie water access for future CC cooling. Fiber corridor present.</td>
+          <td>OEPA shoreline permitting. Port of Cleveland proximity adds complexity.</td>
+          <td><span class="badge badge-gold">Priority A</span></td>
+        </tr>
+        <tr>
+          <td>Slavic Village / Harvard-Miles Corridor</td>
+          <td>Directly adjacent to proposed Morabito campus. Dominion Energy Ohio high-pressure gas lines nearby.</td>
+          <td>Brownfield remediation required. NEORSD stormwater coordination.</td>
+          <td><span class="badge badge-gold">Priority A</span></td>
+        </tr>
+        <tr>
+          <td>Ridge Road Substation</td>
+          <td>Western anchor of CPP's 138 kV loop to Pofok Substation. Existing transmission infrastructure.</td>
+          <td>Distance from fiber backbone. Industrial land availability.</td>
+          <td><span class="badge badge-slate">Priority B</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- SECTION III: ARCHITECTURE -->
+  <section id="architecture">
+    <div class="section-header">
+      <div class="section-num">III.</div>
+      <div class="section-title-block">
+        <h2>Upgrade Architecture: Four Integrated Layers</h2>
+        <div class="gold-rule"></div>
+        <p>The substation upgrade is a four-layer integrated system — not a single capital project. Each layer builds on the last, and each creates independent value.</p>
+      </div>
+    </div>
+
+    <div class="layer-cards">
+      <div class="layer-card" data-num="1">
+        <div class="layer-tag">Layer 01 · Transmission</div>
+        <h3>Dedicated Interconnection Substation</h3>
+        <p>A 300 MW load requires 138 kV primary delivery — aligned with CPP's existing transmission backbone. The substation upgrade includes step-up transformers from turbine terminals (~18–27 kV) to 138 kV, Gas Insulated Switchgear (GIS) for urban footprint constraints, a dedicated 138/13.8 kV step-down bank for campus distribution, and full SCADA integration into CPP's control architecture.</p>
+        <div class="layer-highlight">Infrastructure investment: $40–80M. Substation footprint: 3–5 acres urban GIS configuration.</div>
+      </div>
+
+      <div class="layer-card" data-num="2">
+        <div class="layer-tag">Layer 02 · Generation</div>
+        <h3>7HA.03 Plant — Simple Cycle Configuration</h3>
+        <p>Simple cycle is optimal for CPP's initial deployment: 430 MW output covers 300 MW data center load with 130 MW available for system sales, faster deployment timeline (18–24 months), smaller site footprint, and elimination of HRSG/steam turbine/cooling tower complexity. Combined cycle upgrade remains available as Phase 2 if the campus scales to 500–600 MW or PJM merchant participation intensifies.</p>
+        <div class="layer-highlight">Plant capital cost: ~$500–650M turnkey at $1,200–1,500/kW. Site requirement: 10–15 acres minimum.</div>
+      </div>
+
+      <div class="layer-card" data-num="3">
+        <div class="layer-tag">Layer 03 · Markets</div>
+        <h3>PJM Interconnection &amp; Capacity Markets</h3>
+        <p>CPP's Industrial Power Division participates in PJM as a registered generator — unlocking energy market revenue from 130 MW surplus capacity dispatched into day-ahead and real-time markets. The 7HA.03's 75 MW/min ramp rate qualifies the plant for PJM regulation and spinning reserve ancillary services. The Reliability Pricing Model (RPM) capacity auction provides base revenue regardless of energy dispatch, de-risking the plant's operating economics.</p>
+        <div class="layer-highlight">Estimated PJM revenue from 130 MW surplus: $30–50M annually at current RPM + energy pricing.</div>
+      </div>
+
+      <div class="layer-card" data-num="4">
+        <div class="layer-tag">Layer 04 · Decarbonization</div>
+        <h3>Hydrogen Readiness &amp; Fuel Pathway</h3>
+        <p>The DLN2.6e combustion system demonstrates sub-2.5 ppm NOx at 15%–100% load — the performance data base needed for OEPA Title V permitting in Cuyahoga County's nonattainment air quality zone. The 50% hydrogen co-fire capability aligns with green hydrogen production at the Port of Cleveland and any future PEM electrolysis facility, providing a credible carbon reduction trajectory without stranding the asset.</p>
+        <div class="layer-highlight">A 50% H₂ blend at full load reduces carbon intensity by approximately 40% vs. natural gas-only operation.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION IV: INDUSTRIAL DIVISION -->
+  <section id="division">
+    <div class="section-header">
+      <div class="section-num">IV.</div>
+      <div class="section-title-block">
+        <h2>The Industrial Power Division Structure</h2>
+        <div class="gold-rule"></div>
+        <p>CPP's existing power supply contracts need not be touched. The Industrial Power Division operates as a fully parallel enterprise — same municipal parent, separate financial architecture.</p>
+      </div>
+    </div>
+
+    <p class="body-text">
+      CPP currently purchases most of its power through short and long-term contracts with regional utilities and power suppliers via its three 138 kV interconnections, making it structurally a price-taker on wholesale power with no owned generation hedge beyond small peaking units. The Industrial Power Division <strong>does not replace or modify these contracts</strong> — it creates a parallel generation pathway with no dependency on the wholesale market for the data center load.
+    </p>
+
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Division Element</th>
+          <th>Structure</th>
+          <th>Key Provision</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Enterprise Fund</td>
+          <td>Separate sub-fund by City Council ordinance, ring-fenced from CPP general fund</td>
+          <td>Residential ratepayers bear zero financial exposure from industrial division capital</td>
+        </tr>
+        <tr>
+          <td>Rate Schedule</td>
+          <td>Negotiated directly with data center under 15–20 year Power Purchase Agreement</td>
+          <td>Fixed rate $55–70/MWh all-in; minimum demand charge covers debt service regardless of consumption</td>
+        </tr>
+        <tr>
+          <td>Debt Instrument</td>
+          <td>Revenue bonds backed exclusively by PPA cash flow</td>
+          <td>Bond coverage ratio 1.3–1.5× at assumed PPA pricing; no General Obligation backing required</td>
+        </tr>
+        <tr>
+          <td>PJM Market Access</td>
+          <td>Register plant as PJM Capacity Resource; sell surplus 130 MW into energy + ancillary markets</td>
+          <td>Energy + capacity + regulation revenue estimated $30–50M/yr at current pricing</td>
+        </tr>
+        <tr>
+          <td>Purchased Power Bypass</td>
+          <td>Data center load served entirely from owned generation — no wholesale market exposure</td>
+          <td>As existing contracts expire, CPP negotiates smaller replacements or eliminates them for industrial segment</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="callout">
+      <p>The Power Purchase Agreement with the data center operator is the linchpin: a 20-year off-take at $55–70/MWh makes the revenue bond issuance viable, caps CPP's generation cost well below PJM merchant pricing, and provides the data center with rate certainty unavailable from any investor-owned utility. It is a mutual lock-in that benefits both parties.</p>
+    </div>
+
+    <p class="body-text">
+      When existing wholesale contracts expire, CPP retains the option to negotiate smaller replacement contracts — or none at all for the industrial segment — having replaced that portion of its power supply with owned generation. Over time, the Industrial Power Division's PJM revenues can be structured to cross-subsidize lower rates for CPP's residential customers, creating a durable political constituency for the program within Cleveland City Council.
+    </p>
+  </section>
+
+  <!-- SECTION V: LEGAL -->
+  <section id="legal">
+    <div class="section-header">
+      <div class="section-num">V.</div>
+      <div class="section-title-block">
+        <h2>Legal Framework &amp; Constitutional Authority</h2>
+        <div class="gold-rule"></div>
+        <p>Three overlapping legal foundations give CPP exceptional flexibility unavailable to investor-owned utilities operating under PUCO jurisdiction.</p>
+      </div>
+    </div>
+
+    <div class="legal-grid">
+      <div class="legal-card">
+        <div class="lc-tag">Ohio Constitution · Art. XVIII §4</div>
+        <h4>Municipal Home Rule — Generation Authority</h4>
+        <p>Any municipality may acquire, construct, own, lease and operate within or without its corporate limits any public utility the product or service of which is to be supplied to the municipality or its inhabitants. This is CPP's core generation authority — no PUCO approval required, governed solely by City Council ordinance.</p>
+      </div>
+      <div class="legal-card">
+        <div class="lc-tag">Ohio Constitution · Art. XVIII §6</div>
+        <h4>Surplus Sale Authority — 50% Rule</h4>
+        <p>Municipalities owning a public utility may sell surplus product or service to those outside the municipality in an amount not exceeding fifty percent of the total service or product supplied within the municipality. The Ohio Supreme Court (CEI v. Cleveland, 2021) confirmed this right — CPP's 130 MW surplus from the 7HA.03 falls well within this ceiling.</p>
+      </div>
+      <div class="legal-card">
+        <div class="lc-tag">ORC §4928.73 · Enacted 2025</div>
+        <h4>Mercantile Customer Self-Power System</h4>
+        <p>Creates a direct-wire generation structure for commercial or industrial customers consuming more than 700,000 kWh/year — connecting behind the customer's utility meter without using any public utility distribution infrastructure. A 300 MW data center at ~2.6 billion kWh/year qualifies overwhelmingly, enabling CPP to bypass its own distribution system for the data center feed.</p>
+      </div>
+      <div class="legal-card">
+        <div class="lc-tag">CEI v. Cleveland · 2021</div>
+        <h4>Purchased Power vs. Generated Power Distinction</h4>
+        <p>The Ohio Supreme Court held that Article XVIII §4 authorizes purchase of electricity only for supplying it to the municipality or inhabitants — not for external resale. However, <em>generated</em> power is not subject to this constraint. CPP can sell all generated output to in-city industrial customers without restriction. The critical structuring implication: own the turbine, don't buy and resell.</p>
+      </div>
+      <div class="legal-card">
+        <div class="lc-tag">PUCO Exemption</div>
+        <h4>No State Rate Regulation</h4>
+        <p>CPP, as a municipal electric utility, is explicitly excluded from PUCO's definition of "electric utility" under ORC §4928.01(11). Cleveland City Council is the sole governing body for CPP's rates, capital investments, and organizational structure. A new industrial rate schedule, PPA, and enterprise fund sub-division require only Council ordinance — not a multi-year rate case.</p>
+      </div>
+      <div class="legal-card">
+        <div class="lc-tag">ORC §715.02</div>
+        <h4>Inter-Municipal Cooperation Authority</h4>
+        <p>Two or more municipal corporations may enter into agreement for joint construction or management of any public work or utility benefiting each municipality. This enables CPP's Industrial Power Division to eventually serve neighboring inner-ring suburbs (Garfield Heights, Maple Heights, Brooklyn) under negotiated agreements — expanding the division's revenue base without violating territorial constraints.</p>
+      </div>
+    </div>
+
+    <div class="callout">
+      <p>The CEI v. Cleveland decision created a precise structuring requirement: CPP must own and operate the 7HA.03 as a <em>generation</em> asset — not purchase and resell wholesale power — to avoid the Article XVIII §4 resale prohibition. The Industrial Power Division must be structured as a generator, not a broker. The turbine ownership model satisfies this requirement completely.</p>
+    </div>
+  </section>
+
+  <!-- SECTION VI: AUTHORIZATION -->
+  <section id="authorization">
+    <div class="section-header">
+      <div class="section-num">VI.</div>
+      <div class="section-title-block">
+        <h2>Authorization Path &amp; Financial Structure</h2>
+        <div class="gold-rule"></div>
+        <p>Because CPP is PUCO-exempt, the full authorization path runs through Cleveland's legislative process — faster, more controllable, and politically manageable compared to a state regulatory proceeding.</p>
+      </div>
+    </div>
+
+    <table class="auth-table">
+      <thead>
+        <tr>
+          <th>Action Required</th>
+          <th>Governing Body</th>
+          <th>Instrument</th>
+          <th>Timeline</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Authorize Industrial Power Division</td>
+          <td>Cleveland City Council</td>
+          <td>Ordinance</td>
+          <td>30–60 days</td>
+        </tr>
+        <tr>
+          <td>Approve new large industrial rate schedule</td>
+          <td>City Council</td>
+          <td>Ordinance amending CPP Rate Schedule</td>
+          <td>Concurrent</td>
+        </tr>
+        <tr>
+          <td>Approve Power Purchase Agreement with data center</td>
+          <td>City Council</td>
+          <td>Contract ordinance</td>
+          <td>After PPA negotiation</td>
+        </tr>
+        <tr>
+          <td>Authorize revenue bond issuance</td>
+          <td>City Council + Finance Director</td>
+          <td>Bond ordinance; backed by PPA cash flow only</td>
+          <td>After PPA execution</td>
+        </tr>
+        <tr>
+          <td>Authorize 7HA.03 EPC contract</td>
+          <td>City Council</td>
+          <td>Capital appropriation ordinance</td>
+          <td>After bond authorization</td>
+        </tr>
+        <tr>
+          <td>OEPA Title V air permit</td>
+          <td>Ohio EPA / Cuyahoga County Board of Health</td>
+          <td>Permit application — DLN2.6e performance data as evidentiary basis</td>
+          <td>12–18 months parallel</td>
+        </tr>
+        <tr>
+          <td>PJM Generator Interconnection Study</td>
+          <td>PJM / FERC</td>
+          <td>Standard GI process; CPP's existing 138 kV interconnections accelerate study</td>
+          <td>18–36 months parallel</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p class="body-text"><strong>Federal Incentive Stack:</strong></p>
+
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Incentive</th>
+          <th>Authority</th>
+          <th>Applicability</th>
+          <th>Est. Value</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>§48C Advanced Energy Manufacturing Credit</td>
+          <td>IRA 2022</td>
+          <td>Qualified advanced energy project; generation infrastructure for clean industrial use</td>
+          <td>Up to 30% of qualified investment</td>
+        </tr>
+        <tr>
+          <td>§45Y Clean Electricity Production Credit</td>
+          <td>IRA 2022</td>
+          <td>Applicable if hydrogen co-firing percentage satisfies clean electricity threshold</td>
+          <td>$25–35/MWh on qualifying output</td>
+        </tr>
+        <tr>
+          <td>DOE LPO Title 17 Loan Guarantee</td>
+          <td>DOE Loan Programs Office</td>
+          <td>Innovative energy infrastructure; municipal utility eligible as public entity borrower</td>
+          <td>Reduces cost of capital 100–150 bps</td>
+        </tr>
+        <tr>
+          <td>OAQDA Tax-Exempt Bond Financing</td>
+          <td>Ohio Air Quality Dev. Authority</td>
+          <td>Generation projects with demonstrated emissions improvement over replaced capacity</td>
+          <td>Tax-exempt financing on eligible costs</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- SECTION VII: OUTCOMES -->
+  <section id="outcomes">
+    <div class="section-header">
+      <div class="section-num">VII.</div>
+      <div class="section-title-block">
+        <h2>Strategic Outcomes</h2>
+        <div class="gold-rule"></div>
+        <p>The Industrial Power Division is not an incremental improvement to CPP's operating model. It is a structural transformation in what CPP is.</p>
+      </div>
+    </div>
+
+    <p class="body-text">
+      Today, CPP obtains most of its power through short and long-term contracts with regional utilities and power suppliers — making it a net buyer on the wholesale market with no owned generation hedge. The 7HA.03 paired to a 300 MW hyperscale data center anchor tenant <strong>reverses that equation entirely</strong>: CPP becomes a price-setter for its largest customers, a net seller in PJM markets during surplus hours, and a generation utility — not merely a distribution utility — for the first time in its modern history.
+    </p>
+
+    <div class="outcome-strip">
+      <h3>Four Structural Transformations</h3>
+      <div class="outcome-list">
+        <div class="outcome-item">CPP becomes a <strong>price-setter</strong>, not a price-taker — owned generation at ~$35–45/MWh marginal cost vs. purchased power at $60–90/MWh in peak periods</div>
+        <div class="outcome-item">The data center provides a <strong>guaranteed 20-year off-take</strong> — eliminating merchant generation risk and enabling investment-grade revenue bond financing</div>
+        <div class="outcome-item"><strong>130 MW surplus sells into PJM</strong> energy, capacity, and ancillary markets — generating net revenue that can cross-subsidize residential rate stability</div>
+        <div class="outcome-item">CPP's <strong>system capacity effectively doubles</strong> — positioning Cleveland to attract additional large industrial and technology tenants currently priced out of CPP's service territory due to capacity constraints</div>
+        <div class="outcome-item">A <strong>hydrogen co-fire pathway</strong> provides a credible decarbonization trajectory, supporting CPP's "green city on a blue lake" positioning without stranding the capital asset</div>
+        <div class="outcome-item">The legal structure established by the Industrial Power Division creates a <strong>replicable template</strong> for future large industrial customers — each anchored by a long-term PPA and financed independently of ratepayers</div>
+        <div class="outcome-item"><strong>PUCO exemption</strong> means the entire program moves at City Council speed — ordinances, not rate cases. Execution timeline is political, not regulatory.</div>
+        <div class="outcome-item">The division fulfills CPP's <strong>1906 founding mandate</strong> — a municipally owned generator providing affordable, reliable power to Cleveland's industrial and commercial base, free from investor-owned utility pricing</div>
+      </div>
+    </div>
+
+    <div class="callout" style="margin-top:40px;">
+      <p>The constitutional home rule authority under Article XVIII, the new ORC §4928.73 mercantile customer pathway, and CPP's PUCO-exempt status combine to make this one of the most legally clean and structurally elegant development frameworks available to any Ohio municipality. The binding constraint is not legal or technical — it is whether Cleveland's political leadership has the appetite to execute, and whether the data center developer will sign a 20-year off-take agreement that makes the bond issuance viable.</p>
+    </div>
+  </section>
+
+</div><!-- end .page -->
+
+<footer>
+  <div class="footer-brand">Cleveland Public Power · Industrial Power Division</div>
+  <div class="footer-meta">Strategic Infrastructure Brief · Confidential · 2026</div>
+</footer>
+
+</body>
+</html>

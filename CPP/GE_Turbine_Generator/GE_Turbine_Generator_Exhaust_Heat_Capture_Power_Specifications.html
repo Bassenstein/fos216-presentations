@@ -1,0 +1,1407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GE Turbine Generator and Exhaust Heat Capture Power Specifications</title>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&family=Barlow:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --steel: #0a0e14;
+    --steel-mid: #111720;
+    --steel-light: #1a2332;
+    --panel: #151d28;
+    --accent: #00c8ff;
+    --accent-dim: #007fa8;
+    --accent-glow: rgba(0,200,255,0.12);
+    --amber: #ffb347;
+    --amber-dim: #c87d1a;
+    --green: #39ff8a;
+    --green-dim: #1a8a4a;
+    --red: #ff4757;
+    --white: #e8eef5;
+    --muted: #6b8099;
+    --border: rgba(0,200,255,0.18);
+    --border-subtle: rgba(255,255,255,0.06);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background-color: var(--steel);
+    color: var(--white);
+    font-family: 'Barlow', sans-serif;
+    font-weight: 300;
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* ── GRID BACKGROUND ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(0,200,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,200,255,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ── SCAN LINE ── */
+  body::after {
+    content: '';
+    position: fixed;
+    top: -100%;
+    left: 0;
+    right: 0;
+    height: 200%;
+    background: linear-gradient(transparent 50%, rgba(0,200,255,0.015) 50%);
+    background-size: 100% 4px;
+    pointer-events: none;
+    z-index: 0;
+    animation: scanlines 8s linear infinite;
+  }
+  @keyframes scanlines { to { transform: translateY(50%); } }
+
+  /* ── HEADER ── */
+  header {
+    position: relative;
+    z-index: 10;
+    padding: 60px 40px 50px;
+    border-bottom: 1px solid var(--border);
+    background: linear-gradient(180deg, rgba(0,200,255,0.06) 0%, transparent 100%);
+    overflow: hidden;
+  }
+
+  header::before {
+    content: 'GE TURBINE';
+    position: absolute;
+    top: -10px;
+    right: -20px;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 140px;
+    font-weight: 700;
+    color: rgba(0,200,255,0.04);
+    letter-spacing: -4px;
+    pointer-events: none;
+    white-space: nowrap;
+  }
+
+  .header-eyebrow {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .header-eyebrow::before {
+    content: '';
+    display: block;
+    width: 28px;
+    height: 1px;
+    background: var(--accent);
+  }
+
+  h1 {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: clamp(28px, 4vw, 52px);
+    font-weight: 700;
+    line-height: 1.05;
+    letter-spacing: 1px;
+    color: var(--white);
+    max-width: 800px;
+    margin-bottom: 24px;
+  }
+
+  h1 em {
+    color: var(--accent);
+    font-style: normal;
+  }
+
+  .header-meta {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 2px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 24px;
+    margin-top: 28px;
+    border-top: 1px solid var(--border-subtle);
+    padding-top: 20px;
+  }
+
+  .header-meta span { display: flex; align-items: center; gap: 8px; }
+  .header-meta .dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--green);
+    box-shadow: 0 0 8px var(--green);
+    animation: pulse 2s ease-in-out infinite;
+  }
+  @keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.4;} }
+
+  .attribution {
+    display: inline-block;
+    margin-top: 16px;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--amber);
+    border: 1px solid rgba(255,179,71,0.3);
+    padding: 6px 16px;
+    background: rgba(255,179,71,0.06);
+  }
+
+  /* ── TOC ── */
+  nav.toc {
+    position: relative;
+    z-index: 10;
+    margin: 0;
+    padding: 28px 40px;
+    background: var(--panel);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+  }
+
+  .toc-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-right: 8px;
+  }
+
+  nav.toc a {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-decoration: none;
+    padding: 5px 12px;
+    border: 1px solid transparent;
+    transition: all 0.2s;
+  }
+  nav.toc a:hover {
+    color: var(--accent);
+    border-color: var(--border);
+    background: var(--accent-glow);
+  }
+
+  /* ── MAIN LAYOUT ── */
+  main {
+    position: relative;
+    z-index: 10;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 60px 40px 100px;
+  }
+
+  /* ── SECTION ── */
+  section {
+    margin-bottom: 80px;
+    animation: fadeUp 0.6s ease both;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .section-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+    margin-bottom: 32px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .section-number {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 3px;
+    padding-top: 8px;
+    min-width: 40px;
+  }
+
+  h2 {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: clamp(20px, 3vw, 32px);
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: var(--white);
+    line-height: 1.2;
+  }
+
+  h2 span.hl { color: var(--accent); }
+
+  h3 {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 18px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--amber);
+    margin: 36px 0 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  h3::before {
+    content: '';
+    display: block;
+    width: 20px;
+    height: 2px;
+    background: var(--amber);
+    flex-shrink: 0;
+  }
+
+  h4 {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 24px 0 10px;
+  }
+
+  p {
+    font-size: 15px;
+    color: rgba(232,238,245,0.85);
+    margin-bottom: 16px;
+    max-width: 780px;
+  }
+
+  strong {
+    color: var(--white);
+    font-weight: 500;
+  }
+
+  /* ── CALLOUT BOX ── */
+  .callout {
+    border-left: 3px solid var(--accent);
+    background: var(--accent-glow);
+    padding: 18px 24px;
+    margin: 24px 0;
+    border-radius: 0 4px 4px 0;
+  }
+
+  .callout.amber {
+    border-color: var(--amber);
+    background: rgba(255,179,71,0.06);
+  }
+
+  .callout.green {
+    border-color: var(--green);
+    background: rgba(57,255,138,0.06);
+  }
+
+  .callout p { margin: 0; font-size: 14px; }
+
+  /* ── SPEC CARD ── */
+  .spec-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 2px;
+    margin: 24px 0;
+    border: 1px solid var(--border);
+  }
+
+  .spec-card {
+    background: var(--panel);
+    padding: 20px;
+    position: relative;
+    overflow: hidden;
+    transition: background 0.2s;
+  }
+
+  .spec-card:hover { background: var(--steel-light); }
+
+  .spec-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--accent), transparent);
+  }
+
+  .spec-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  .spec-value {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--accent);
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .spec-unit {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+  }
+
+  /* ── DATA TABLE ── */
+  .data-table-wrap {
+    overflow-x: auto;
+    margin: 24px 0;
+    border: 1px solid var(--border);
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13.5px;
+  }
+
+  thead tr {
+    background: var(--steel-light);
+    border-bottom: 2px solid var(--accent);
+  }
+
+  thead th {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--accent);
+    padding: 14px 16px;
+    text-align: left;
+    white-space: nowrap;
+  }
+
+  tbody tr {
+    border-bottom: 1px solid var(--border-subtle);
+    transition: background 0.15s;
+  }
+  tbody tr:hover { background: rgba(0,200,255,0.04); }
+
+  tbody td {
+    padding: 12px 16px;
+    color: rgba(232,238,245,0.8);
+    vertical-align: top;
+  }
+
+  tbody td:first-child {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    color: var(--white);
+  }
+
+  .td-hi { color: var(--accent); font-weight: 500; }
+  .td-amber { color: var(--amber); font-weight: 500; }
+  .td-green { color: var(--green); font-weight: 500; }
+
+  /* ── COMPARISON PANEL ── */
+  .compare-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin: 28px 0;
+  }
+
+  @media (max-width: 680px) { .compare-grid { grid-template-columns: 1fr; } }
+
+  .compare-card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    padding: 28px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .compare-card.primary { border-color: var(--accent); }
+  .compare-card.secondary { border-color: var(--amber); }
+
+  .compare-card-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  .compare-card.primary .compare-card-label { color: var(--accent); }
+  .compare-card.secondary .compare-card-label { color: var(--amber); }
+
+  .compare-card-title {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--white);
+    margin-bottom: 20px;
+    line-height: 1.2;
+  }
+
+  .compare-card ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .compare-card li {
+    font-size: 13.5px;
+    color: rgba(232,238,245,0.75);
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+  }
+
+  .compare-card.primary li::before { content: '›'; color: var(--accent); font-weight: 700; flex-shrink:0; }
+  .compare-card.secondary li::before { content: '›'; color: var(--amber); font-weight: 700; flex-shrink:0; }
+
+  /* ── INLINE CODE / MONO ── */
+  code {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 12px;
+    background: rgba(0,200,255,0.08);
+    border: 1px solid var(--border);
+    color: var(--accent);
+    padding: 2px 7px;
+    border-radius: 2px;
+  }
+
+  /* ── DIVIDER ── */
+  .divider {
+    border: none;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--border), transparent);
+    margin: 48px 0;
+  }
+
+  /* ── TAG BADGES ── */
+  .badge-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 12px 0 24px;
+  }
+
+  .badge {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: 2px;
+  }
+
+  .badge-cyan { background: rgba(0,200,255,0.1); color: var(--accent); border: 1px solid rgba(0,200,255,0.25); }
+  .badge-amber { background: rgba(255,179,71,0.1); color: var(--amber); border: 1px solid rgba(255,179,71,0.25); }
+  .badge-green { background: rgba(57,255,138,0.1); color: var(--green); border: 1px solid rgba(57,255,138,0.25); }
+
+  /* ── CONCLUSION BLOCK ── */
+  .conclusion {
+    background: var(--steel-light);
+    border: 1px solid var(--border);
+    border-top: 3px solid var(--accent);
+    padding: 36px 40px;
+    position: relative;
+    overflow: hidden;
+    margin-top: 48px;
+  }
+
+  .conclusion::before {
+    content: '//';
+    position: absolute;
+    bottom: -20px;
+    right: 20px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 120px;
+    color: rgba(0,200,255,0.03);
+    pointer-events: none;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    position: relative;
+    z-index: 10;
+    border-top: 1px solid var(--border);
+    padding: 32px 40px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    background: var(--panel);
+  }
+
+  .footer-brand {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--amber);
+  }
+
+  .footer-meta {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 2px;
+    text-align: right;
+  }
+
+  /* ── PRINT ── */
+  @media print {
+    body::before, body::after { display: none; }
+    .spec-card:hover, tbody tr:hover { background: unset; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════════ HEADER ═══════════ -->
+<header>
+  <div class="header-eyebrow">TECHNICAL SPECIFICATION REPORT</div>
+  <h1>GE Turbine Generator and<br><em>Exhaust Heat Capture</em><br>Power Specifications</h1>
+  <div class="attribution">Conceptualization by The FixOurStreets216 Project</div>
+  <div class="header-meta">
+    <span><span class="dot"></span>ACTIVE DOCUMENT</span>
+    <span>SUBJECT: GE TM2500 DLE · GE 7HA.03</span>
+    <span>SCOPE: Combined Cycle · HRSG · SCR · Steam Turbine</span>
+    <span>REGION: Cleveland, OH / Industrial Valley</span>
+  </div>
+</header>
+
+<!-- ═══════════ NAV / TOC ═══════════ -->
+<nav class="toc">
+  <span class="toc-label">Sections</span>
+  <a href="#s1">TM2500 DLE Overview</a>
+  <a href="#s2">Exhaust Capture</a>
+  <a href="#s3">Emissions</a>
+  <a href="#s4">Steam Turbine Options</a>
+  <a href="#s5">7HA.03 Comparison</a>
+  <a href="#s6">HRSG Architecture</a>
+  <a href="#s7">Final Matrix</a>
+</nav>
+
+<main>
+
+<!-- ═══════════ SECTION 1 · TM2500 DLE ═══════════ -->
+<section id="s1">
+  <div class="section-header">
+    <span class="section-number">01</span>
+    <h2>GE TM2500 DLE — <span class="hl">Base Platform</span></h2>
+  </div>
+
+  <div class="badge-row">
+    <span class="badge badge-cyan">AERODERIVATIVE</span>
+    <span class="badge badge-cyan">MOBILE / RAPID DEPLOY</span>
+    <span class="badge badge-green">~37 MW SIMPLE CYCLE</span>
+    <span class="badge badge-amber">DLE COMBUSTOR</span>
+  </div>
+
+  <p>The GE TM2500 DLE is a trailer-mounted aeroderivative gas turbine based on the LM2500 family, one of the most widely deployed gas turbines in the world. The DLE (Dry Low Emissions) combustor variant eliminates the need for water injection for NOₓ control, reducing operating complexity and water consumption entirely at the simple cycle stage.</p>
+
+  <p>The TM2500 DLE can scale output in ~37 MW blocks and is capable of reaching full power within 10 minutes, with installation and commissioning achievable in as few as 11 days — making it suitable for rapid-permanent deployment at industrial campuses.</p>
+
+  <div class="spec-grid">
+    <div class="spec-card">
+      <div class="spec-label">Simple Cycle Output</div>
+      <div class="spec-value">~37</div>
+      <div class="spec-unit">MW (net)</div>
+    </div>
+    <div class="spec-card">
+      <div class="spec-label">Simple Cycle Efficiency</div>
+      <div class="spec-value">~40</div>
+      <div class="spec-unit">% (LHV)</div>
+    </div>
+    <div class="spec-card">
+      <div class="spec-label">Exhaust Temperature</div>
+      <div class="spec-value">900</div>
+      <div class="spec-unit">°F approx.</div>
+    </div>
+    <div class="spec-card">
+      <div class="spec-label">Exhaust Mass Flow</div>
+      <div class="spec-value">~290</div>
+      <div class="spec-unit">lb/sec</div>
+    </div>
+    <div class="spec-card">
+      <div class="spec-label">Thermal in Exhaust</div>
+      <div class="spec-value">~55</div>
+      <div class="spec-unit">MWth available</div>
+    </div>
+    <div class="spec-card">
+      <div class="spec-label">Time to Full Power</div>
+      <div class="spec-value">10</div>
+      <div class="spec-unit">minutes</div>
+    </div>
+    <div class="spec-card">
+      <div class="spec-label">Reliability</div>
+      <div class="spec-value">99.7</div>
+      <div class="spec-unit">%</div>
+    </div>
+    <div class="spec-card">
+      <div class="spec-label">Turbine Speed</div>
+      <div class="spec-value">3,600</div>
+      <div class="spec-unit">RPM (60 Hz)</div>
+    </div>
+  </div>
+
+  <div class="callout amber">
+    <p><strong>Key insight:</strong> At ~37 MW electrical output, roughly 53–56 MWth rides out the exhaust stack. This thermal budget drives all downstream HRSG and steam turbine sizing decisions. The TM2500's aeroderivative lineage means higher pressure ratio but lower exhaust temperature (~900°F) compared to heavy-frame machines — a thermodynamic constraint that caps HRSG architecture.</p>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ═══════════ SECTION 2 · EXHAUST HEAT CAPTURE ═══════════ -->
+<section id="s2">
+  <div class="section-header">
+    <span class="section-number">02</span>
+    <h2>Exhaust Heat <span class="hl">Capture &amp; Recovery</span></h2>
+  </div>
+
+  <p>The TM2500 DLE is fully deployable with downstream heat recovery. A Heat Recovery Steam Generator (HRSG) connects at the exhaust flange, capturing waste thermal energy for power augmentation, process heat, or combined heat and power (CHP) applications. The TM2500's three-trailer mobility configuration is retained — the HRSG and emissions control equipment are pad-mounted permanent structures connected at the exhaust interface.</p>
+
+  <h3>HRSG Configurations for TM2500</h3>
+
+  <div class="compare-grid">
+    <div class="compare-card primary">
+      <div class="compare-card-label">Option A</div>
+      <div class="compare-card-title">Single Pressure<br>Unfired HRSG</div>
+      <ul>
+        <li>Single steam drum, one pressure level</li>
+        <li>Steam at ~600–900 psig</li>
+        <li>Lower capital cost</li>
+        <li>Best for stable thermal loads</li>
+        <li>SCR catalyst integrated mid-HRSG</li>
+        <li>Simplest operational profile</li>
+      </ul>
+    </div>
+    <div class="compare-card secondary">
+      <div class="compare-card-label">Option B</div>
+      <div class="compare-card-title">Dual Pressure<br>w/ Duct Burner</div>
+      <ul>
+        <li>HP + LP steam drums</li>
+        <li>Supplemental duct burner boosts output</li>
+        <li>Steam output: ~150,000–180,000 lb/hr</li>
+        <li>Extends CHP capability</li>
+        <li>Additional 2–4 MW ST output potential</li>
+        <li>Preferred for data center CHP</li>
+      </ul>
+    </div>
+  </div>
+
+  <h3>Steam Output Parameters</h3>
+
+  <div class="data-table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Parameter</th>
+          <th>Single Pressure</th>
+          <th>Dual Pressure + Firing</th>
+          <th>Unit</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Steam Flow (HP)</td>
+          <td>~120,000–140,000</td>
+          <td class="td-hi">~150,000–180,000</td>
+          <td>lb/hr</td>
+        </tr>
+        <tr>
+          <td>HP Steam Pressure</td>
+          <td>600–750 psig</td>
+          <td class="td-hi">800–900 psig</td>
+          <td>psig</td>
+        </tr>
+        <tr>
+          <td>LP Steam Pressure</td>
+          <td>N/A</td>
+          <td class="td-amber">50–150 psig</td>
+          <td>psig</td>
+        </tr>
+        <tr>
+          <td>Stack Exhaust Temp</td>
+          <td>~300–350°F</td>
+          <td>~280–320°F</td>
+          <td>°F</td>
+        </tr>
+        <tr>
+          <td>Process Heat Available</td>
+          <td>~35–45 MWth</td>
+          <td class="td-hi">~45–55 MWth</td>
+          <td>MWth</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout">
+    <p><strong>SCR catalyst placement:</strong> The selective catalytic reduction (SCR) bed is integrated into the HRSG ductwork at the optimal temperature window — typically 550–750°F for vanadium-based SCR. This positions the catalyst mid-HRSG, where exhaust has cooled to the active catalyst range, before the IP/LP evaporator sections.</p>
+  </div>
+
+  <h3>Tri-Generation (CHPC) Configuration</h3>
+  <p>For a data center campus, the HRSG steam loop can serve an absorption chiller system — converting recovered thermal energy directly into chilled water for cooling loads. This tri-generation (Combined Heat, Power, and Cooling) configuration extracts value from exhaust energy across three outputs simultaneously: electricity, process heat, and mechanical cooling.</p>
+</section>
+
+<hr class="divider">
+
+<!-- ═══════════ SECTION 3 · EMISSIONS CONTROL ═══════════ -->
+<section id="s3">
+  <div class="section-header">
+    <span class="section-number">03</span>
+    <h2>Emissions Control <span class="hl">Train</span></h2>
+  </div>
+
+  <p>The TM2500 DLE combustor significantly reduces NOₓ formation upstream of the stack. A full post-combustion treatment train is required for Ohio EPA Title V or Synthetic Minor permit compliance, using a BACT (Best Available Control Technology) analysis. The DLE combustor + SCR stack is a well-established BACT pathway for this turbine class.</p>
+
+  <h3>DLE Baseline Emissions (Pre-Treatment)</h3>
+
+  <div class="spec-grid">
+    <div class="spec-card">
+      <div class="spec-label">NOₓ (DLE, no SCR)</div>
+      <div class="spec-value">15–25</div>
+      <div class="spec-unit">ppm</div>
+    </div>
+    <div class="spec-card">
+      <div class="spec-label">CO (DLE, no catalyst)</div>
+      <div class="spec-value">10–25</div>
+      <div class="spec-unit">ppm</div>
+    </div>
+    <div class="spec-card">
+      <div class="spec-label">NOₓ (post-SCR)</div>
+      <div class="spec-value">&lt;5</div>
+      <div class="spec-unit">ppm</div>
+    </div>
+    <div class="spec-card">
+      <div class="spec-label">CO (post-catalyst)</div>
+      <div class="spec-value">&lt;10</div>
+      <div class="spec-unit">ppm</div>
+    </div>
+  </div>
+
+  <h3>Full Purification Stack Components</h3>
+
+  <div class="data-table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Component</th>
+          <th>Function</th>
+          <th>Pollutant Targeted</th>
+          <th>Result</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>DLE Combustor</td>
+          <td>Premixed lean combustion reduces peak flame temp</td>
+          <td>NOₓ (primary)</td>
+          <td class="td-amber">15–25 ppm NOₓ</td>
+        </tr>
+        <tr>
+          <td>SCR (Selective Catalytic Reduction)</td>
+          <td>NH₃ or urea injection; vanadium/zeolite catalyst bed</td>
+          <td>NOₓ</td>
+          <td class="td-green">&lt;2–5 ppm NOₓ</td>
+        </tr>
+        <tr>
+          <td>CO Oxidation Catalyst</td>
+          <td>Platinum-group metal catalyst, CO → CO₂</td>
+          <td>CO, VOC, UHC</td>
+          <td class="td-green">&lt;5–10 ppm CO</td>
+        </tr>
+        <tr>
+          <td>Ammonia Slip Catalyst</td>
+          <td>Oxidizes unreacted NH₃ downstream of SCR</td>
+          <td>NH₃ slip</td>
+          <td class="td-green">Limits NH₃ emissions</td>
+        </tr>
+        <tr>
+          <td>CEMS</td>
+          <td>Real-time O₂, NOₓ, CO, CO₂, SO₂ stack monitoring</td>
+          <td>All regulated</td>
+          <td class="td-hi">Permit compliance verification</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout amber">
+    <p><strong>Cold-start window:</strong> SCR catalyst requires minimum exhaust temperatures (~550°F) to function. A brief emissions-non-compliant window exists on cold start (typically &lt;3 minutes). Ohio EPA air permits must account for this via startup/shutdown exemption provisions — a standard provision in Title V permit packages for this turbine class.</p>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ═══════════ SECTION 4 · STEAM TURBINE OPTIONS ═══════════ -->
+<section id="s4">
+  <div class="section-header">
+    <span class="section-number">04</span>
+    <h2>Steam Turbine <span class="hl">Bottoming Cycle</span></h2>
+  </div>
+
+  <p>The TM2500 DLE combined cycle bottoming stage uses a steam turbine to convert HRSG-generated steam into additional electrical output. Three configurations are viable, each with distinct trade-offs between electrical output maximization and thermal energy delivery for campus use.</p>
+
+  <h3>Configuration A — Backpressure Steam Turbine</h3>
+  <p>Steam expands from HRSG inlet conditions to a usable process pressure (50–250 psig). The exhaust steam exits still hot and pressurized — directly usable as process heat, absorption chiller feed, or hot water supply. Electrical extraction is limited by the pressure drop across the turbine.</p>
+
+  <div class="spec-grid">
+    <div class="spec-card">
+      <div class="spec-label">ST Electrical Output</div>
+      <div class="spec-value">5–8</div>
+      <div class="spec-unit">MW</div>
+    </div>
+    <div class="spec-card">
+      <div class="spec-label">Total Plant (GT+ST)</div>
+      <div class="spec-value">42–45</div>
+      <div class="spec-unit">MW</div>
+    </div>
+    <div class="spec-card">
+      <div class="spec-label">Process Heat</div>
+      <div class="spec-value">35–45</div>
+      <div class="spec-unit">MWth available</div>
+    </div>
+    <div class="spec-card">
+      <div class="spec-label">Net Efficiency</div>
+      <div class="spec-value">45–48</div>
+      <div class="spec-unit">% (fuel+heat)</div>
+    </div>
+  </div>
+
+  <h3>Configuration B — Condensing Steam Turbine</h3>
+  <p>Steam expands through the full pressure range down to near-vacuum condenser pressure (~1–2 psia, ~100°F), extracting maximum enthalpy as shaft work and electricity. This is the maximum electrical output configuration. A real-world reference: the GE LM2500+G4 Gen04 Combined Cycle Power Plant achieves ~45 MW total output from a ~35 MW gas turbine base, with a 10–12 MW condensing steam turbine, delivering over 52% net plant efficiency.</p>
+
+  <div class="spec-grid">
+    <div class="spec-card">
+      <div class="spec-label">ST Electrical Output</div>
+      <div class="spec-value">10–13</div>
+      <div class="spec-unit">MW</div>
+    </div>
+    <div class="spec-card">
+      <div class="spec-label">Total Plant (GT+ST)</div>
+      <div class="spec-value">47–50</div>
+      <div class="spec-unit">MW</div>
+    </div>
+    <div class="spec-card">
+      <div class="spec-label">CC Net Efficiency</div>
+      <div class="spec-value">52–54</div>
+      <div class="spec-unit">%</div>
+    </div>
+    <div class="spec-card">
+      <div class="spec-label">ST Inlet Pressure</div>
+      <div class="spec-value">850+</div>
+      <div class="spec-unit">psig</div>
+    </div>
+    <div class="spec-card">
+      <div class="spec-label">Condenser Pressure</div>
+      <div class="spec-value">1–2</div>
+      <div class="spec-unit">psia</div>
+    </div>
+    <div class="spec-card">
+      <div class="spec-label">Cost Premium vs BP</div>
+      <div class="spec-value">+$25</div>
+      <div class="spec-unit">/kW installed</div>
+    </div>
+  </div>
+
+  <h3>Configuration C — Extraction-Condensing (Recommended)</h3>
+  <p>The optimal configuration for a data center campus. Controlled extraction ports at intermediate pressure stages allow dynamic split between electrical generation and thermal delivery — dialing between full power mode and full CHP mode in real time based on campus load requirements.</p>
+
+  <div class="callout green">
+    <p><strong>Campus control logic:</strong> Peak IT load, low thermal demand → close extraction, maximize electrical output (~12 MW ST). Peak thermal demand (summer cooling or winter heating) → open extraction, trade ~2–4 MW electrical for 20+ MWth direct to the building loop. No equipment change required — purely a valve position adjustment.</p>
+  </div>
+
+  <h3>Decision Matrix</h3>
+
+  <div class="data-table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Criterion</th>
+          <th>Backpressure</th>
+          <th>Condensing</th>
+          <th>Extraction-Condensing</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>ST Electrical Output</td>
+          <td>5–8 MW</td>
+          <td class="td-hi">10–13 MW</td>
+          <td class="td-amber">7–12 MW (variable)</td>
+        </tr>
+        <tr>
+          <td>Total Plant Output</td>
+          <td>42–45 MW</td>
+          <td class="td-hi">47–50 MW</td>
+          <td>44–50 MW</td>
+        </tr>
+        <tr>
+          <td>Net Efficiency</td>
+          <td>45–48%</td>
+          <td class="td-hi">52–54%</td>
+          <td>50–54%</td>
+        </tr>
+        <tr>
+          <td>Process Heat</td>
+          <td class="td-green">High (35–45 MWth)</td>
+          <td>None (rejected)</td>
+          <td class="td-green">Moderate (variable)</td>
+        </tr>
+        <tr>
+          <td>Cooling Tower</td>
+          <td>Small / none</td>
+          <td>Yes (~40 MW rejection)</td>
+          <td>Partial</td>
+        </tr>
+        <tr>
+          <td>Capital Cost</td>
+          <td class="td-green">Lowest</td>
+          <td>+$25–30/kW vs BP</td>
+          <td>Moderate premium</td>
+        </tr>
+        <tr>
+          <td>Best Application</td>
+          <td>Large thermal load</td>
+          <td>Pure power</td>
+          <td class="td-hi">Data center campus</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout">
+    <p><strong>Morabito campus projection (2× TM2500 DLE + extraction-condensing bottoming):</strong> Two-unit TM2500 configuration with extraction-condensing steam turbines yields approximately <strong>74–100 MW total electrical capacity</strong> with a thermal extraction loop feeding absorption chillers or a hot water ring — optimized for combined power and thermal management at a data center campus scale.</p>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ═══════════ SECTION 5 · 7HA.03 COMPARISON ═══════════ -->
+<section id="s5">
+  <div class="section-header">
+    <span class="section-number">05</span>
+    <h2>GE Vernova 7HA.03 — <span class="hl">Platform Comparison</span></h2>
+  </div>
+
+  <div class="badge-row">
+    <span class="badge badge-cyan">HEAVY-FRAME H-CLASS</span>
+    <span class="badge badge-cyan">60 HZ</span>
+    <span class="badge badge-green">430 MW SIMPLE CYCLE</span>
+    <span class="badge badge-amber">DLN 2.6e COMBUSTOR</span>
+    <span class="badge badge-amber">50% H₂ CAPABLE</span>
+  </div>
+
+  <p>The 7HA.03 is a fundamentally different class of machine from the TM2500 DLE. At 430 MW simple cycle and 640 MW combined cycle (1×1 configuration), it is the most powerful and efficient 60 Hz gas turbine currently in commercial operation globally. The exhaust heat capture system for the 7HA.03 is not an adaptation of the TM2500 package — it is a categorically different engineering and civil project.</p>
+
+  <h3>Head-to-Head Specification Comparison</h3>
+
+  <div class="data-table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Parameter</th>
+          <th>TM2500 DLE</th>
+          <th>7HA.03</th>
+          <th>Scale Factor</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Simple Cycle Output</td>
+          <td>~37 MW</td>
+          <td class="td-hi">430 MW</td>
+          <td class="td-amber">11.6×</td>
+        </tr>
+        <tr>
+          <td>SC Net Efficiency</td>
+          <td>~40%</td>
+          <td class="td-green">43.3%</td>
+          <td>+3.3 pts</td>
+        </tr>
+        <tr>
+          <td>CC Output (1×1)</td>
+          <td>~47–50 MW</td>
+          <td class="td-hi">640 MW</td>
+          <td class="td-amber">~13×</td>
+        </tr>
+        <tr>
+          <td>CC Net Efficiency</td>
+          <td>~52–54%</td>
+          <td class="td-green">63.9%</td>
+          <td>+10 pts</td>
+        </tr>
+        <tr>
+          <td>CC Heat Rate (Btu/kWh)</td>
+          <td>~6,300</td>
+          <td class="td-green">5,342</td>
+          <td>−15%</td>
+        </tr>
+        <tr>
+          <td>Exhaust Temperature</td>
+          <td>~850–950°F</td>
+          <td class="td-hi">~1,130–1,150°F</td>
+          <td>+180–200°F</td>
+        </tr>
+        <tr>
+          <td>Exhaust Mass Flow</td>
+          <td>~290 lb/sec</td>
+          <td class="td-hi">~1,700–1,800 lb/sec</td>
+          <td class="td-amber">~6×</td>
+        </tr>
+        <tr>
+          <td>Thermal in Exhaust</td>
+          <td>~55 MWth</td>
+          <td class="td-hi">~500–550 MWth</td>
+          <td class="td-amber">~10×</td>
+        </tr>
+        <tr>
+          <td>Ramp Rate</td>
+          <td>—</td>
+          <td class="td-green">75 MW/min</td>
+          <td>—</td>
+        </tr>
+        <tr>
+          <td>Minimum Load</td>
+          <td>—</td>
+          <td>26%</td>
+          <td>—</td>
+        </tr>
+        <tr>
+          <td>NOₓ (post-treatment)</td>
+          <td>&lt;5 ppm</td>
+          <td class="td-green">&lt;2.5 ppm</td>
+          <td>—</td>
+        </tr>
+        <tr>
+          <td>H₂ capability</td>
+          <td>Limited</td>
+          <td class="td-green">Up to 50% vol.</td>
+          <td>—</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout amber">
+    <p><strong>Critical exhaust temperature difference:</strong> The 7HA.03's ~1,130°F+ exhaust versus the TM2500's ~900°F exhaust is not simply a performance delta — it is the thermodynamic threshold that determines which HRSG architecture is viable. The reheat cycle is generally limited to gas turbines with exhaust temperatures above 593°C (1,100°F). The 7HA.03 clears this threshold comfortably; the TM2500 does not, which is why their HRSG configurations differ structurally, not just in scale.</p>
+  </div>
+
+  <h3>Real-World Deployment Reference — Dania Beach, FL</h3>
+  <p>The world's first GE 7HA.03 gas turbines entered commercial operation at Florida Power &amp; Light's Dania Beach Clean Energy Center on June 1, 2022. Two 7HA.03 units power a 1,260 MW combined cycle plant — the largest and most efficient 60 Hz combined cycle plant in operation at the time.</p>
+
+  <div class="spec-grid">
+    <div class="spec-card">
+      <div class="spec-label">Plant Total Output</div>
+      <div class="spec-value">1,260</div>
+      <div class="spec-unit">MW (2× GT + 1 ST)</div>
+    </div>
+    <div class="spec-card">
+      <div class="spec-label">Steam Turbine Rating</div>
+      <div class="spec-value">437.6</div>
+      <div class="spec-unit">MW (ISO base load)</div>
+    </div>
+    <div class="spec-card">
+      <div class="spec-label">HRSG Configuration</div>
+      <div class="spec-value">3P-RH</div>
+      <div class="spec-unit">Triple pressure reheat</div>
+    </div>
+    <div class="spec-card">
+      <div class="spec-label">Fast Restart (Hot)</div>
+      <div class="spec-value">30</div>
+      <div class="spec-unit">minutes to full power</div>
+    </div>
+    <div class="spec-card">
+      <div class="spec-label">NOₓ at 15–100% Load</div>
+      <div class="spec-value">&lt;2.5</div>
+      <div class="spec-unit">ppm</div>
+    </div>
+    <div class="spec-card">
+      <div class="spec-label">Project Capital</div>
+      <div class="spec-value">$880</div>
+      <div class="spec-unit">million (FPL)</div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ═══════════ SECTION 6 · HRSG ARCHITECTURE ═══════════ -->
+<section id="s6">
+  <div class="section-header">
+    <span class="section-number">06</span>
+    <h2>HRSG Architecture — <span class="hl">Platform Differences</span></h2>
+  </div>
+
+  <p>The heat recovery steam generator is the defining engineering difference between the two platforms. The TM2500 uses a compact single or dual pressure HRSG; the 7HA.03 requires a triple-pressure reheat HRSG — a fundamentally different system in size, cost, civil footprint, and operational integration.</p>
+
+  <h3>TM2500 DLE: Single / Dual Pressure, No Reheat</h3>
+  <p>The aeroderivative's lower exhaust temperature (~900°F) and modest mass flow makes a single or dual pressure unfired HRSG the appropriate design. Adding a third pressure level or reheat section yields diminishing returns — there is insufficient thermal head in the exhaust to support incremental tube surface cost. A supplemental duct burner can push toward dual pressure operation, but triple pressure reheat is uneconomical at this scale.</p>
+
+  <div class="compare-grid">
+    <div class="compare-card primary">
+      <div class="compare-card-label">TM2500 HRSG</div>
+      <div class="compare-card-title">Compact Industrial Package</div>
+      <ul>
+        <li>Single or dual pressure</li>
+        <li>No reheat section</li>
+        <li>HP steam: 600–900 psig</li>
+        <li>SCR integrated in ductwork</li>
+        <li>~1 acre footprint</li>
+        <li>Pad-mounted, permanent connection</li>
+        <li>Est. HRSG+ST capital: ~$40–60M</li>
+      </ul>
+    </div>
+    <div class="compare-card secondary">
+      <div class="compare-card-label">7HA.03 HRSG</div>
+      <div class="compare-card-title">Utility-Scale Multi-Module System</div>
+      <ul>
+        <li>Triple pressure with full reheat</li>
+        <li>HP / IP / LP steam circuits</li>
+        <li>HP steam: ~2,400 psig / 1,050–1,100°F</li>
+        <li>Reheater between HP and IP turbine stages</li>
+        <li>SCR is a building-scale civil structure</li>
+        <li>3–5 acre HRSG footprint</li>
+        <li>Est. HRSG+ST capital: ~$400–600M+</li>
+      </ul>
+    </div>
+  </div>
+
+  <h3>7HA.03 Triple Pressure Reheat HRSG — Section Breakdown</h3>
+
+  <div class="data-table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>HRSG Section</th>
+          <th>Steam Conditions</th>
+          <th>Function</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>HP Superheater (3 stages)</td>
+          <td class="td-hi">~2,400 psig / 1,050–1,100°F</td>
+          <td>Primary high-pressure steam for HP turbine admission</td>
+        </tr>
+        <tr>
+          <td>HP Reheater (2 stages)</td>
+          <td class="td-amber">~600 psig / 1,050°F</td>
+          <td>Reheats HP steam after HP turbine exhaust before IP admission — critical efficiency gain</td>
+        </tr>
+        <tr>
+          <td>IP Evaporator / Superheater</td>
+          <td>~400–600 psig</td>
+          <td>Intermediate pressure steam for IP turbine stage</td>
+        </tr>
+        <tr>
+          <td>LP Evaporator / Superheater</td>
+          <td>~50–80 psig</td>
+          <td>Feedwater heating + low pressure steam turbine admission</td>
+        </tr>
+        <tr>
+          <td>Condensate Preheater</td>
+          <td>~200–250°F</td>
+          <td>Cold-end heat recovery; prevents acid dew point condensation in HRSG tubes</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>Steam Turbine Scale Comparison</h3>
+
+  <div class="data-table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Element</th>
+          <th>TM2500 Bottoming ST</th>
+          <th>7HA.03 (GE STF-A650)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Casing configuration</td>
+          <td>Single casing, single flow</td>
+          <td class="td-hi">Multi-casing: HP + IP + LP</td>
+        </tr>
+        <tr>
+          <td>Admission pressures</td>
+          <td>Single pressure</td>
+          <td class="td-hi">Triple pressure with reheat</td>
+        </tr>
+        <tr>
+          <td>Electrical output</td>
+          <td>10–13 MW</td>
+          <td class="td-hi">437.6 MW (at Dania Beach)</td>
+        </tr>
+        <tr>
+          <td>Condenser size</td>
+          <td>Moderate cooling tower</td>
+          <td>Warehouse-scale; hundreds of thousands GPM</td>
+        </tr>
+        <tr>
+          <td>Foundation scale</td>
+          <td>Industrial skid</td>
+          <td>Major civil structure</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout">
+    <p><strong>Fast Restart — 7HA.03 exclusive:</strong> Terminal attemperators control steam temperature during startup independently of gas turbine exhaust temperature, allowing the GT to reach full load without inducing thermal stresses in the triple-pressure HRSG and multi-casing steam turbine. Hot restart from zero to full plant output: 30 minutes. This is a 7HA.03 system-level engineering integration with no equivalent in the TM2500 package.</p>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ═══════════ SECTION 7 · FINAL MATRIX ═══════════ -->
+<section id="s7">
+  <div class="section-header">
+    <span class="section-number">07</span>
+    <h2>Complete System <span class="hl">Comparison Matrix</span></h2>
+  </div>
+
+  <div class="data-table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>System Component</th>
+          <th>TM2500 DLE</th>
+          <th>GE Vernova 7HA.03</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Gas turbine class</td>
+          <td>Aeroderivative (LM2500 family)</td>
+          <td class="td-hi">Heavy-frame H-class</td>
+        </tr>
+        <tr>
+          <td>Simple cycle output</td>
+          <td>~37 MW</td>
+          <td class="td-hi">430 MW</td>
+        </tr>
+        <tr>
+          <td>SC efficiency</td>
+          <td>~40%</td>
+          <td class="td-green">43.3%</td>
+        </tr>
+        <tr>
+          <td>HRSG type</td>
+          <td>Single / dual pressure, no reheat</td>
+          <td class="td-hi">Triple pressure with reheat</td>
+        </tr>
+        <tr>
+          <td>HRSG footprint</td>
+          <td>~1 acre (compact skid)</td>
+          <td>3–5 acres (multi-module)</td>
+        </tr>
+        <tr>
+          <td>HP steam pressure</td>
+          <td>600–900 psig</td>
+          <td class="td-hi">~2,400 psig</td>
+        </tr>
+        <tr>
+          <td>Steam turbine</td>
+          <td>Single casing, 10–13 MW</td>
+          <td class="td-hi">STF-A650, multi-casing, 200–437 MW</td>
+        </tr>
+        <tr>
+          <td>Combined cycle output (1×1)</td>
+          <td>~47–50 MW</td>
+          <td class="td-hi">640 MW</td>
+        </tr>
+        <tr>
+          <td>CC net efficiency</td>
+          <td>~52–54%</td>
+          <td class="td-green">63.9%</td>
+        </tr>
+        <tr>
+          <td>SCR / CO catalyst</td>
+          <td>Compact HRSG-integrated</td>
+          <td>Full building-scale reactor</td>
+        </tr>
+        <tr>
+          <td>NOₓ post-treatment</td>
+          <td>&lt;5 ppm</td>
+          <td class="td-green">&lt;2.5 ppm</td>
+        </tr>
+        <tr>
+          <td>Fast restart (CC mode)</td>
+          <td>Bypass stack; SC only</td>
+          <td class="td-green">30 min hot restart (CC)</td>
+        </tr>
+        <tr>
+          <td>H₂ fuel capability</td>
+          <td>Limited</td>
+          <td class="td-green">Up to 50% vol. (pathway to 100%)</td>
+        </tr>
+        <tr>
+          <td>Deployment timeline</td>
+          <td class="td-green">11 days to power</td>
+          <td>Multi-year construction</td>
+        </tr>
+        <tr>
+          <td>HRSG+ST capital (est.)</td>
+          <td>~$40–60M</td>
+          <td>~$400–600M+</td>
+        </tr>
+        <tr>
+          <td>Best application</td>
+          <td class="td-amber">Rapid-perm CHP, data center bridging</td>
+          <td class="td-hi">Utility-scale baseload / grid spine</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="conclusion">
+    <h4>Strategic Summary — Cleveland Industrial Valley Applications</h4>
+    <p>For a data center campus deployment at the Morabito site or Opportunity Corridor IPGD, the TM2500 DLE with extraction-condensing bottoming cycle represents the right machine for rapid-to-permanent power infrastructure: deployable in weeks, 74–100 MW per two-unit installation in combined cycle, fully permit-compliant with Ohio EPA BACT via SCR, and adaptable for absorption cooling via the thermal extraction loop.</p>
+    <p>The GE Vernova 7HA.03 is the correct specification for a utility-scale campus spine targeting 640 MW+ per unit in combined cycle — equivalent in scope to a major utility power plant project. The heat recovery package for the 7HA.03 is not a scaled-up version of the TM2500 system; it is a structurally different engineering category, requiring triple-pressure reheat HRSGs, a multi-casing GE STF-A650 class steam turbine producing 200–437 MW from the bottoming cycle alone, building-scale SCR infrastructure, and major civil foundations across 3–5 acres per unit. Both platforms share the same fundamental DLN combustor + SCR + CO catalyst emissions pathway — the chemistry is identical; the physical scale is categorically different.</p>
+  </div>
+</section>
+
+</main>
+
+<!-- ═══════════ FOOTER ═══════════ -->
+<footer>
+  <div class="footer-brand">The FixOurStreets216 Project</div>
+  <div class="footer-meta">
+    GE Turbine Generator &amp; Exhaust Heat Capture Power Specifications<br>
+    Cleveland, Ohio · Industrial Valley Applications Research
+  </div>
+</footer>
+
+</body>
+</html>

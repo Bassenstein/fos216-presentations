@@ -1,0 +1,1384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CMSD Building Trades Curriculum</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy: #0a1628;
+  --navy-mid: #132040;
+  --navy-light: #1e3060;
+  --gold: #e8a020;
+  --gold-light: #f0b84a;
+  --gold-dim: #7a5210;
+  --steel: #c8d4e8;
+  --steel-dim: #6a7d9a;
+  --white: #f4f6fb;
+  --elec: #3a9fdd;
+  --elec-dim: #1a4f7a;
+  --plumb: #28b580;
+  --plumb-dim: #0e5a3c;
+  --hvac: #e8921a;
+  --hvac-dim: #7a4a08;
+  --carp: #d45080;
+  --carp-dim: #6a2040;
+  --cert: #9b7de8;
+  --cert-dim: #3a2480;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Barlow', sans-serif;
+  background: var(--navy);
+  color: var(--white);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ── BACKGROUND TEXTURE ── */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    repeating-linear-gradient(0deg, transparent, transparent 60px, rgba(255,255,255,0.015) 60px, rgba(255,255,255,0.015) 61px),
+    repeating-linear-gradient(90deg, transparent, transparent 60px, rgba(255,255,255,0.015) 60px, rgba(255,255,255,0.015) 61px);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ── HEADER ── */
+header {
+  position: relative;
+  z-index: 10;
+  background: linear-gradient(135deg, var(--navy-mid) 0%, var(--navy) 60%);
+  border-bottom: 3px solid var(--gold);
+  padding: 0;
+  overflow: hidden;
+}
+
+header::after {
+  content: '';
+  position: absolute;
+  right: -60px;
+  top: -40px;
+  width: 340px;
+  height: 340px;
+  border: 40px solid rgba(232,160,32,0.07);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.header-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 2.5rem 2rem 2rem;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 1.5rem;
+  align-items: end;
+}
+
+.header-eyebrow {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 0.5rem;
+}
+
+header h1 {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: clamp(2rem, 5vw, 3.2rem);
+  font-weight: 800;
+  line-height: 1.05;
+  color: var(--white);
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+header h1 span {
+  color: var(--gold);
+}
+
+.header-sub {
+  font-size: 13px;
+  color: var(--steel-dim);
+  margin-top: 0.6rem;
+  font-weight: 300;
+  letter-spacing: 0.04em;
+}
+
+.trade-badges {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  align-items: flex-end;
+}
+
+.tbadge {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 4px 12px 4px 10px;
+  border-radius: 2px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.tbadge .dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.tbadge.e { background: rgba(58,159,221,0.15); color: var(--elec); border-left: 3px solid var(--elec); }
+.tbadge.p { background: rgba(40,181,128,0.15); color: var(--plumb); border-left: 3px solid var(--plumb); }
+.tbadge.h { background: rgba(232,146,26,0.15); color: var(--hvac); border-left: 3px solid var(--hvac); }
+.tbadge.c { background: rgba(212,80,128,0.15); color: var(--carp); border-left: 3px solid var(--carp); }
+
+/* ── STAT BAR ── */
+.stat-bar {
+  position: relative;
+  z-index: 10;
+  background: var(--navy-mid);
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+}
+
+.stat-bar-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+}
+
+.stat-item {
+  padding: 1.1rem 0;
+  border-right: 1px solid rgba(255,255,255,0.07);
+  padding-right: 1.5rem;
+  padding-left: 1rem;
+}
+
+.stat-item:first-child { padding-left: 0; }
+.stat-item:last-child { border-right: none; }
+
+.stat-label {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--steel-dim);
+  margin-bottom: 3px;
+}
+
+.stat-value {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--gold);
+}
+
+.stat-note {
+  font-size: 11px;
+  color: var(--steel-dim);
+  margin-top: 1px;
+}
+
+/* ── NAV ── */
+nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--navy-mid);
+  border-bottom: 2px solid var(--gold);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+}
+
+.nav-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  display: flex;
+  gap: 0;
+  overflow-x: auto;
+}
+
+.nav-btn {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 14px 20px;
+  background: none;
+  border: none;
+  color: var(--steel-dim);
+  cursor: pointer;
+  border-bottom: 3px solid transparent;
+  margin-bottom: -2px;
+  white-space: nowrap;
+  transition: color 0.2s, border-color 0.2s;
+}
+
+.nav-btn:hover { color: var(--steel); }
+.nav-btn.act { color: var(--gold); border-bottom-color: var(--gold); }
+
+/* ── MAIN CONTENT ── */
+main {
+  position: relative;
+  z-index: 10;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.tab { display: none; }
+.tab.act { display: block; }
+
+/* ── SECTION LABEL ── */
+.sec-label {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gold-dim);
+  margin-bottom: 1.2rem;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.sec-label::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: rgba(255,255,255,0.07);
+}
+
+/* ── GRADE ROWS ── */
+.grade-row {
+  display: grid;
+  grid-template-columns: 100px 1fr;
+  gap: 0;
+  margin-bottom: 2.5rem;
+}
+
+.grade-label-col {
+  padding-top: 4px;
+  padding-right: 1.2rem;
+}
+
+.grade-pill {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  background: var(--gold);
+  color: var(--navy);
+  padding: 4px 10px;
+  display: inline-block;
+  border-radius: 2px;
+}
+
+.grade-content {
+  border-left: 2px solid var(--gold-dim);
+  padding-left: 1.5rem;
+}
+
+.grade-title {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--white);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 4px;
+}
+
+.grade-desc {
+  font-size: 13px;
+  color: var(--steel-dim);
+  line-height: 1.6;
+  margin-bottom: 1rem;
+  font-weight: 300;
+  max-width: 680px;
+}
+
+.hint {
+  font-size: 11px;
+  color: var(--gold-dim);
+  font-style: italic;
+  margin-bottom: 1.5rem;
+  letter-spacing: 0.03em;
+}
+
+/* ── COURSE CARDS ── */
+.courses {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.course-card {
+  background: var(--navy-light);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+  overflow: hidden;
+  min-width: 180px;
+  max-width: 260px;
+  flex: 1 1 180px;
+}
+
+.course-card:hover { border-color: rgba(255,255,255,0.2); }
+.course-card.open { border-color: var(--gold); background: #162240; }
+
+.course-card.type-e { border-left: 3px solid var(--elec); }
+.course-card.type-p { border-left: 3px solid var(--plumb); }
+.course-card.type-h { border-left: 3px solid var(--hvac); }
+.course-card.type-c { border-left: 3px solid var(--carp); }
+.course-card.type-co { border-left: 3px solid var(--steel-dim); }
+.course-card.type-ce { border-left: 3px solid var(--cert); background: rgba(155,125,232,0.08); }
+.course-card.type-ce.open { background: rgba(155,125,232,0.14); }
+
+.card-header {
+  padding: 10px 12px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.card-title {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--white);
+  line-height: 1.2;
+  letter-spacing: 0.02em;
+}
+
+.card-sub {
+  font-size: 10px;
+  color: var(--steel-dim);
+  margin-top: 3px;
+  font-weight: 300;
+}
+
+.card-arrow {
+  font-size: 10px;
+  color: var(--steel-dim);
+  transition: transform 0.2s;
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+
+.course-card.open .card-arrow { transform: rotate(180deg); color: var(--gold); }
+
+.card-body {
+  display: none;
+  padding: 0 12px 12px;
+  border-top: 1px solid rgba(255,255,255,0.07);
+  margin-top: 0;
+}
+
+.course-card.open .card-body { display: block; }
+
+.card-body p {
+  font-size: 12px;
+  color: var(--steel);
+  line-height: 1.65;
+  margin-top: 10px;
+  font-weight: 300;
+}
+
+.card-body ul {
+  list-style: none;
+  margin-top: 8px;
+}
+
+.card-body ul li {
+  font-size: 11px;
+  color: var(--steel-dim);
+  padding: 2px 0;
+  display: flex;
+  gap: 7px;
+  align-items: flex-start;
+  line-height: 1.5;
+}
+
+.card-body ul li::before {
+  content: '—';
+  color: var(--gold-dim);
+  flex-shrink: 0;
+  font-size: 10px;
+  margin-top: 1px;
+}
+
+.card-credential {
+  display: inline-block;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-top: 10px;
+  padding: 3px 8px;
+  border-radius: 2px;
+  background: rgba(155,125,232,0.2);
+  color: var(--cert);
+  border: 1px solid rgba(155,125,232,0.3);
+}
+
+.card-tag {
+  display: inline-block;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-top: 10px;
+  padding: 3px 8px;
+  border-radius: 2px;
+}
+
+.tag-e { background: rgba(58,159,221,0.15); color: var(--elec); }
+.tag-p { background: rgba(40,181,128,0.15); color: var(--plumb); }
+.tag-h { background: rgba(232,146,26,0.15); color: var(--hvac); }
+.tag-c { background: rgba(212,80,128,0.15); color: var(--carp); }
+.tag-co { background: rgba(106,125,154,0.2); color: var(--steel-dim); }
+
+/* ── TRADE DEEP DIVES ── */
+.trade-nav {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.trade-btn {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 8px 18px;
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 2px;
+  background: var(--navy-light);
+  color: var(--steel-dim);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.trade-btn:hover { color: var(--white); border-color: rgba(255,255,255,0.25); }
+.trade-btn.te.act { background: rgba(58,159,221,0.15); color: var(--elec); border-color: var(--elec); }
+.trade-btn.tp.act { background: rgba(40,181,128,0.15); color: var(--plumb); border-color: var(--plumb); }
+.trade-btn.th.act { background: rgba(232,146,26,0.15); color: var(--hvac); border-color: var(--hvac); }
+.trade-btn.tc.act { background: rgba(212,80,128,0.15); color: var(--carp); border-color: var(--carp); }
+
+.trade-detail { display: none; }
+.trade-detail.act { display: block; }
+
+.skill-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 1.2rem;
+}
+
+.skill-block {
+  background: var(--navy-light);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 4px;
+  padding: 14px 16px;
+}
+
+.skill-block h4 {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--gold-dim);
+  margin-bottom: 10px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+
+.skill-block ul { list-style: none; }
+
+.skill-block ul li {
+  font-size: 12px;
+  color: var(--steel);
+  padding: 3px 0;
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  font-weight: 300;
+}
+
+.skill-block ul li::before {
+  content: '';
+  width: 4px; height: 4px;
+  border-radius: 50%;
+  margin-top: 6px;
+  flex-shrink: 0;
+}
+
+.elec-dot::before { background: var(--elec); }
+.plumb-dot::before { background: var(--plumb); }
+.hvac-dot::before { background: var(--hvac); }
+.carp-dot::before { background: var(--carp); }
+
+.cert-box {
+  background: rgba(155,125,232,0.1);
+  border: 1px solid rgba(155,125,232,0.25);
+  border-radius: 4px;
+  padding: 14px 16px;
+}
+
+.cert-box h4 {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--cert);
+  margin-bottom: 10px;
+}
+
+.cert-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+
+.ctag {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  padding: 4px 10px;
+  border-radius: 2px;
+  background: rgba(155,125,232,0.15);
+  color: var(--cert);
+  border: 1px solid rgba(155,125,232,0.25);
+}
+
+/* ── PATHWAYS ── */
+.outcome-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin-bottom: 2rem;
+}
+
+.outcome-card {
+  background: var(--navy-light);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 4px;
+  padding: 14px;
+  border-top: 3px solid var(--gold);
+}
+
+.outcome-label { font-size: 10px; color: var(--steel-dim); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 4px; }
+.outcome-value { font-family: 'Barlow Condensed', sans-serif; font-size: 20px; font-weight: 700; color: var(--gold); }
+.outcome-note { font-size: 11px; color: var(--steel-dim); margin-top: 3px; font-weight: 300; }
+
+.pathway-card {
+  background: var(--navy-light);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 4px;
+  padding: 18px;
+  margin-bottom: 12px;
+  transition: border-color 0.2s;
+}
+
+.pathway-card:hover { border-color: rgba(255,255,255,0.15); }
+
+.pathway-head { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 12px; }
+.pathway-icon { font-size: 22px; flex-shrink: 0; }
+.pathway-title { font-family: 'Barlow Condensed', sans-serif; font-size: 18px; font-weight: 700; color: var(--white); letter-spacing: 0.04em; text-transform: uppercase; }
+.pathway-sub { font-size: 12px; color: var(--steel-dim); margin-top: 2px; font-weight: 300; }
+.pathway-steps { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.step-pill { font-size: 11px; padding: 4px 10px; background: rgba(255,255,255,0.06); color: var(--steel); border-radius: 2px; border: 1px solid rgba(255,255,255,0.1); }
+.step-arr { color: var(--gold-dim); font-size: 12px; }
+.salary-row { display: flex; gap: 16px; margin-top: 12px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.06); }
+.sal-label { font-size: 11px; color: var(--steel-dim); }
+.sal-value { font-weight: 600; color: var(--white); }
+
+/* ── PARTNERS ── */
+.partner-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+.partner-card {
+  background: var(--navy-light);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 4px;
+  padding: 14px 16px;
+  transition: border-color 0.2s;
+}
+
+.partner-card:hover { border-color: rgba(255,255,255,0.15); }
+.partner-type { font-size: 9px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: var(--gold-dim); margin-bottom: 4px; }
+.partner-name { font-family: 'Barlow Condensed', sans-serif; font-size: 16px; font-weight: 700; color: var(--white); margin-bottom: 5px; }
+.partner-desc { font-size: 12px; color: var(--steel-dim); line-height: 1.55; font-weight: 300; }
+
+.next-box {
+  margin-top: 1.5rem;
+  background: rgba(232,160,32,0.07);
+  border: 1px solid rgba(232,160,32,0.25);
+  border-radius: 4px;
+  padding: 16px 18px;
+}
+
+.next-box h4 {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 10px;
+}
+
+.next-item {
+  font-size: 13px;
+  color: var(--steel);
+  display: flex;
+  gap: 10px;
+  margin-bottom: 6px;
+  font-weight: 300;
+}
+
+.next-item::before { content: '✓'; color: var(--gold); font-weight: 700; flex-shrink: 0; }
+
+/* ── FOOTER ── */
+footer {
+  position: relative;
+  z-index: 10;
+  border-top: 1px solid rgba(255,255,255,0.07);
+  background: var(--navy-mid);
+  padding: 1.5rem 2rem;
+  text-align: center;
+}
+
+.footer-credit {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--gold-dim);
+}
+
+.footer-credit span {
+  color: var(--gold);
+}
+
+/* ── ANIMATIONS ── */
+@keyframes fadeSlideUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.tab.act {
+  animation: fadeSlideUp 0.25s ease forwards;
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 720px) {
+  .header-inner { grid-template-columns: 1fr; }
+  .trade-badges { flex-direction: row; flex-wrap: wrap; align-items: flex-start; }
+  .stat-bar-inner { grid-template-columns: repeat(2, 1fr); }
+  .stat-item:nth-child(2) { border-right: none; }
+  .skill-grid { grid-template-columns: 1fr; }
+  .outcome-grid { grid-template-columns: repeat(2, 1fr); }
+  .partner-grid { grid-template-columns: 1fr; }
+  .grade-row { grid-template-columns: 70px 1fr; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div>
+      <div class="header-eyebrow">Cleveland Metropolitan School District &nbsp;·&nbsp; Career &amp; Technical Education</div>
+      <h1>Building Trades<br><span>Curriculum</span></h1>
+      <div class="header-sub">Grades 9–12 &nbsp;·&nbsp; Electrical · Plumbing · HVAC · Carpentry &nbsp;·&nbsp; Job-Ready Graduation Pathway</div>
+    </div>
+    <div class="trade-badges">
+      <div class="tbadge e"><div class="dot" style="background:var(--elec)"></div> Electrical</div>
+      <div class="tbadge p"><div class="dot" style="background:var(--plumb)"></div> Plumbing</div>
+      <div class="tbadge h"><div class="dot" style="background:var(--hvac)"></div> HVAC</div>
+      <div class="tbadge c"><div class="dot" style="background:var(--carp)"></div> Carpentry</div>
+    </div>
+  </div>
+</header>
+
+<div class="stat-bar">
+  <div class="stat-bar-inner">
+    <div class="stat-item">
+      <div class="stat-label">Grade Entry</div>
+      <div class="stat-value">9th</div>
+      <div class="stat-note">All CMSD students</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-label">Trades Offered</div>
+      <div class="stat-value">4</div>
+      <div class="stat-note">Single or multi-track</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-label">Credential Goal</div>
+      <div class="stat-value">Pre-App</div>
+      <div class="stat-note">Apprenticeship ready</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-label">Avg. Entry Wage</div>
+      <div class="stat-value">$28+/hr</div>
+      <div class="stat-note">Cleveland metro, apprentice rate</div>
+    </div>
+  </div>
+</div>
+
+<nav>
+  <div class="nav-inner" id="mainnav">
+    <button class="nav-btn act" data-tab="grades">Grade-by-Grade Plan</button>
+    <button class="nav-btn" data-tab="trades">Trade Deep-Dives</button>
+    <button class="nav-btn" data-tab="pathways">Career Pathways</button>
+    <button class="nav-btn" data-tab="partners">Partners &amp; Resources</button>
+  </div>
+</nav>
+
+<main>
+
+<!-- ═══════════════════════════════════════════════
+     GRADES TAB
+════════════════════════════════════════════════ -->
+<div id="tab-grades" class="tab act">
+  <p class="hint" style="margin-bottom:1.5rem;">↓ Click any course card to expand its full summary</p>
+
+  <!-- 9th Grade -->
+  <div class="grade-row">
+    <div class="grade-label-col"><div class="grade-pill">9th Grade</div></div>
+    <div class="grade-content">
+      <div class="grade-title">Foundations of the Building Trades</div>
+      <div class="grade-desc">Every student takes this core year — no track selection required. Covers safety, tools, math, blueprint reading, and hands-on exposure to all four trades. Students identify their primary interest by year-end.</div>
+      <div class="courses">
+
+        <div class="course-card type-co">
+          <div class="card-header"><div><div class="card-title">Trades Safety &amp; OSHA-10</div><div class="card-sub">Semester 1 · Required</div></div><span class="card-arrow">▾</span></div>
+          <div class="card-body">
+            <p>The foundational safety course every student completes before touching any tool or entering any lab. Covers OSHA regulations, hazard recognition, and PPE — culminating in the nationally recognized OSHA-10 Construction card.</p>
+            <ul>
+              <li>Recognizing and reporting workplace hazards</li>
+              <li>PPE selection, fit, and maintenance</li>
+              <li>Electrical, fall, struck-by, and caught-in hazards</li>
+              <li>OSHA rights, responsibilities, and inspection process</li>
+              <li>Job site safety culture and reporting procedures</li>
+            </ul>
+            <span class="card-credential">🏅 Earns: OSHA-10 Construction Certification</span>
+          </div>
+        </div>
+
+        <div class="course-card type-co">
+          <div class="card-header"><div><div class="card-title">Construction Math &amp; Measurement</div><div class="card-sub">Semester 1–2 · Required</div></div><span class="card-arrow">▾</span></div>
+          <div class="card-body">
+            <p>Applied math taught entirely in the context of construction — not abstract algebra. Students learn to measure, calculate, and problem-solve the way real tradespeople do on job sites.</p>
+            <ul>
+              <li>Fractions, decimals, and unit conversion</li>
+              <li>Area, volume, and perimeter calculations</li>
+              <li>Reading a tape measure to 1/16 inch</li>
+              <li>Estimating material quantities</li>
+              <li>Applied geometry: angles, slopes, and the Pythagorean theorem</li>
+            </ul>
+            <span class="card-tag tag-co">Core · All Tracks</span>
+          </div>
+        </div>
+
+        <div class="course-card type-co">
+          <div class="card-header"><div><div class="card-title">Blueprint Reading &amp; Technical Drawing</div><div class="card-sub">Semester 1–2 · Required</div></div><span class="card-arrow">▾</span></div>
+          <div class="card-body">
+            <p>Students learn to read and interpret construction documents — the universal language of every building trade. Covers residential and light commercial drawings with hands-on sketch exercises.</p>
+            <ul>
+              <li>Floor plans, elevations, sections, and details</li>
+              <li>Reading scales and dimensions</li>
+              <li>Architectural, structural, electrical, and plumbing symbols</li>
+              <li>Spec sheets and material schedules</li>
+              <li>Introduction to digital plan viewing tools</li>
+            </ul>
+            <span class="card-tag tag-co">Core · All Tracks</span>
+          </div>
+        </div>
+
+        <div class="course-card type-co">
+          <div class="card-header"><div><div class="card-title">Intro to All Four Trades (Rotating)</div><div class="card-sub">Semester 2 · 4-week rotations</div></div><span class="card-arrow">▾</span></div>
+          <div class="card-body">
+            <p>A structured 16-week rotation giving every student hands-on exposure to all four trades before committing to a track. Taught in the school's trade lab with real tools and materials.</p>
+            <ul>
+              <li>Electrical: wire a basic circuit, identify components</li>
+              <li>Plumbing: cut and join pipe, assemble a simple fixture</li>
+              <li>HVAC: identify system components, basic airflow concepts</li>
+              <li>Carpentry: measure, cut, and assemble a framed panel</li>
+              <li>Daily reflection journal — students track interest and aptitude</li>
+              <li>End-of-rotation: student selects preferred trade for 10th grade</li>
+            </ul>
+            <span class="card-tag tag-co">Core · Leads to Track Selection</span>
+          </div>
+        </div>
+
+        <div class="course-card type-co">
+          <div class="card-header"><div><div class="card-title">Hand &amp; Power Tools Lab</div><div class="card-sub">Semester 1–2 · Required</div></div><span class="card-arrow">▾</span></div>
+          <div class="card-body">
+            <p>Hands-on competency with the most common hand and power tools used across all building trades. Students complete safety checkouts before using each tool class independently.</p>
+            <ul>
+              <li>Hammers, screwdrivers, pliers, wrenches, and levels</li>
+              <li>Circular saw, jigsaw, and reciprocating saw</li>
+              <li>Power drill and impact driver</li>
+              <li>Proper storage, maintenance, and inspection of tools</li>
+              <li>Tool safety checkout system — sign-off per tool class</li>
+            </ul>
+            <span class="card-tag tag-co">Core · All Tracks</span>
+          </div>
+        </div>
+
+        <div class="course-card type-ce">
+          <div class="card-header"><div><div class="card-title">OSHA-10 Certification</div><div class="card-sub">End of 9th grade · Milestone</div></div><span class="card-arrow">▾</span></div>
+          <div class="card-body">
+            <p>Upon completing the Trades Safety course, students sit for and earn the OSHA-10 Construction certification — recognized by virtually every employer and union in the trades.</p>
+            <ul>
+              <li>Required for 10th grade lab access</li>
+              <li>Recognized by IBEW, UA, UBC, and most open-shop contractors</li>
+              <li>Card is valid indefinitely — students keep it for life</li>
+            </ul>
+            <span class="card-credential">🏅 Credential Milestone</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- 10th Grade -->
+  <div class="grade-row">
+    <div class="grade-label-col"><div class="grade-pill">10th Grade</div></div>
+    <div class="grade-content">
+      <div class="grade-title">Trade Selection + Core Skills</div>
+      <div class="grade-desc">Students choose their primary trade and begin formal technical training. Shared professional skills coursework runs alongside all tracks.</div>
+      <div class="courses">
+
+        <div class="course-card type-e">
+          <div class="card-header"><div><div class="card-title">Electrical I</div><div class="card-sub">Electrical track · Year 1</div></div><span class="card-arrow">▾</span></div>
+          <div class="card-body">
+            <p>Introduction to electrical theory and residential wiring. Students begin working with real wire, boxes, and devices in a controlled lab environment aligned with NCCER Electrical Level 1.</p>
+            <ul>
+              <li>Ohm's Law, voltage, current, and resistance</li>
+              <li>Series and parallel circuits</li>
+              <li>NEC codebook orientation and table navigation</li>
+              <li>Residential wiring: outlets, switches, and lighting circuits</li>
+              <li>Box fill calculations and conduit type introduction</li>
+            </ul>
+            <span class="card-tag tag-e">⚡ Electrical Track</span>
+          </div>
+        </div>
+
+        <div class="course-card type-p">
+          <div class="card-header"><div><div class="card-title">Plumbing I</div><div class="card-sub">Plumbing track · Year 1</div></div><span class="card-arrow">▾</span></div>
+          <div class="card-body">
+            <p>Foundational plumbing skills covering pipe materials, basic systems, and code principles. Students build and test simple plumbing assemblies in the lab.</p>
+            <ul>
+              <li>Pipe materials: copper, PVC, CPVC, PEX, ABS</li>
+              <li>Cutting, joining, and fitting techniques for each material</li>
+              <li>Introduction to drain-waste-vent (DWV) systems</li>
+              <li>Water supply systems: hot and cold rough-in</li>
+              <li>Basic fixture installation: sink, toilet, shower rough-in</li>
+            </ul>
+            <span class="card-tag tag-p">💧 Plumbing Track</span>
+          </div>
+        </div>
+
+        <div class="course-card type-h">
+          <div class="card-header"><div><div class="card-title">HVAC I</div><div class="card-sub">HVAC track · Year 1</div></div><span class="card-arrow">▾</span></div>
+          <div class="card-body">
+            <p>Introduction to heating, cooling, and ventilation systems. Students learn refrigeration theory, system components, and basic airflow principles using training equipment in the lab.</p>
+            <ul>
+              <li>The refrigeration cycle: compression, condensation, expansion, evaporation</li>
+              <li>Identifying system components: compressor, condenser, evaporator</li>
+              <li>Airflow fundamentals and duct types</li>
+              <li>Basic electrical controls: thermostats and contactors</li>
+              <li>Introduction to EPA 608 refrigerant regulations</li>
+            </ul>
+            <span class="card-tag tag-h">🌀 HVAC Track</span>
+          </div>
+        </div>
+
+        <div class="course-card type-c">
+          <div class="card-header"><div><div class="card-title">Carpentry I</div><div class="card-sub">Carpentry track · Year 1</div></div><span class="card-arrow">▾</span></div>
+          <div class="card-body">
+            <p>Core carpentry skills starting with lumber, layout, and structural framing. Students build wall sections, floor assemblies, and roof components in the lab.</p>
+            <ul>
+              <li>Lumber grades, sizes, and species identification</li>
+              <li>Layout: snapping lines, reading plans, marking studs</li>
+              <li>Floor framing: joists, beams, and subfloor</li>
+              <li>Wall framing: plates, studs, headers, and corners</li>
+              <li>Roof framing basics and sheathing installation</li>
+            </ul>
+            <span class="card-tag tag-c">🔨 Carpentry Track</span>
+          </div>
+        </div>
+
+        <div class="course-card type-co">
+          <div class="card-header"><div><div class="card-title">Construction Business &amp; Professionalism</div><div class="card-sub">Both semesters · All tracks</div></div><span class="card-arrow">▾</span></div>
+          <div class="card-body">
+            <p>The soft skills of the trades — employer expectations, workplace communication, and business fundamentals every tradesperson needs whether they work for someone else or themselves.</p>
+            <ul>
+              <li>Professionalism: attendance, punctuality, and workplace conduct</li>
+              <li>Communicating with supervisors, coworkers, and customers</li>
+              <li>Understanding pay stubs, taxes, and benefits</li>
+              <li>Introduction to union vs. open-shop employment</li>
+              <li>Resume building and interview preparation</li>
+            </ul>
+            <span class="card-tag tag-co">Core · All Tracks</span>
+          </div>
+        </div>
+
+        <div class="course-card type-co">
+          <div class="card-header"><div><div class="card-title">Residential Construction Lab</div><div class="card-sub">Shared project-based lab</div></div><span class="card-arrow">▾</span></div>
+          <div class="card-body">
+            <p>A collaborative lab where students from all four tracks work together on a simulated residential construction project — mirroring the real-world experience of multiple trades on one job site.</p>
+            <ul>
+              <li>Each trade completes their portion of a model residential structure</li>
+              <li>Students learn to coordinate with other trades' drawings</li>
+              <li>Introduction to construction sequencing and scheduling</li>
+              <li>Final walkthrough with instructor critique — simulates an inspection</li>
+            </ul>
+            <span class="card-tag tag-co">Core · All Tracks</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- 11th Grade -->
+  <div class="grade-row">
+    <div class="grade-label-col"><div class="grade-pill">11th Grade</div></div>
+    <div class="grade-content">
+      <div class="grade-title">Intermediate Training + Workplace Experience</div>
+      <div class="grade-desc">Deeper technical skills with job-site simulation. All students complete structured job-shadowing (minimum 60 hours) with a Cleveland-area partner. Multi-trade students add their second trade.</div>
+      <div class="courses">
+
+        <div class="course-card type-e">
+          <div class="card-header"><div><div class="card-title">Electrical II</div><div class="card-sub">Electrical track · Year 2</div></div><span class="card-arrow">▾</span></div>
+          <div class="card-body">
+            <p>Builds directly on Electrical I with more complex wiring systems, conduit work, and panel installation. Students work from full residential plans and complete a wired model structure.</p>
+            <ul>
+              <li>Conduit bending: offsets, saddles, and box offsets</li>
+              <li>EMT, rigid, and flexible conduit installation</li>
+              <li>Service entrance and panel installation</li>
+              <li>Branch circuit layout and load calculations</li>
+              <li>GFCI and AFCI requirements under NEC</li>
+              <li>Introduction to low-voltage: data and communication</li>
+            </ul>
+            <span class="card-tag tag-e">⚡ Electrical Track</span>
+          </div>
+        </div>
+
+        <div class="course-card type-p">
+          <div class="card-header"><div><div class="card-title">Plumbing II</div><div class="card-sub">Plumbing track · Year 2</div></div><span class="card-arrow">▾</span></div>
+          <div class="card-body">
+            <p>Advances into gas systems, water heating, and code-based system design. Students complete a full rough-in of a model bathroom and kitchen on a residential project.</p>
+            <ul>
+              <li>Gas line materials, sizing, and pressure testing</li>
+              <li>Tank and tankless water heater installation</li>
+              <li>Venting systems: individual, common, and wet venting</li>
+              <li>Isometric drawing: reading and sketching plumbing diagrams</li>
+              <li>Code research: using the Ohio Plumbing Code to size systems</li>
+            </ul>
+            <span class="card-tag tag-p">💧 Plumbing Track</span>
+          </div>
+        </div>
+
+        <div class="course-card type-h">
+          <div class="card-header"><div><div class="card-title">HVAC II</div><div class="card-sub">HVAC track · Year 2</div></div><span class="card-arrow">▾</span></div>
+          <div class="card-body">
+            <p>Moves into refrigerant handling, residential load calculations, and troubleshooting. Students work with live training systems and begin preparing for the EPA 608 exam.</p>
+            <ul>
+              <li>Refrigerant types, handling, and recovery procedures</li>
+              <li>Manifold gauge set use and system charging</li>
+              <li>Manual J residential load calculation basics</li>
+              <li>Troubleshooting using temperature-pressure relationships</li>
+              <li>Gas furnace operation, ignition systems, and heat exchangers</li>
+              <li>EPA 608 exam preparation (Type I, II, and Universal)</li>
+            </ul>
+            <span class="card-tag tag-h">🌀 HVAC Track</span>
+          </div>
+        </div>
+
+        <div class="course-card type-c">
+          <div class="card-header"><div><div class="card-title">Carpentry II</div><div class="card-sub">Carpentry track · Year 2</div></div><span class="card-arrow">▾</span></div>
+          <div class="card-body">
+            <p>Transitions from rough framing to interior finish work — the higher-skill, higher-wage side of carpentry. Students build stair stringers, install doors and windows, and complete interior trim packages.</p>
+            <ul>
+              <li>Stair layout: rise, run, and stringer calculation</li>
+              <li>Door and window installation: plumb, level, and square</li>
+              <li>Interior trim: baseboard, casing, and crown molding</li>
+              <li>Cabinet installation: layout, shimming, and scribing</li>
+              <li>Introduction to hardwood flooring installation</li>
+            </ul>
+            <span class="card-tag tag-c">🔨 Carpentry Track</span>
+          </div>
+        </div>
+
+        <div class="course-card type-co">
+          <div class="card-header"><div><div class="card-title">Job-Shadow / Work-Based Learning</div><div class="card-sub">60 hrs minimum · All students</div></div><span class="card-arrow">▾</span></div>
+          <div class="card-body">
+            <p>Every 11th-grade student spends a minimum of 60 hours on a real job site with a Cleveland-area contractor or union partner — connecting classroom learning to professional reality.</p>
+            <ul>
+              <li>Placed with a partner employer matched to their trade track</li>
+              <li>Supervised by a journeyman or foreman mentor</li>
+              <li>Students complete a structured observation journal</li>
+              <li>Midpoint and final evaluation by site supervisor</li>
+              <li>Top performers may receive early internship offers for 12th grade</li>
+            </ul>
+            <span class="card-tag tag-co">Required · All Tracks</span>
+          </div>
+        </div>
+
+        <div class="course-card type-co">
+          <div class="card-header"><div><div class="card-title">Estimating &amp; Project Management</div><div class="card-sub">Semester 2 · All tracks</div></div><span class="card-arrow">▾</span></div>
+          <div class="card-body">
+            <p>Introduces the business side of construction — how jobs get priced, scheduled, and managed. Essential knowledge for anyone who wants to advance into a lead, foreman, or owner role.</p>
+            <ul>
+              <li>Material takeoffs: counting and measuring from plans</li>
+              <li>Labor and material cost estimation</li>
+              <li>Bid documents: proposals, change orders, and invoices</li>
+              <li>Introduction to project scheduling: Gantt charts and sequencing</li>
+              <li>Using spreadsheet tools for job costing</li>
+            </ul>
+            <span class="card-tag tag-co">Core · All Tracks</span>
+          </div>
+        </div>
+
+        <div class="course-card type-ce">
+          <div class="card-header"><div><div class="card-title">NCCER Level 1 Credential</div><div class="card-sub">End of 11th grade · Milestone</div></div><span class="card-arrow">▾</span></div>
+          <div class="card-body">
+            <p>The NCCER Level 1 credential is earned at the end of 11th grade, validating two years of trade-specific technical training.</p>
+            <ul>
+              <li>Written knowledge assessment per trade</li>
+              <li>Hands-on performance evaluation by credentialed instructor</li>
+              <li>Portable credential recognized by contractors and unions nationwide</li>
+              <li>Counts toward apprenticeship application credit with IBEW, UA, and UBC</li>
+            </ul>
+            <span class="card-credential">🏅 Credential Milestone</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- 12th Grade -->
+  <div class="grade-row">
+    <div class="grade-label-col"><div class="grade-pill">12th Grade</div></div>
+    <div class="grade-content">
+      <div class="grade-title">Advanced Skills + Apprenticeship Readiness</div>
+      <div class="grade-desc">Advanced trade coursework, a 200-hour paid internship, capstone project, and a full credential stack at graduation. Every student walks the stage with a next step confirmed.</div>
+      <div class="courses">
+
+        <div class="course-card type-e">
+          <div class="card-header"><div><div class="card-title">Electrical III (Advanced)</div><div class="card-sub">Electrical track · Year 3</div></div><span class="card-arrow">▾</span></div>
+          <div class="card-body">
+            <p>Advanced residential and commercial electrical systems. Students work from commercial blueprints and learn motor control basics — defining skills for a strong apprenticeship candidate.</p>
+            <ul>
+              <li>Commercial wiring methods: wireways, cable trays, and MC cable</li>
+              <li>Three-phase power systems: theory and application</li>
+              <li>Motor controls: starters, contactors, and overloads</li>
+              <li>Transformer basics: step-up, step-down, and sizing</li>
+              <li>Fire alarm and emergency lighting systems introduction</li>
+            </ul>
+            <span class="card-tag tag-e">⚡ Electrical Track</span>
+          </div>
+        </div>
+
+        <div class="course-card type-p">
+          <div class="card-header"><div><div class="card-title">Plumbing III (Advanced)</div><div class="card-sub">Plumbing track · Year 3</div></div><span class="card-arrow">▾</span></div>
+          <div class="card-body">
+            <p>Commercial plumbing systems, larger-scale pipe sizing, and advanced code application. Students work from commercial drawings and practice skills required for apprenticeship entry.</p>
+            <ul>
+              <li>Commercial DWV: larger pipe sizing and building drains</li>
+              <li>Storm drainage systems and roof drains</li>
+              <li>Water hammer, pressure reducing valves, and expansion tanks</li>
+              <li>Reading commercial plumbing plans and specifications</li>
+              <li>Permit application process and inspection simulation</li>
+            </ul>
+            <span class="card-tag tag-p">💧 Plumbing Track</span>
+          </div>
+        </div>
+
+        <div class="course-card type-h">
+          <div class="card-header"><div><div class="card-title">HVAC III (Advanced)</div><div class="card-sub">HVAC track · Year 3</div></div><span class="card-arrow">▾</span></div>
+          <div class="card-body">
+            <p>Commercial HVAC systems, advanced controls, and EPA 608 completion. Covers rooftop units, split systems, and the energy-efficiency technologies reshaping the trade.</p>
+            <ul>
+              <li>Commercial rooftop units: installation and startup procedures</li>
+              <li>Variable air volume (VAV) systems introduction</li>
+              <li>Building automation and smart controls basics</li>
+              <li>Heat pump technology: air-source and geothermal overview</li>
+              <li>EPA 608 Universal exam — students sit and earn certification</li>
+            </ul>
+            <span class="card-credential">🏅 Earns: EPA 608 Universal Certification</span>
+          </div>
+        </div>
+
+        <div class="course-card type-c">
+          <div class="card-header"><div><div class="card-title">Carpentry III (Advanced)</div><div class="card-sub">Carpentry track · Year 3</div></div><span class="card-arrow">▾</span></div>
+          <div class="card-body">
+            <p>Commercial carpentry methods, advanced finish work, and project leadership skills. Students are expected to function at a near-apprentice level by year-end.</p>
+            <ul>
+              <li>Metal stud framing for commercial interiors</li>
+              <li>Suspended ceiling systems: grid and tile installation</li>
+              <li>Advanced millwork: built-ins, wainscoting, coffered ceilings</li>
+              <li>Reading commercial architectural drawings</li>
+              <li>Lead carpenter role: planning, sequencing, directing helpers</li>
+            </ul>
+            <span class="card-tag tag-c">🔨 Carpentry Track</span>
+          </div>
+        </div>
+
+        <div class="course-card type-co">
+          <div class="card-header"><div><div class="card-title">Paid Internship / Pre-Apprenticeship</div><div class="card-sub">200 hrs · Employer partner</div></div><span class="card-arrow">▾</span></div>
+          <div class="card-body">
+            <p>A structured, paid placement with a Cleveland-area contractor, union training center, or facilities employer. Students work as paid helpers alongside journeymen for a minimum of 200 hours.</p>
+            <ul>
+              <li>Matched to trade track and geographic preference</li>
+              <li>Paid at minimum wage or above — employer sets rate</li>
+              <li>Formal mentor assigned: journeyman or lead tradesperson</li>
+              <li>Hours count toward apprenticeship application credit with most unions</li>
+              <li>Top performers may receive full-time offers upon graduation</li>
+            </ul>
+            <span class="card-tag tag-co">Required for Graduation · All Tracks</span>
+          </div>
+        </div>
+
+        <div class="course-card type-co">
+          <div class="card-header"><div><div class="card-title">Capstone Project</div><div class="card-sub">Real build · Portfolio + presentation</div></div><span class="card-arrow">▾</span></div>
+          <div class="card-body">
+            <p>Each 12th-grade student completes a significant real-world build project demonstrating the full scope of their trade skills, presented to a panel of industry professionals.</p>
+            <ul>
+              <li>Projects drawn from community-benefit builds (tiny home, facility upgrade)</li>
+              <li>Student produces written plan, material list, and budget before starting</li>
+              <li>Photo and video portfolio of the build process</li>
+              <li>Final presentation to union reps, contractors, and instructors</li>
+              <li>Portfolio becomes part of the student's job/apprenticeship application packet</li>
+            </ul>
+            <span class="card-tag tag-co">Core · All Tracks</span>
+          </div>
+        </div>
+
+        <div class="course-card type-ce">
+          <div class="card-header"><div><div class="card-title">NCCER Level 2 + Trade Certification</div><div class="card-sub">OSHA-30 · EPA 608 (HVAC)</div></div><span class="card-arrow">▾</span></div>
+          <div class="card-body">
+            <p>The graduation-year credential stack. Students complete NCCER Level 2, earn OSHA-30, and (for HVAC) sit for EPA 608 Universal — one of the strongest entry-level packages in Northeast Ohio.</p>
+            <ul>
+              <li>NCCER Level 2: advanced knowledge and performance assessment</li>
+              <li>OSHA-30: 30-hour construction safety certification</li>
+              <li>EPA 608 Universal (HVAC track only)</li>
+              <li>All credentials are portable, nationally recognized, and lifelong</li>
+            </ul>
+            <span class="card-credential">🏅 Graduation Credential Stack</span>
+          </div>
+        </div>
+
+        <div class="course-card type-ce">
+          <div class="card-header"><div><div class="card-title">Apprenticeship / Job-Ready Placement</div><div class="card-sub">Graduation milestone</div></div><span class="card-arrow">▾</span></div>
+          <div class="card-body">
+            <p>Every graduate exits with an active placement — a union apprenticeship application submitted, a job offer in hand, or a community college dual-enrollment plan in place. No student walks the stage without a next step confirmed.</p>
+            <ul>
+              <li>CMSD career coordinator works with each student by February of senior year</li>
+              <li>Union hall introductions facilitated through partner MOUs</li>
+              <li>Employer job fair held each spring for graduating seniors</li>
+              <li>90-day and 1-year alumni check-ins to track outcomes</li>
+            </ul>
+            <span class="card-credential">🏅 Graduation Requirement</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     TRADES TAB
+════════════════════════════════════════════════ -->
+<div id="tab-trades" class="tab">
+  <div class="trade-nav" id="tradenav">
+    <button class="trade-btn te act" data-trade="elec">⚡ Electrical</button>
+    <button class="trade-btn tp" data-trade="plumb">💧 Plumbing</button>
+    <button class="trade-btn th" data-trade="hvac">🌀 HVAC</button>
+    <button class="trade-btn tc" data-trade="carp">🔨 Carpentry</button>
+  </div>
+
+  <div id="trade-elec" class="trade-detail act">
+    <div class="skill-grid">
+      <div class="skill-block"><h4>Core Technical Skills</h4><ul><li class="elec-dot">NEC codebook navigation</li><li class="elec-dot">Residential &amp; commercial wiring</li><li class="elec-dot">Service panel installation</li><li class="elec-dot">Conduit bending &amp; installation</li><li class="elec-dot">Motor controls &amp; low-voltage</li><li class="elec-dot">Load calculations</li><li class="elec-dot">Circuit troubleshooting</li></ul></div>
+      <div class="skill-block"><h4>Tools &amp; Equipment</h4><ul><li class="elec-dot">Multimeter &amp; clamp meter</li><li class="elec-dot">Conduit bender (hand &amp; electric)</li><li class="elec-dot">Wire strippers, crimpers, fish tape</li><li class="elec-dot">Voltage testers &amp; GFI testers</li><li class="elec-dot">Power drills, hole saws</li><li class="elec-dot">Label makers &amp; circuit tracers</li></ul></div>
+      <div class="skill-block"><h4>Safety &amp; Code</h4><ul><li class="elec-dot">Lockout/tagout (LOTO)</li><li class="elec-dot">Arc flash awareness</li><li class="elec-dot">Ohio Electrical Code basics</li><li class="elec-dot">OSHA 29 CFR 1926 Subpart K</li><li class="elec-dot">PPE selection &amp; use</li></ul></div>
+      <div class="skill-block"><h4>Professional Skills</h4><ul><li class="elec-dot">Blueprint &amp; schematic reading</li><li class="elec-dot">Customer communication</li><li class="elec-dot">Time &amp; material estimating</li><li class="elec-dot">Crew coordination</li><li class="elec-dot">Digital tools &amp; permit process</li></ul></div>
+    </div>
+    <div class="cert-box"><h4>Certifications Students Can Earn</h4><div class="cert-tags"><span class="ctag">OSHA-10 (9th)</span><span class="ctag">OSHA-30 (12th)</span><span class="ctag">NCCER Electrical Level 1</span><span class="ctag">NCCER Electrical Level 2</span><span class="ctag">IBEW Pre-Apprenticeship Ready</span><span class="ctag">Ohio Apprentice Eligible</span></div></div>
+  </div>
+
+  <div id="trade-plumb" class="trade-detail">
+    <div class="skill-grid">
+      <div class="skill-block"><h4>Core Technical Skills</h4><ul><li class="plumb-dot">Pipe sizing &amp; material selection</li><li class="plumb-dot">DWV systems (drain-waste-vent)</li><li class="plumb-dot">Water supply rough-in</li><li class="plumb-dot">Fixture installation</li><li class="plumb-dot">Gas line installation</li><li class="plumb-dot">Water heater installation</li><li class="plumb-dot">Code-compliant inspections</li></ul></div>
+      <div class="skill-block"><h4>Tools &amp; Equipment</h4><ul><li class="plumb-dot">Pipe cutters (copper, PVC, ABS)</li><li class="plumb-dot">Torch &amp; soldering equipment</li><li class="plumb-dot">Press fitting tools</li><li class="plumb-dot">Pipe threaders &amp; dies</li><li class="plumb-dot">Drain snake &amp; hydro-jet intro</li><li class="plumb-dot">Leak detectors &amp; pressure gauges</li></ul></div>
+      <div class="skill-block"><h4>Safety &amp; Code</h4><ul><li class="plumb-dot">Ohio Plumbing Code (OPC)</li><li class="plumb-dot">Gas safety &amp; shutoff procedures</li><li class="plumb-dot">Confined space awareness</li><li class="plumb-dot">Backflow prevention</li><li class="plumb-dot">Permit &amp; inspection process</li></ul></div>
+      <div class="skill-block"><h4>Professional Skills</h4><ul><li class="plumb-dot">Reading plumbing drawings</li><li class="plumb-dot">Material estimating &amp; ordering</li><li class="plumb-dot">Customer service on job sites</li><li class="plumb-dot">Scheduling &amp; job documentation</li></ul></div>
+    </div>
+    <div class="cert-box"><h4>Certifications Students Can Earn</h4><div class="cert-tags"><span class="ctag">OSHA-10 (9th)</span><span class="ctag">OSHA-30 (12th)</span><span class="ctag">NCCER Plumbing Level 1</span><span class="ctag">NCCER Plumbing Level 2</span><span class="ctag">UA Local 55 Pre-App Ready</span><span class="ctag">Ohio Apprentice Eligible</span></div></div>
+  </div>
+
+  <div id="trade-hvac" class="trade-detail">
+    <div class="skill-grid">
+      <div class="skill-block"><h4>Core Technical Skills</h4><ul><li class="hvac-dot">Refrigeration cycle fundamentals</li><li class="hvac-dot">Duct design &amp; installation</li><li class="hvac-dot">Heating systems (furnace, boiler)</li><li class="hvac-dot">Cooling systems &amp; heat pumps</li><li class="hvac-dot">Controls &amp; smart thermostats</li><li class="hvac-dot">Load calculations (Manual J)</li><li class="hvac-dot">Commercial rooftop units</li></ul></div>
+      <div class="skill-block"><h4>Tools &amp; Equipment</h4><ul><li class="hvac-dot">Manifold gauge sets</li><li class="hvac-dot">Refrigerant recovery machines</li><li class="hvac-dot">Flaring &amp; swaging tools</li><li class="hvac-dot">Combustion analyzers</li><li class="hvac-dot">Sheet metal tools &amp; duct crimpers</li><li class="hvac-dot">Digital multimeters for controls</li></ul></div>
+      <div class="skill-block"><h4>Safety &amp; Code</h4><ul><li class="hvac-dot">EPA 608 refrigerant handling</li><li class="hvac-dot">Gas furnace safety</li><li class="hvac-dot">CO safety &amp; detector placement</li><li class="hvac-dot">Electrical safety for HVAC</li><li class="hvac-dot">Ohio Mechanical Code</li></ul></div>
+      <div class="skill-block"><h4>Professional Skills</h4><ul><li class="hvac-dot">Mechanical &amp; shop drawings</li><li class="hvac-dot">Preventive maintenance scheduling</li><li class="hvac-dot">Customer education on systems</li><li class="hvac-dot">Energy efficiency &amp; green tech</li></ul></div>
+    </div>
+    <div class="cert-box"><h4>Certifications Students Can Earn</h4><div class="cert-tags"><span class="ctag">OSHA-10 (9th)</span><span class="ctag">OSHA-30 (12th)</span><span class="ctag">EPA 608 Certification</span><span class="ctag">NCCER HVAC Level 1</span><span class="ctag">NCCER HVAC Level 2</span><span class="ctag">NATE Core Ready</span><span class="ctag">UA Local 120 Pre-App Ready</span></div></div>
+  </div>
+
+  <div id="trade-carp" class="trade-detail">
+    <div class="skill-grid">
+      <div class="skill-block"><h4>Core Technical Skills</h4><ul><li class="carp-dot">Foundation layout &amp; footings</li><li class="carp-dot">Floor, wall &amp; roof framing</li><li class="carp-dot">Sheathing &amp; weather barrier</li><li class="carp-dot">Window &amp; door installation</li><li class="carp-dot">Interior finish &amp; trim</li><li class="carp-dot">Cabinetry &amp; millwork</li><li class="carp-dot">Commercial construction intro</li></ul></div>
+      <div class="skill-block"><h4>Tools &amp; Equipment</h4><ul><li class="carp-dot">Circular saw, miter saw, table saw</li><li class="carp-dot">Framing nailer &amp; finish nailer</li><li class="carp-dot">Levels, squares &amp; laser levels</li><li class="carp-dot">Router &amp; jig saw</li><li class="carp-dot">Hand tools &amp; chisels</li><li class="carp-dot">Scaffolding &amp; ladder safety</li></ul></div>
+      <div class="skill-block"><h4>Safety &amp; Code</h4><ul><li class="carp-dot">Fall protection &amp; scaffolding</li><li class="carp-dot">Ohio Residential Building Code</li><li class="carp-dot">Saw &amp; tool guarding</li><li class="carp-dot">Silica dust exposure prevention</li><li class="carp-dot">Material handling &amp; rigging basics</li></ul></div>
+      <div class="skill-block"><h4>Professional Skills</h4><ul><li class="carp-dot">Architectural drawing reading</li><li class="carp-dot">Material takeoffs &amp; estimating</li><li class="carp-dot">Project sequencing &amp; scheduling</li><li class="carp-dot">Subcontractor coordination</li></ul></div>
+    </div>
+    <div class="cert-box"><h4>Certifications Students Can Earn</h4><div class="cert-tags"><span class="ctag">OSHA-10 (9th)</span><span class="ctag">OSHA-30 (12th)</span><span class="ctag">NCCER Carpentry Level 1</span><span class="ctag">NCCER Carpentry Level 2</span><span class="ctag">UBC Pre-Apprenticeship Ready</span><span class="ctag">Ohio Apprentice Eligible</span></div></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     PATHWAYS TAB
+════════════════════════════════════════════════ -->
+<div id="tab-pathways" class="tab">
+  <div class="sec-label">Post-Graduation Outcomes</div>
+  <div class="outcome-grid">
+    <div class="outcome-card"><div class="outcome-label">Single Trade Graduate</div><div class="outcome-value">Apprentice-Ready</div><div class="outcome-note">Direct union or open-shop placement</div></div>
+    <div class="outcome-card"><div class="outcome-label">Multi-Trade (2+) Graduate</div><div class="outcome-value">Journeyman-Track</div><div class="outcome-note">Accelerated apprenticeship credit</div></div>
+    <div class="outcome-card"><div class="outcome-label">Typical Entry Wage</div><div class="outcome-value">$22–$28/hr</div><div class="outcome-note">Cleveland metro, apprentice rate</div></div>
+    <div class="outcome-card"><div class="outcome-label">Journeyman Wage (5 yrs)</div><div class="outcome-value">$38–$55/hr</div><div class="outcome-note">Union scale, Cuyahoga County</div></div>
+  </div>
+
+  <div class="sec-label">Pathway Options After Graduation</div>
+
+  <div class="pathway-card">
+    <div class="pathway-head"><div class="pathway-icon">🏭</div><div><div class="pathway-title">Union Apprenticeship</div><div class="pathway-sub">IBEW, UA, UBC, Sheet Metal Workers</div></div></div>
+    <div class="pathway-steps"><span class="step-pill">CMSD diploma + NCCER L2</span><span class="step-arr">→</span><span class="step-pill">Apprenticeship application</span><span class="step-arr">→</span><span class="step-pill">4–5 year paid training</span><span class="step-arr">→</span><span class="step-pill">Journeyman card</span></div>
+    <div class="salary-row"><div><span class="sal-label">Start: </span><span class="sal-value">$22–$26/hr + benefits</span></div><div><span class="sal-label">Journeyman: </span><span class="sal-value">$42–$58/hr</span></div></div>
+  </div>
+
+  <div class="pathway-card">
+    <div class="pathway-head"><div class="pathway-icon">🔧</div><div><div class="pathway-title">Direct Employment (Open Shop)</div><div class="pathway-sub">Cleveland-area contractors, home builders, facilities</div></div></div>
+    <div class="pathway-steps"><span class="step-pill">CMSD diploma + certs</span><span class="step-arr">→</span><span class="step-pill">Entry-level helper / tech</span><span class="step-arr">→</span><span class="step-pill">On-the-job advancement</span><span class="step-arr">→</span><span class="step-pill">Lead / foreman</span></div>
+    <div class="salary-row"><div><span class="sal-label">Start: </span><span class="sal-value">$18–$24/hr</span></div><div><span class="sal-label">Lead: </span><span class="sal-value">$28–$40/hr</span></div></div>
+  </div>
+
+  <div class="pathway-card">
+    <div class="pathway-head"><div class="pathway-icon">🎓</div><div><div class="pathway-title">Community College / Technical Program</div><div class="pathway-sub">Tri-C, Lakeland, Lorain CCC</div></div></div>
+    <div class="pathway-steps"><span class="step-pill">CMSD diploma</span><span class="step-arr">→</span><span class="step-pill">Dual enrollment credit applied</span><span class="step-arr">→</span><span class="step-pill">AAS Degree (2 yrs)</span><span class="step-arr">→</span><span class="step-pill">Advanced trade role</span></div>
+    <div class="salary-row"><div><span class="sal-label">Potential credit: </span><span class="sal-value">Up to 30 credit hours</span></div><div><span class="sal-label">Outcome: </span><span class="sal-value">Supervisor / estimator track</span></div></div>
+  </div>
+
+  <div class="pathway-card">
+    <div class="pathway-head"><div class="pathway-icon">💼</div><div><div class="pathway-title">Entrepreneurship / Own Business</div><div class="pathway-sub">Contractor licensing after apprenticeship</div></div></div>
+    <div class="pathway-steps"><span class="step-pill">Trade experience (3–5 yrs)</span><span class="step-arr">→</span><span class="step-pill">Ohio contractor license</span><span class="step-arr">→</span><span class="step-pill">Launch own business</span></div>
+    <div class="salary-row"><div><span class="sal-label">Curriculum prep: </span><span class="sal-value">Estimating, business &amp; project mgmt courses</span></div></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     PARTNERS TAB
+════════════════════════════════════════════════ -->
+<div id="tab-partners" class="tab">
+  <div class="sec-label">Recommended Partnership Ecosystem</div>
+  <div class="partner-grid">
+    <div class="partner-card"><div class="partner-type">Union / Training</div><div class="partner-name">IBEW Local 38</div><div class="partner-desc">Electrical apprenticeship pipeline. Pre-apprenticeship articulation agreement and job-shadow placement for electrical track students.</div></div>
+    <div class="partner-card"><div class="partner-type">Union / Training</div><div class="partner-name">UA Local 55 / 120</div><div class="partner-desc">Plumbing (Local 55) and HVAC (Local 120) pipefitter unions. Apprenticeship articulation agreements and equipment donations.</div></div>
+    <div class="partner-card"><div class="partner-type">Union / Training</div><div class="partner-name">United Brotherhood of Carpenters</div><div class="partner-desc">Carpentry apprenticeship referrals and on-site training partnerships at active Cleveland build sites.</div></div>
+    <div class="partner-card"><div class="partner-type">Higher Education</div><div class="partner-name">Tri-C (Cuyahoga Community College)</div><div class="partner-desc">Dual enrollment, credit transfer for NCCER courses, and shared lab facilities for advanced 12th-grade students.</div></div>
+    <div class="partner-card"><div class="partner-type">Curriculum / Credential</div><div class="partner-name">NCCER</div><div class="partner-desc">National Center for Construction Education &amp; Research — core curriculum provider and credentialing body for all four trades.</div></div>
+    <div class="partner-card"><div class="partner-type">Safety / Credential</div><div class="partner-name">OSHA Training Institute</div><div class="partner-desc">OSHA-10 (9th grade) and OSHA-30 (12th grade) certifications through an authorized training provider partnership.</div></div>
+    <div class="partner-card"><div class="partner-type">Industry / Employer</div><div class="partner-name">Cleveland-Area Contractors</div><div class="partner-desc">Paid internship hosts, job-shadow sites, and capstone project sponsors. Target: 50+ signed MOUs with local firms.</div></div>
+    <div class="partner-card"><div class="partner-type">Funding / Policy</div><div class="partner-name">Ohio Dept. of Education (CTE)</div><div class="partner-desc">Perkins V CTE funding, state credential reimbursement, and curriculum approval pathway for program launch.</div></div>
+    <div class="partner-card"><div class="partner-type">Civic / Workforce</div><div class="partner-name">WorkAdvance / OhioMeansJobs</div><div class="partner-desc">Workforce development funding, employer matching, and alumni tracking and outcomes reporting infrastructure.</div></div>
+    <div class="partner-card"><div class="partner-type">Project / Civic Context</div><div class="partner-name">FOS 216 / City of Cleveland</div><div class="partner-desc">Connects students to real municipal projects — North Coast, Opportunity Corridor, Industrial Valley — as live capstone contexts.</div></div>
+  </div>
+
+  <div class="next-box">
+    <h4>Suggested Next Steps for CMSD Adoption</h4>
+    <div class="next-item">Present to CMSD CTE Director + Superintendent with this framework</div>
+    <div class="next-item">Identify 2–3 pilot schools for a 9th-grade foundations cohort</div>
+    <div class="next-item">Submit for Perkins V CTE funding through Ohio DOE</div>
+    <div class="next-item">Negotiate articulation agreements with IBEW, UA, and UBC</div>
+    <div class="next-item">Apply for Workforce Innovation and Opportunity Act (WIOA) Title I funding</div>
+  </div>
+</div>
+
+</main>
+
+<footer>
+  <div class="footer-credit">Conceptualized by <span>The FixOurStreets216 Project</span></div>
+</footer>
+
+<script>
+(function() {
+  // Main nav
+  document.getElementById('mainnav').addEventListener('click', function(e) {
+    var btn = e.target.closest('.nav-btn');
+    if (!btn) return;
+    var tab = btn.getAttribute('data-tab');
+    document.querySelectorAll('.nav-btn').forEach(function(b) { b.classList.remove('act'); });
+    btn.classList.add('act');
+    document.querySelectorAll('.tab').forEach(function(t) { t.classList.remove('act'); });
+    document.getElementById('tab-' + tab).classList.add('act');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+
+  // Trade tabs
+  document.getElementById('tradenav').addEventListener('click', function(e) {
+    var btn = e.target.closest('.trade-btn');
+    if (!btn) return;
+    var trade = btn.getAttribute('data-trade');
+    var classMap = { elec: 'te', plumb: 'tp', hvac: 'th', carp: 'tc' };
+    document.querySelectorAll('.trade-btn').forEach(function(b) { b.classList.remove('act'); });
+    btn.classList.add('act');
+    document.querySelectorAll('.trade-detail').forEach(function(d) { d.classList.remove('act'); });
+    document.getElementById('trade-' + trade).classList.add('act');
+  });
+
+  // Course card expand/collapse
+  document.addEventListener('click', function(e) {
+    var card = e.target.closest('.course-card');
+    if (!card) return;
+    card.classList.toggle('open');
+  });
+})();
+</script>
+
+</body>
+</html>

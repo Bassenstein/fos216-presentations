@@ -1,0 +1,2157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cleveland North Coast — A Vision for the Lakefront</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #0A1628;
+    --deep: #0D1F3C;
+    --lake: #1B4F72;
+    --water: #2E86AB;
+    --sky: #85C1E9;
+    --gold: #C9A84C;
+    --gold-light: #F0C966;
+    --white: #F5F2EC;
+    --off: #E8E4DC;
+    --gray: #8E8880;
+    --accent: #E8593C;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--navy);
+    color: var(--white);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    overflow-x: hidden;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 40px;
+    background: rgba(10,22,40,0.92);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid rgba(201,168,76,0.2);
+  }
+
+  .nav-logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 20px;
+    letter-spacing: 3px;
+    color: var(--gold);
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 28px;
+    list-style: none;
+  }
+
+  .nav-links a {
+    color: var(--off);
+    text-decoration: none;
+    font-size: 12px;
+    font-weight: 400;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    opacity: 0.7;
+    transition: opacity 0.2s, color 0.2s;
+  }
+
+  .nav-links a:hover { opacity: 1; color: var(--gold); }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 120px 80px 80px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 80% 60% at 70% 50%, rgba(30,79,114,0.4) 0%, transparent 70%),
+      radial-gradient(ellipse 40% 40% at 20% 80%, rgba(201,168,76,0.12) 0%, transparent 60%),
+      linear-gradient(180deg, var(--navy) 0%, var(--deep) 100%);
+  }
+
+  .hero-waves {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 200px;
+    overflow: hidden;
+  }
+
+  .wave {
+    position: absolute;
+    bottom: 0;
+    width: 200%;
+    height: 100%;
+  }
+
+  .wave svg { width: 100%; height: 100%; }
+
+  .wave1 { animation: wave-move 8s linear infinite; opacity: 0.15; }
+  .wave2 { animation: wave-move 12s linear infinite reverse; opacity: 0.08; }
+
+  @keyframes wave-move {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+
+  .hero-eyebrow {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 24px;
+    position: relative;
+    opacity: 0;
+    animation: fade-up 0.8s 0.2s forwards;
+  }
+
+  .hero-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(72px, 12vw, 160px);
+    line-height: 0.88;
+    letter-spacing: 2px;
+    color: var(--white);
+    position: relative;
+    opacity: 0;
+    animation: fade-up 0.8s 0.4s forwards;
+    max-width: 900px;
+  }
+
+  .hero-title .accent { color: var(--gold); }
+
+  .hero-sub {
+    font-size: 20px;
+    font-weight: 300;
+    color: var(--sky);
+    margin-top: 32px;
+    max-width: 580px;
+    line-height: 1.6;
+    position: relative;
+    opacity: 0;
+    animation: fade-up 0.8s 0.6s forwards;
+  }
+
+  .hero-stats {
+    display: flex;
+    gap: 56px;
+    margin-top: 56px;
+    position: relative;
+    opacity: 0;
+    animation: fade-up 0.8s 0.8s forwards;
+  }
+
+  .hero-stat-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 52px;
+    color: var(--gold);
+    line-height: 1;
+  }
+
+  .hero-stat-label {
+    font-size: 12px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--gray);
+    margin-top: 4px;
+  }
+
+  .scroll-cue {
+    position: absolute;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    opacity: 0;
+    animation: fade-up 0.8s 1.2s forwards;
+  }
+
+  .scroll-cue span {
+    font-size: 10px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--gray);
+  }
+
+  .scroll-line {
+    width: 1px;
+    height: 40px;
+    background: linear-gradient(to bottom, var(--gold), transparent);
+    animation: scroll-pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes scroll-pulse {
+    0%, 100% { opacity: 0.4; transform: scaleY(1); }
+    50% { opacity: 1; transform: scaleY(1.1); }
+  }
+
+  @keyframes fade-up {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* SECTION BASE */
+  section {
+    padding: 100px 80px;
+    position: relative;
+  }
+
+  .section-label {
+    font-size: 11px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 16px;
+    font-weight: 500;
+  }
+
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(36px, 5vw, 64px);
+    font-weight: 900;
+    line-height: 1.1;
+    margin-bottom: 24px;
+    color: var(--white);
+  }
+
+  .section-body {
+    font-size: 17px;
+    line-height: 1.8;
+    color: rgba(245,242,236,0.75);
+    max-width: 680px;
+  }
+
+  .gold-rule {
+    width: 60px;
+    height: 3px;
+    background: var(--gold);
+    margin: 32px 0;
+  }
+
+  /* OPPORTUNITY */
+  .opportunity {
+    background: var(--deep);
+    border-top: 1px solid rgba(201,168,76,0.15);
+    border-bottom: 1px solid rgba(201,168,76,0.15);
+  }
+
+  .opp-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    margin-top: 60px;
+    align-items: start;
+  }
+
+  .opp-card {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(201,168,76,0.2);
+    border-radius: 4px;
+    padding: 36px;
+    position: relative;
+    transition: border-color 0.3s;
+  }
+
+  .opp-card:hover { border-color: rgba(201,168,76,0.5); }
+
+  .opp-card-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 80px;
+    color: rgba(201,168,76,0.12);
+    position: absolute;
+    top: 16px; right: 24px;
+    line-height: 1;
+  }
+
+  .opp-card-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 16px;
+    color: var(--gold-light);
+  }
+
+  .opp-card-body {
+    font-size: 15px;
+    line-height: 1.75;
+    color: rgba(245,242,236,0.7);
+  }
+
+  /* SITE MAP */
+  .sitemap-section {
+    background: var(--navy);
+  }
+
+  .site-diagram {
+    margin-top: 60px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(201,168,76,0.15);
+    border-radius: 8px;
+    padding: 48px;
+    position: relative;
+  }
+
+  .lake-bar {
+    background: rgba(46,134,171,0.3);
+    border: 1px solid rgba(133,193,233,0.3);
+    border-radius: 4px;
+    padding: 14px 24px;
+    text-align: center;
+    font-size: 13px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--sky);
+    margin-bottom: 12px;
+  }
+
+  .site-row {
+    display: grid;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+
+  .site-row-3 { grid-template-columns: 1fr 1.6fr 1fr; }
+  .site-row-2 { grid-template-columns: 1fr 1fr; }
+  .site-row-1 { grid-template-columns: 1fr; }
+
+  .site-block {
+    border-radius: 4px;
+    padding: 18px 20px;
+    cursor: default;
+    transition: transform 0.2s, box-shadow 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .site-block:hover { transform: translateY(-2px); }
+
+  .site-block-title {
+    font-weight: 500;
+    font-size: 13px;
+    letter-spacing: 0.5px;
+    margin-bottom: 4px;
+  }
+
+  .site-block-sub {
+    font-size: 11px;
+    opacity: 0.65;
+  }
+
+  .sb-perf {
+    background: rgba(83,74,183,0.25);
+    border: 1px solid rgba(83,74,183,0.5);
+    color: #C5C0F5;
+  }
+
+  .sb-museum {
+    background: rgba(29,158,117,0.2);
+    border: 1px solid rgba(29,158,117,0.5);
+    color: #9FE1CB;
+  }
+
+  .sb-rec {
+    background: rgba(99,153,34,0.2);
+    border: 1px solid rgba(99,153,34,0.5);
+    color: #C0DD97;
+  }
+
+  .sb-food {
+    background: rgba(186,117,23,0.2);
+    border: 1px solid rgba(186,117,23,0.5);
+    color: #FAC775;
+  }
+
+  .sb-plaza {
+    background: rgba(232,89,60,0.15);
+    border: 1px solid rgba(232,89,60,0.4);
+    color: #F5C4B3;
+  }
+
+  .sb-transit {
+    background: rgba(100,100,100,0.15);
+    border: 1px solid rgba(150,150,150,0.3);
+    color: #D3D1C7;
+  }
+
+  .sb-bridge {
+    background: rgba(201,168,76,0.12);
+    border: 2px solid rgba(201,168,76,0.4);
+    color: var(--gold-light);
+    text-align: center;
+    font-size: 13px;
+    letter-spacing: 2px;
+  }
+
+  .sb-mallc {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.15);
+    color: rgba(245,242,236,0.6);
+    text-align: center;
+    font-size: 12px;
+  }
+
+  .promenade-bar {
+    background: rgba(99,153,34,0.15);
+    border: 1px solid rgba(99,153,34,0.3);
+    border-radius: 4px;
+    padding: 10px 24px;
+    text-align: center;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #C0DD97;
+    margin: 0 0 10px;
+  }
+
+  /* PERFORMANCE CENTER */
+  .perf-section {
+    background: linear-gradient(135deg, var(--deep) 0%, #0A1F3A 100%);
+    border-top: 1px solid rgba(83,74,183,0.3);
+  }
+
+  .perf-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    margin-top: 60px;
+    align-items: start;
+  }
+
+  .config-cards {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 32px;
+  }
+
+  .config-card {
+    background: rgba(83,74,183,0.12);
+    border: 1px solid rgba(83,74,183,0.3);
+    border-radius: 4px;
+    padding: 20px;
+    transition: border-color 0.2s;
+  }
+
+  .config-card:hover { border-color: rgba(83,74,183,0.6); }
+
+  .config-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 40px;
+    color: #AFA9EC;
+    line-height: 1;
+  }
+
+  .config-label {
+    font-size: 11px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: rgba(197,192,245,0.6);
+    margin-top: 4px;
+  }
+
+  .config-desc {
+    font-size: 13px;
+    color: rgba(197,192,245,0.75);
+    margin-top: 8px;
+    line-height: 1.5;
+  }
+
+  /* ROOF SECTION */
+  .roof-section {
+    background: var(--navy);
+  }
+
+  .roof-comparison {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-top: 48px;
+  }
+
+  .roof-card {
+    border-radius: 6px;
+    padding: 36px;
+    border: 1px solid rgba(255,255,255,0.1);
+    position: relative;
+    transition: border-color 0.2s;
+  }
+
+  .roof-card.old {
+    background: rgba(255,255,255,0.03);
+    opacity: 0.7;
+  }
+
+  .roof-card.new {
+    background: rgba(29,158,117,0.08);
+    border-color: rgba(29,158,117,0.4);
+  }
+
+  .roof-tag {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 4px 12px;
+    border-radius: 2px;
+    margin-bottom: 16px;
+  }
+
+  .roof-tag.removed {
+    background: rgba(232,89,60,0.2);
+    color: #F5C4B3;
+  }
+
+  .roof-tag.selected {
+    background: rgba(29,158,117,0.2);
+    color: #9FE1CB;
+  }
+
+  .roof-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 12px;
+    color: var(--white);
+  }
+
+  .roof-cost {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 44px;
+    line-height: 1;
+    margin-bottom: 20px;
+  }
+
+  .roof-cost.old-cost { color: rgba(245,242,236,0.35); }
+  .roof-cost.new-cost { color: #9FE1CB; }
+
+  .roof-points { list-style: none; }
+
+  .roof-points li {
+    font-size: 14px;
+    line-height: 1.6;
+    color: rgba(245,242,236,0.65);
+    padding: 6px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    padding-left: 18px;
+    position: relative;
+  }
+
+  .roof-points li::before {
+    content: '•';
+    position: absolute;
+    left: 0;
+    color: var(--gold);
+  }
+
+  .savings-banner {
+    background: rgba(201,168,76,0.1);
+    border: 1px solid rgba(201,168,76,0.35);
+    border-radius: 4px;
+    padding: 28px 40px;
+    margin-top: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 32px;
+  }
+
+  .savings-amount {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 64px;
+    color: var(--gold);
+    line-height: 1;
+    white-space: nowrap;
+  }
+
+  .savings-label {
+    font-size: 15px;
+    color: rgba(245,242,236,0.7);
+    line-height: 1.6;
+    max-width: 400px;
+  }
+
+  /* MUSEUM */
+  .museum-section {
+    background: linear-gradient(135deg, #041A0E 0%, var(--deep) 100%);
+    border-top: 1px solid rgba(29,158,117,0.3);
+  }
+
+  .museum-floors {
+    margin-top: 56px;
+  }
+
+  .floor-row {
+    display: grid;
+    grid-template-columns: 100px 1fr;
+    gap: 24px;
+    margin-bottom: 12px;
+    align-items: stretch;
+  }
+
+  .floor-label-box {
+    background: rgba(29,158,117,0.15);
+    border: 1px solid rgba(29,158,117,0.3);
+    border-radius: 4px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 16px 8px;
+    text-align: center;
+  }
+
+  .floor-label-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    color: #5DCAA5;
+    line-height: 1;
+  }
+
+  .floor-label-sub {
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: rgba(93,202,165,0.6);
+    margin-top: 4px;
+  }
+
+  .floor-exhibits {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+  }
+
+  .exhibit-card {
+    background: rgba(29,158,117,0.08);
+    border: 1px solid rgba(29,158,117,0.2);
+    border-radius: 4px;
+    padding: 18px;
+    transition: border-color 0.2s, background 0.2s;
+  }
+
+  .exhibit-card:hover {
+    border-color: rgba(29,158,117,0.5);
+    background: rgba(29,158,117,0.12);
+  }
+
+  .exhibit-name {
+    font-weight: 500;
+    font-size: 13px;
+    color: #9FE1CB;
+    margin-bottom: 6px;
+  }
+
+  .exhibit-desc {
+    font-size: 12px;
+    color: rgba(245,242,236,0.55);
+    line-height: 1.55;
+  }
+
+  .audio-partner-box {
+    background: rgba(201,168,76,0.08);
+    border: 1px solid rgba(201,168,76,0.25);
+    border-radius: 4px;
+    padding: 32px 36px;
+    margin-top: 48px;
+  }
+
+  .audio-partner-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--gold-light);
+    margin-bottom: 16px;
+  }
+
+  .audio-partner-body {
+    font-size: 15px;
+    line-height: 1.75;
+    color: rgba(245,242,236,0.7);
+  }
+
+  /* LAND BRIDGE */
+  .bridge-section {
+    background: linear-gradient(to bottom, var(--deep) 0%, var(--navy) 100%);
+    border-top: 1px solid rgba(99,153,34,0.2);
+  }
+
+  .bridge-visual {
+    margin-top: 56px;
+    position: relative;
+    height: 180px;
+    border-radius: 4px;
+    overflow: hidden;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.08);
+  }
+
+  .bridge-track {
+    position: absolute;
+    top: 50%;
+    left: 5%;
+    right: 5%;
+    height: 2px;
+    background: rgba(255,255,255,0.08);
+    transform: translateY(-50%);
+  }
+
+  .bridge-arc {
+    position: absolute;
+    top: 50%;
+    left: 5%;
+    right: 5%;
+    height: 80px;
+    border-top: 2px solid var(--gold);
+    border-radius: 50% 50% 0 0;
+    transform: translateY(-100%);
+    opacity: 0.4;
+  }
+
+  .bridge-node {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .bridge-dot {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    border: 2px solid var(--gold);
+    background: var(--navy);
+  }
+
+  .bridge-node-label {
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--gold);
+    white-space: nowrap;
+    text-align: center;
+  }
+
+  .bridge-node-sub {
+    font-size: 10px;
+    color: rgba(245,242,236,0.4);
+    white-space: nowrap;
+    text-align: center;
+    margin-top: -4px;
+  }
+
+  .bridge-line {
+    position: absolute;
+    top: 50%;
+    height: 1px;
+    background: rgba(201,168,76,0.3);
+    transform: translateY(-50%);
+  }
+
+  .bridge-benefits {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    margin-top: 48px;
+  }
+
+  .bridge-benefit {
+    background: rgba(99,153,34,0.08);
+    border: 1px solid rgba(99,153,34,0.2);
+    border-radius: 4px;
+    padding: 24px;
+  }
+
+  .bridge-benefit-title {
+    font-weight: 500;
+    font-size: 14px;
+    color: #C0DD97;
+    margin-bottom: 8px;
+  }
+
+  .bridge-benefit-body {
+    font-size: 13px;
+    color: rgba(245,242,236,0.6);
+    line-height: 1.6;
+  }
+
+  /* RECREATION */
+  .rec-section {
+    background: var(--navy);
+  }
+
+  .rec-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-top: 48px;
+  }
+
+  .rec-card {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 4px;
+    padding: 28px 22px;
+    transition: border-color 0.2s;
+  }
+
+  .rec-card:hover { border-color: rgba(201,168,76,0.4); }
+
+  .rec-icon {
+    width: 48px;
+    height: 48px;
+    background: rgba(201,168,76,0.12);
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 16px;
+    font-size: 22px;
+  }
+
+  .rec-card-title {
+    font-weight: 500;
+    font-size: 14px;
+    color: var(--gold-light);
+    margin-bottom: 8px;
+  }
+
+  .rec-card-body {
+    font-size: 13px;
+    color: rgba(245,242,236,0.6);
+    line-height: 1.6;
+  }
+
+  /* BUDGET */
+  .budget-section {
+    background: var(--deep);
+    border-top: 1px solid rgba(201,168,76,0.15);
+  }
+
+  .budget-bars {
+    margin-top: 48px;
+  }
+
+  .budget-row {
+    display: grid;
+    grid-template-columns: 220px 1fr 140px;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 16px;
+  }
+
+  .budget-label {
+    font-size: 13px;
+    color: rgba(245,242,236,0.7);
+    text-align: right;
+  }
+
+  .budget-bar-wrap {
+    height: 36px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 3px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .budget-bar-fill {
+    height: 100%;
+    border-radius: 3px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    padding-left: 12px;
+    font-size: 12px;
+    font-weight: 500;
+    transition: width 1s ease;
+  }
+
+  .budget-range {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    color: var(--white);
+    white-space: nowrap;
+  }
+
+  .budget-total-box {
+    background: rgba(201,168,76,0.1);
+    border: 1px solid rgba(201,168,76,0.35);
+    border-radius: 4px;
+    padding: 32px 40px;
+    margin-top: 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .budget-total-label {
+    font-size: 15px;
+    color: rgba(245,242,236,0.7);
+  }
+
+  .budget-total-amount {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 72px;
+    color: var(--gold);
+    line-height: 1;
+  }
+
+  .budget-note {
+    font-size: 12px;
+    color: rgba(245,242,236,0.35);
+    margin-top: 20px;
+    line-height: 1.6;
+  }
+
+  /* PARTNERSHIP */
+  .partner-section {
+    background: var(--navy);
+  }
+
+  .partner-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    margin-top: 48px;
+  }
+
+  .partner-card {
+    border-radius: 4px;
+    padding: 32px;
+    border: 1px solid rgba(255,255,255,0.1);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .partner-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+  }
+
+  .partner-card.rock::before { background: #7F77DD; }
+  .partner-card.science::before { background: #1D9E75; }
+  .partner-card.audio::before { background: var(--gold); }
+
+  .partner-card.rock { background: rgba(83,74,183,0.08); border-color: rgba(83,74,183,0.25); }
+  .partner-card.science { background: rgba(29,158,117,0.08); border-color: rgba(29,158,117,0.25); }
+  .partner-card.audio { background: rgba(201,168,76,0.08); border-color: rgba(201,168,76,0.25); }
+
+  .partner-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+
+  .partner-card.rock .partner-name { color: #AFA9EC; }
+  .partner-card.science .partner-name { color: #9FE1CB; }
+  .partner-card.audio .partner-name { color: var(--gold-light); }
+
+  .partner-role {
+    font-size: 11px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: rgba(245,242,236,0.4);
+    margin-bottom: 20px;
+  }
+
+  .partner-points {
+    list-style: none;
+  }
+
+  .partner-points li {
+    font-size: 13px;
+    color: rgba(245,242,236,0.65);
+    padding: 6px 0 6px 16px;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    position: relative;
+    line-height: 1.5;
+  }
+
+  .partner-card.rock .partner-points li::before { content: '—'; position: absolute; left: 0; color: #7F77DD; }
+  .partner-card.science .partner-points li::before { content: '—'; position: absolute; left: 0; color: #1D9E75; }
+  .partner-card.audio .partner-points li::before { content: '—'; position: absolute; left: 0; color: var(--gold); }
+
+  /* TIMELINE */
+  .timeline-section {
+    background: var(--deep);
+    border-top: 1px solid rgba(201,168,76,0.15);
+  }
+
+  .timeline {
+    margin-top: 56px;
+    position: relative;
+    padding-left: 40px;
+  }
+
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 10px;
+    top: 0; bottom: 0;
+    width: 1px;
+    background: linear-gradient(to bottom, var(--gold), rgba(201,168,76,0.1));
+  }
+
+  .timeline-item {
+    position: relative;
+    margin-bottom: 48px;
+  }
+
+  .timeline-item::before {
+    content: '';
+    position: absolute;
+    left: -34px;
+    top: 8px;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--gold);
+    border: 2px solid var(--navy);
+    box-shadow: 0 0 0 3px rgba(201,168,76,0.3);
+  }
+
+  .timeline-phase {
+    font-size: 10px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 6px;
+  }
+
+  .timeline-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--white);
+    margin-bottom: 10px;
+  }
+
+  .timeline-body {
+    font-size: 14px;
+    color: rgba(245,242,236,0.65);
+    line-height: 1.7;
+    max-width: 560px;
+  }
+
+  /* CTA / CLOSING */
+  .closing-section {
+    background: linear-gradient(135deg, #0A1628 0%, #0D2A1F 50%, #1A0A28 100%);
+    min-height: 70vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 100px 80px;
+    border-top: 1px solid rgba(201,168,76,0.2);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .closing-bg {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 60% 60% at 50% 50%, rgba(201,168,76,0.06) 0%, transparent 70%);
+  }
+
+  .closing-content {
+    position: relative;
+    max-width: 800px;
+  }
+
+  .closing-eyebrow {
+    font-size: 11px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 24px;
+  }
+
+  .closing-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(40px, 6vw, 72px);
+    font-weight: 900;
+    line-height: 1.1;
+    color: var(--white);
+    margin-bottom: 32px;
+  }
+
+  .closing-body {
+    font-size: 18px;
+    line-height: 1.8;
+    color: rgba(245,242,236,0.65);
+    margin-bottom: 48px;
+  }
+
+  .closing-stats {
+    display: flex;
+    justify-content: center;
+    gap: 64px;
+    border-top: 1px solid rgba(201,168,76,0.2);
+    padding-top: 48px;
+  }
+
+  .closing-stat-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 56px;
+    color: var(--gold);
+    line-height: 1;
+  }
+
+  .closing-stat-label {
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: rgba(245,242,236,0.4);
+    margin-top: 8px;
+  }
+
+  /* FOOTER */
+  footer {
+    background: #060E1A;
+    padding: 40px 80px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid rgba(201,168,76,0.1);
+  }
+
+  .footer-logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 18px;
+    letter-spacing: 3px;
+    color: var(--gold);
+    opacity: 0.6;
+  }
+
+  .footer-note {
+    font-size: 11px;
+    color: rgba(245,242,236,0.3);
+    letter-spacing: 1px;
+  }
+
+  /* REVEAL ANIMATIONS */
+  .reveal {
+    opacity: 0;
+    transform: translateY(32px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+
+  .reveal.visible {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 900px) {
+    section { padding: 60px 24px; }
+    .hero { padding: 100px 24px 60px; }
+    nav { padding: 14px 20px; }
+    .nav-links { display: none; }
+    .opp-grid, .perf-grid, .bridge-benefits { grid-template-columns: 1fr; }
+    .config-cards, .partner-grid { grid-template-columns: 1fr 1fr; }
+    .rec-grid { grid-template-columns: 1fr 1fr; }
+    .hero-stats { gap: 28px; flex-wrap: wrap; }
+    .budget-row { grid-template-columns: 1fr; }
+    .budget-label { text-align: left; }
+    .closing-stats { gap: 32px; flex-wrap: wrap; }
+    footer { flex-direction: column; gap: 16px; text-align: center; }
+    .site-row-3 { grid-template-columns: 1fr; }
+    .site-row-2 { grid-template-columns: 1fr; }
+    .floor-exhibits { grid-template-columns: 1fr 1fr; }
+    .budget-total-box { flex-direction: column; gap: 16px; text-align: center; }
+  }
+
+  /* EVENTS SECTION */
+  .events-section {
+    background: linear-gradient(160deg, #1A0A28 0%, var(--deep) 60%, #0A1628 100%);
+    border-top: 1px solid rgba(232,89,60,0.2);
+  }
+
+  .events-intro-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 48px;
+    margin-bottom: 60px;
+    align-items: start;
+  }
+
+  .event-card {
+    border-radius: 6px;
+    padding: 40px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .event-card.midwest {
+    background: rgba(232,89,60,0.08);
+    border: 1px solid rgba(232,89,60,0.3);
+  }
+
+  .event-card.greatlakes {
+    background: rgba(46,134,171,0.1);
+    border: 1px solid rgba(46,134,171,0.35);
+  }
+
+  .event-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+  }
+
+  .event-card.midwest::before { background: linear-gradient(to right, #E8593C, #C9A84C); }
+  .event-card.greatlakes::before { background: linear-gradient(to right, #2E86AB, #85C1E9); }
+
+  .event-card-eyebrow {
+    font-size: 10px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+    font-weight: 500;
+  }
+
+  .event-card.midwest .event-card-eyebrow { color: #F0997B; }
+  .event-card.greatlakes .event-card-eyebrow { color: #85C1E9; }
+
+  .event-card-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 26px;
+    font-weight: 900;
+    line-height: 1.15;
+    margin-bottom: 16px;
+  }
+
+  .event-card.midwest .event-card-title { color: #F5C4B3; }
+  .event-card.greatlakes .event-card-title { color: #B5D4F4; }
+
+  .event-card-body {
+    font-size: 14px;
+    line-height: 1.75;
+    color: rgba(245,242,236,0.65);
+    margin-bottom: 24px;
+  }
+
+  .event-stat-row {
+    display: grid;
+    grid-template-columns: repeat(3,1fr);
+    gap: 10px;
+    margin-bottom: 24px;
+  }
+
+  .event-stat-box {
+    padding: 14px 10px;
+    border-radius: 4px;
+    text-align: center;
+  }
+
+  .event-card.midwest .event-stat-box { background: rgba(232,89,60,0.14); }
+  .event-card.greatlakes .event-stat-box { background: rgba(46,134,171,0.14); }
+
+  .event-stat-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 30px;
+    line-height: 1;
+  }
+
+  .event-card.midwest .event-stat-num { color: #F0997B; }
+  .event-card.greatlakes .event-stat-num { color: #85C1E9; }
+
+  .event-stat-lbl {
+    font-size: 10px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: rgba(245,242,236,0.35);
+    margin-top: 4px;
+    line-height: 1.3;
+  }
+
+  .event-features {
+    list-style: none;
+  }
+
+  .event-features li {
+    font-size: 13px;
+    color: rgba(245,242,236,0.6);
+    padding: 5px 0 5px 16px;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    position: relative;
+    line-height: 1.5;
+  }
+
+  .event-card.midwest .event-features li::before { content:'—'; position:absolute; left:0; color:#E8593C; }
+  .event-card.greatlakes .event-features li::before { content:'—'; position:absolute; left:0; color:#2E86AB; }
+
+  .campus-activation {
+    background: rgba(201,168,76,0.06);
+    border: 1px solid rgba(201,168,76,0.2);
+    border-radius: 6px;
+    padding: 40px;
+    margin-top: 48px;
+  }
+
+  .campus-act-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 26px;
+    font-weight: 900;
+    color: var(--gold-light);
+    margin-bottom: 8px;
+  }
+
+  .campus-act-sub {
+    font-size: 14px;
+    color: rgba(245,242,236,0.5);
+    margin-bottom: 28px;
+    letter-spacing: 0.5px;
+  }
+
+  .venue-grid {
+    display: grid;
+    grid-template-columns: repeat(4,1fr);
+    gap: 12px;
+    margin-bottom: 32px;
+  }
+
+  .venue-chip {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 4px;
+    padding: 18px 14px;
+    transition: border-color 0.2s;
+  }
+
+  .venue-chip:hover { border-color: rgba(201,168,76,0.4); }
+
+  .venue-chip-name {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--gold-light);
+    margin-bottom: 6px;
+  }
+
+  .venue-chip-desc {
+    font-size: 11px;
+    color: rgba(245,242,236,0.4);
+    line-height: 1.5;
+  }
+
+  .unifier-body {
+    font-size: 15px;
+    line-height: 1.8;
+    color: rgba(245,242,236,0.7);
+    max-width: 900px;
+  }
+
+  .calendar-section {
+    margin-top: 40px;
+  }
+
+  .cal-title {
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 14px;
+  }
+
+  .calendar-strip {
+    display: grid;
+    grid-template-columns: repeat(12,1fr);
+    gap: 3px;
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  .cal-month {
+    padding: 12px 4px;
+    text-align: center;
+    font-size: 10px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: rgba(245,242,236,0.25);
+    background: rgba(255,255,255,0.03);
+  }
+
+  .cal-month.m-midwest { background: rgba(232,89,60,0.2); color: #F0997B; font-weight:500; }
+  .cal-month.m-greatlakes { background: rgba(46,134,171,0.2); color: #85C1E9; font-weight:500; }
+  .cal-month.m-induction { background: rgba(83,74,183,0.25); color: #AFA9EC; font-weight:500; }
+  .cal-month.m-summer { background: rgba(201,168,76,0.15); color: var(--gold-light); font-weight:500; }
+
+  .cal-legend {
+    display: flex;
+    gap: 24px;
+    margin-top: 12px;
+    flex-wrap: wrap;
+  }
+
+  .cal-legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    color: rgba(245,242,236,0.5);
+  }
+
+  .cal-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 2px;
+    flex-shrink: 0;
+  }
+
+  .economic-strip {
+    display: grid;
+    grid-template-columns: repeat(4,1fr);
+    gap: 16px;
+    margin-top: 40px;
+  }
+
+  .econ-card {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 4px;
+    padding: 24px;
+  }
+
+  .econ-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 44px;
+    color: var(--gold);
+    line-height: 1;
+  }
+
+  .econ-label {
+    font-size: 12px;
+    color: rgba(245,242,236,0.45);
+    margin-top: 6px;
+    line-height: 1.5;
+    letter-spacing: 0.3px;
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">Cleveland North Coast</div>
+  <ul class="nav-links">
+    <li><a href="#opportunity">Opportunity</a></li>
+    <li><a href="#site">Site Plan</a></li>
+    <li><a href="#performance">Performance Center</a></li>
+    <li><a href="#museum">Bass Museum</a></li>
+    <li><a href="#bridge">Land Bridge</a></li>
+    <li><a href="#events">Conferences</a></li>
+    <li><a href="#budget">Investment</a></li>
+    <li><a href="#timeline">Timeline</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-waves">
+    <div class="wave wave1">
+      <svg viewBox="0 0 1200 120" preserveAspectRatio="none">
+        <path d="M0,60 C200,100 400,20 600,60 C800,100 1000,20 1200,60 L1200,120 L0,120 Z" fill="rgba(30,79,114,0.4)"/>
+      </svg>
+    </div>
+    <div class="wave wave2">
+      <svg viewBox="0 0 1200 120" preserveAspectRatio="none">
+        <path d="M0,40 C300,80 600,10 900,50 C1050,70 1150,30 1200,40 L1200,120 L0,120 Z" fill="rgba(46,134,171,0.2)"/>
+      </svg>
+    </div>
+  </div>
+
+  <div class="hero-eyebrow">A vision for Cleveland · 2030</div>
+  <h1 class="hero-title">The <span class="accent">North</span><br>Coast</h1>
+  <p class="hero-sub">A once-in-a-generation opportunity to reclaim our lakefront — and create something the world has never seen before.</p>
+
+  <div class="hero-stats">
+    <div>
+      <div class="hero-stat-num">12K</div>
+      <div class="hero-stat-label">Seat performance center</div>
+    </div>
+    <div>
+      <div class="hero-stat-num">60K</div>
+      <div class="hero-stat-label">Sq ft science museum</div>
+    </div>
+    <div>
+      <div class="hero-stat-num">$1.2B</div>
+      <div class="hero-stat-label">Total investment</div>
+    </div>
+    <div>
+      <div class="hero-stat-num">2030</div>
+      <div class="hero-stat-label">Opening year</div>
+    </div>
+  </div>
+
+  <div class="scroll-cue">
+    <span>Explore</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<!-- OPPORTUNITY -->
+<section class="opportunity" id="opportunity">
+  <div class="section-label">The moment</div>
+  <h2 class="section-title reveal">Cleveland's lakefront<br>has waited long enough.</h2>
+  <div class="gold-rule reveal"></div>
+  <p class="section-body reveal">The Huntington Bank Stadium will be removed by 2030, freeing the most significant undeveloped urban lakefront parcel in the Midwest. This is not just a real estate opportunity. It is Cleveland's chance to build a destination that reflects who we truly are — a city with a soundtrack, a scientific curiosity, and a lake that belongs to everyone.</p>
+
+  <div class="opp-grid">
+    <div class="opp-card reveal">
+      <div class="opp-card-num">01</div>
+      <div class="opp-card-title">The right site</div>
+      <p class="opp-card-body">Steps from the Rock and Roll Hall of Fame, adjacent to the Great Lakes Science Center, and directly connected to downtown via the Mall C corridor. No other city has a lakefront parcel with these neighbors, this visibility, and this civic significance.</p>
+    </div>
+    <div class="opp-card reveal">
+      <div class="opp-card-num">02</div>
+      <div class="opp-card-title">The right moment</div>
+      <p class="opp-card-body">Stadium removal, major federal infrastructure funding availability, and a city-county alignment around lakefront development create a window that may not open again for a generation. The time to act is now — with a bold, unified vision.</p>
+    </div>
+    <div class="opp-card reveal">
+      <div class="opp-card-num">03</div>
+      <div class="opp-card-title">The right idea</div>
+      <p class="opp-card-body">A world-first Science of Bass Museum. The permanent home of the Rock Hall Induction Ceremony. A land bridge that finally connects downtown to the water. No other American city can build exactly this — because no other city has Cleveland's story to tell.</p>
+    </div>
+    <div class="opp-card reveal">
+      <div class="opp-card-num">04</div>
+      <div class="opp-card-title">Year-round economic engine</div>
+      <p class="opp-card-body">Not a seasonal attraction. Not a stadium that sits dark 300 days a year. A campus designed for daily activation — museum visitors, recreation, food, outdoor events, concerts, school groups, tourists, and Clevelanders who finally have a reason to walk to their own lakefront.</p>
+    </div>
+  </div>
+</section>
+
+<!-- SITE MAP -->
+<section class="sitemap-section" id="site">
+  <div class="section-label">The campus</div>
+  <h2 class="section-title reveal">One connected<br>lakefront destination.</h2>
+  <div class="gold-rule reveal"></div>
+  <p class="section-body reveal">The campus is designed as a single, walkable district — not a collection of separate buildings. Every element connects to every other element, and the Land Bridge ties the whole thing to downtown.</p>
+
+  <div class="site-diagram reveal">
+    <div class="lake-bar">Lake Erie — North</div>
+    <div class="promenade-bar">Lakefront Promenade + Bike Trail</div>
+
+    <div class="site-row site-row-3">
+      <div class="site-block sb-perf">
+        <div class="site-block-title">Rock Hall Performance Center</div>
+        <div class="site-block-sub">12,000 seats · Induction Ceremony home</div>
+      </div>
+      <div class="site-block sb-museum">
+        <div class="site-block-title">Science of Bass Museum</div>
+        <div class="site-block-sub">60,000 sq ft · World's first of its kind</div>
+      </div>
+      <div class="site-block sb-rec">
+        <div class="site-block-title">Recreation Zone</div>
+        <div class="site-block-sub">Pickleball · Basketball · Green space</div>
+      </div>
+    </div>
+
+    <div class="site-row site-row-3">
+      <div class="site-block sb-food">
+        <div class="site-block-title">Cleveland Food Hall</div>
+        <div class="site-block-sub">Local vendors · Waterfront dining</div>
+      </div>
+      <div class="site-block sb-plaza">
+        <div class="site-block-title">Civic Plaza + Amphitheater</div>
+        <div class="site-block-sub">Free events · Festival grounds</div>
+      </div>
+      <div class="site-block sb-transit">
+        <div class="site-block-title">Transit + Parking Hub</div>
+        <div class="site-block-sub">RTA · Bike share · Water taxi</div>
+      </div>
+    </div>
+
+    <div class="site-row site-row-1">
+      <div class="site-block sb-bridge" style="padding:16px 24px;">
+        THE LAND BRIDGE &nbsp;·&nbsp; Mall C to Lakefront
+      </div>
+    </div>
+
+    <div class="site-row site-row-1">
+      <div class="site-block sb-mallc" style="padding:14px 24px;">
+        Mall C Civic Campus — Rock Hall · Science Center · Convention Center · City Hall
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PERFORMANCE CENTER -->
+<section class="perf-section" id="performance">
+  <div class="section-label">Anchor destination</div>
+  <h2 class="section-title reveal">Rock Hall Performance Center</h2>
+  <div class="gold-rule reveal"></div>
+
+  <div class="perf-grid">
+    <div>
+      <p class="section-body reveal">Cleveland will never again send the Rock and Roll Hall of Fame Induction Ceremony to New York. The Rock Hall Performance Center becomes the permanent, iconic home of the most celebrated night in music — and one of the most versatile event venues in the Midwest.</p>
+      <p class="section-body reveal" style="margin-top:20px;">Facing Lake Erie to the north with a full-height glass wall, the building is a landmark visible from the water and from the highway — a civic gesture that says Cleveland takes its cultural identity seriously.</p>
+
+      <div class="config-cards reveal">
+        <div class="config-card">
+          <div class="config-num">12,000</div>
+          <div class="config-label">Induction Gala</div>
+          <div class="config-desc">Full capacity with banquet floor for the annual ceremony broadcast</div>
+        </div>
+        <div class="config-card">
+          <div class="config-num">8,000</div>
+          <div class="config-label">Concert Mode</div>
+          <div class="config-desc">Fixed seating plus GA floor for major touring productions</div>
+        </div>
+        <div class="config-card">
+          <div class="config-num">5,000</div>
+          <div class="config-label">Theater Mode</div>
+          <div class="config-desc">Lower bowl only — intimate residencies and special events</div>
+        </div>
+        <div class="config-card">
+          <div class="config-num">3,000</div>
+          <div class="config-label">Gala / Banquet</div>
+          <div class="config-desc">Full flat-floor configuration for private and civic events</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="reveal">
+      <div style="background:rgba(83,74,183,0.1);border:1px solid rgba(83,74,183,0.25);border-radius:4px;padding:32px;">
+        <div class="section-label" style="margin-bottom:16px;">Why Cleveland owns this</div>
+        <p style="font-size:15px;line-height:1.8;color:rgba(245,242,236,0.7);margin-bottom:20px;">The Rock and Roll Hall of Fame has held induction ceremonies in New York and Los Angeles since 1986. The museum has been in Cleveland since 1995. It is long past time for the ceremony to come home permanently.</p>
+        <p style="font-size:15px;line-height:1.8;color:rgba(245,242,236,0.7);margin-bottom:20px;">A purpose-built venue designed around the ceremony — with broadcast infrastructure, artist facilities, and the full production capability of a world-class performance space — makes Cleveland the undisputed capital of rock and roll, not just its museum city.</p>
+        <div style="border-top:1px solid rgba(83,74,183,0.2);padding-top:20px;margin-top:8px;">
+          <div style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#7F77DD;margin-bottom:12px;">What the building includes</div>
+          <ul style="list-style:none;">
+            <li style="font-size:13px;color:rgba(197,192,245,0.7);padding:5px 0 5px 16px;border-bottom:1px solid rgba(83,74,183,0.1);position:relative;"><span style="position:absolute;left:0;color:#7F77DD;">—</span>80-foot-wide main stage with hydraulic pit</li>
+            <li style="font-size:13px;color:rgba(197,192,245,0.7);padding:5px 0 5px 16px;border-bottom:1px solid rgba(83,74,183,0.1);position:relative;"><span style="position:absolute;left:0;color:#7F77DD;">—</span>Dedicated broadcast control room for TV production</li>
+            <li style="font-size:13px;color:rgba(197,192,245,0.7);padding:5px 0 5px 16px;border-bottom:1px solid rgba(83,74,183,0.1);position:relative;"><span style="position:absolute;left:0;color:#7F77DD;">—</span>Six artist dressing suites and full green room</li>
+            <li style="font-size:13px;color:rgba(197,192,245,0.7);padding:5px 0 5px 16px;border-bottom:1px solid rgba(83,74,183,0.1);position:relative;"><span style="position:absolute;left:0;color:#7F77DD;">—</span>Rock Hall exhibit concourse throughout</li>
+            <li style="font-size:13px;color:rgba(197,192,245,0.7);padding:5px 0 5px 16px;position:relative;"><span style="position:absolute;left:0;color:#7F77DD;">—</span>Retractable floor seating for full versatility</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EVENTS -->
+<section class="events-section" id="events">
+  <div class="section-label">Signature programming</div>
+  <h2 class="section-title reveal">Two world-class events.<br>One unforgettable campus.</h2>
+  <div class="gold-rule reveal"></div>
+  <p class="section-body reveal">The North Coast campus isn't just a collection of buildings. It is a platform for the events that define Cleveland as the music capital of the Midwest. Two anchor conferences — the Midwest Music Conference and the Great Lakes Music Gathering — bring thousands of artists, industry professionals, and music fans to the campus every year, filling every venue, every hotel room, and every restaurant in the city.</p>
+
+  <div class="events-intro-grid reveal">
+    <div class="event-card midwest">
+      <div class="event-card-eyebrow">Annual conference</div>
+      <div class="event-card-title">Midwest Music Conference</div>
+      <div class="event-card-body">The premier industry gathering for music professionals across the Midwest — labels, managers, booking agents, publishers, producers, and emerging artists who want to be discovered. Modeled on Austin's SXSW and Nashville's Americana Fest, the MMC uses the entire North Coast campus as its conference center, with the Performance Center as its anchor venue and the Science of Bass Museum as its unmistakable identity.</div>
+
+      <div class="event-stat-row">
+        <div class="event-stat-box"><div class="event-stat-num">3</div><div class="event-stat-lbl">Day event</div></div>
+        <div class="event-stat-box"><div class="event-stat-num">200+</div><div class="event-stat-lbl">Showcasing artists</div></div>
+        <div class="event-stat-box"><div class="event-stat-num">5,000+</div><div class="event-stat-lbl">Industry delegates</div></div>
+      </div>
+
+      <ul class="event-features">
+        <li>Keynote sessions in the 12,000-seat Performance Center — headliner concerts each evening</li>
+        <li>Industry panels, workshops, and label showcases in the Science of Bass Museum galleries</li>
+        <li>Emerging artist showcase stages in the Civic Plaza outdoor amphitheater</li>
+        <li>Recording Lab open for live demo sessions with conference attendees</li>
+        <li>Audio Partner Innovation Suite open for industry tours and technology demonstrations</li>
+        <li>Cleveland Food Hall as the unofficial conference gathering hub</li>
+        <li>Formal partnership with Rock Hall for inductee appearances and archive access</li>
+      </ul>
+    </div>
+
+    <div class="event-card greatlakes">
+      <div class="event-card-eyebrow">Annual festival</div>
+      <div class="event-card-title">Great Lakes Music Gathering</div>
+      <div class="event-card-body">A public-facing multi-day music festival celebrating the full musical spectrum of the Great Lakes region — from Cleveland's deep soul and gospel roots to Detroit's techno legacy, Chicago blues, Cincinnati funk, and the emerging scenes from across Ohio, Michigan, and Indiana. The Gathering is the community counterpart to the MMC — free and low-cost programming that makes the North Coast a destination for every Clevelander, not just the music industry.</div>
+
+      <div class="event-stat-row">
+        <div class="event-stat-box"><div class="event-stat-num">4</div><div class="event-stat-lbl">Day festival</div></div>
+        <div class="event-stat-box"><div class="event-stat-num">6</div><div class="event-stat-lbl">Stages across campus</div></div>
+        <div class="event-stat-box"><div class="event-stat-num">40K+</div><div class="event-stat-lbl">Attendees projected</div></div>
+      </div>
+
+      <ul class="event-features">
+        <li>Main stage in the 12,000-seat Performance Center — ticketed headliner shows</li>
+        <li>Free outdoor stages on the Civic Plaza and Lakefront Promenade</li>
+        <li>Museum open with special festival programming and reduced admission</li>
+        <li>Haptic Chamber and Bass in Culture galleries open for festival ticketholders</li>
+        <li>Local restaurant and vendor activation throughout the Food Hall</li>
+        <li>Youth stage featuring CMSD student performers and Recording Lab graduates</li>
+        <li>Water taxi service from downtown and the Flats district</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="campus-activation reveal">
+    <div class="campus-act-title">Every venue activated. Every visit meaningful.</div>
+    <div class="campus-act-sub">How the campus functions as one unified event platform</div>
+
+    <div class="venue-grid">
+      <div class="venue-chip">
+        <div class="venue-chip-name">Performance Center</div>
+        <div class="venue-chip-desc">Keynotes, headliners, induction ceremonies, award shows — the anchor for every major event</div>
+      </div>
+      <div class="venue-chip">
+        <div class="venue-chip-name">Science of Bass Museum</div>
+        <div class="venue-chip-desc">Industry panels, workshops, artist showcases, and the unmistakable identity that sets Cleveland apart</div>
+      </div>
+      <div class="venue-chip">
+        <div class="venue-chip-name">Civic Plaza + Amphitheater</div>
+        <div class="venue-chip-desc">Free outdoor stages, community programming, festival grounds for 3,000 standing</div>
+      </div>
+      <div class="venue-chip">
+        <div class="venue-chip-name">Lakefront Promenade</div>
+        <div class="venue-chip-desc">Buskers, pop-up performances, artisan markets, and the most scenic festival walk in the Midwest</div>
+      </div>
+      <div class="venue-chip">
+        <div class="venue-chip-name">Cleveland Food Hall</div>
+        <div class="venue-chip-desc">The social hub of every event — local vendors, outdoor terrace, open late during conferences and festivals</div>
+      </div>
+      <div class="venue-chip">
+        <div class="venue-chip-name">Recording Lab</div>
+        <div class="venue-chip-desc">Live demo sessions, emerging artist recordings, conference workshops, and public access evenings</div>
+      </div>
+      <div class="venue-chip">
+        <div class="venue-chip-name">Recreation Courts</div>
+        <div class="venue-chip-desc">Morning tournament programming during conferences — community engagement that keeps delegates on campus</div>
+      </div>
+      <div class="venue-chip">
+        <div class="venue-chip-name">The Land Bridge</div>
+        <div class="venue-chip-desc">The arrival experience — a lit, landscaped walk from downtown that announces: something special is happening here</div>
+      </div>
+    </div>
+
+    <p class="unifier-body">What the Midwest Music Conference and the Great Lakes Music Gathering do together is transform the North Coast from a great destination into a must-visit annual pilgrimage. They fill hotel rooms in March and August. They bring music industry money to Cleveland restaurants. They give the city a reason to appear on the front page of Billboard, Rolling Stone, and Pitchfork every single year. And they create a pipeline of performers, producers, and fans who discover the Science of Bass Museum, fall in love with Cleveland, and come back.</p>
+  </div>
+
+  <div class="calendar-section reveal">
+    <div class="cal-title">Annual programming calendar — North Coast campus</div>
+    <div class="calendar-strip">
+      <div class="cal-month">Jan</div>
+      <div class="cal-month">Feb</div>
+      <div class="cal-month m-midwest">Mar<br><span style="font-size:9px;">MMC</span></div>
+      <div class="cal-month">Apr</div>
+      <div class="cal-month">May</div>
+      <div class="cal-month m-summer">Jun<br><span style="font-size:9px;">Outdoor</span></div>
+      <div class="cal-month m-summer">Jul<br><span style="font-size:9px;">Outdoor</span></div>
+      <div class="cal-month m-greatlakes">Aug<br><span style="font-size:9px;">GLMG</span></div>
+      <div class="cal-month">Sep</div>
+      <div class="cal-month m-induction">Oct<br><span style="font-size:9px;">Induction</span></div>
+      <div class="cal-month">Nov</div>
+      <div class="cal-month">Dec</div>
+    </div>
+    <div class="cal-legend">
+      <div class="cal-legend-item"><div class="cal-dot" style="background:rgba(232,89,60,0.5);"></div>Midwest Music Conference (March)</div>
+      <div class="cal-legend-item"><div class="cal-dot" style="background:rgba(46,134,171,0.5);"></div>Great Lakes Music Gathering (August)</div>
+      <div class="cal-legend-item"><div class="cal-dot" style="background:rgba(83,74,183,0.5);"></div>Rock Hall Induction Ceremony (October)</div>
+      <div class="cal-legend-item"><div class="cal-dot" style="background:rgba(201,168,76,0.4);"></div>Outdoor plaza + promenade season</div>
+    </div>
+  </div>
+
+  <div class="economic-strip reveal">
+    <div class="econ-card">
+      <div class="econ-num">$42M+</div>
+      <div class="econ-label">Estimated annual visitor spending in Cleveland's broader economy from both signature events</div>
+    </div>
+    <div class="econ-card">
+      <div class="econ-num">85K+</div>
+      <div class="econ-label">Combined projected attendees across both MMC and Great Lakes Music Gathering annually</div>
+    </div>
+    <div class="econ-card">
+      <div class="econ-num">365</div>
+      <div class="econ-label">Days per year the campus is designed to activate — not a seasonal or single-purpose destination</div>
+    </div>
+    <div class="econ-card">
+      <div class="econ-num">#1</div>
+      <div class="econ-label">Cleveland's position as the music capital of the Midwest — earned, not inherited</div>
+    </div>
+  </div>
+</section>
+
+<!-- MUSEUM -->
+<section class="museum-section" id="museum">
+  <div class="section-label">World's first</div>
+  <h2 class="section-title reveal">The Science of<br>Bass Museum</h2>
+  <div class="gold-rule reveal"></div>
+  <p class="section-body reveal">No museum anywhere in the world has claimed bass as its subject. The science of low-frequency sound touches everything — nature, the human body, music history, engineering, and culture. Cleveland is the only city that can tell this story with complete authority. And we will.</p>
+
+  <div class="museum-floors reveal">
+    <div class="floor-row">
+      <div class="floor-label-box">
+        <div class="floor-label-title">3rd</div>
+        <div class="floor-label-sub">Make it</div>
+      </div>
+      <div class="floor-exhibits">
+        <div class="exhibit-card">
+          <div class="exhibit-name">The Recording Lab</div>
+          <div class="exhibit-desc">A fully working recording studio open to students, community members, and school groups. Real equipment, real credentials, real careers launched.</div>
+        </div>
+        <div class="exhibit-card">
+          <div class="exhibit-name">Bass Engineering Lab</div>
+          <div class="exhibit-desc">Hands-on exploration of how speakers, amplifiers, and sound systems actually work — from circuit boards to concert-scale systems.</div>
+        </div>
+        <div class="exhibit-card">
+          <div class="exhibit-name">Audio Partner Innovation Suite</div>
+          <div class="exhibit-desc">A permanent 8,000 sq ft gallery co-designed with our world-class audio equipment partner — showing cutting-edge sound technology in action.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="floor-row">
+      <div class="floor-label-box">
+        <div class="floor-label-title">2nd</div>
+        <div class="floor-label-sub">Hear it</div>
+      </div>
+      <div class="floor-exhibits">
+        <div class="exhibit-card">
+          <div class="exhibit-name">Bass in Nature</div>
+          <div class="exhibit-desc">Whale song, earthquake rumble, Lake Erie acoustics, thunder. The natural world is full of bass — visitors listen through bone-conduction headphones to feel what they're hearing.</div>
+        </div>
+        <div class="exhibit-card">
+          <div class="exhibit-name">Bass in Culture</div>
+          <div class="exhibit-desc">From African talking drums to New Orleans tuba to hip-hop's 808 drum machine. A journey through humanity's deepest relationship with low frequency sound.</div>
+        </div>
+        <div class="exhibit-card">
+          <div class="exhibit-name">Cleveland Artists Wing</div>
+          <div class="exhibit-desc">Rotating gallery celebrating Northeast Ohio's extraordinary musical legacy — from Motown soul to funk, gospel, metal, and beyond.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="floor-row">
+      <div class="floor-label-box">
+        <div class="floor-label-title">1st</div>
+        <div class="floor-label-sub">Feel it</div>
+      </div>
+      <div class="floor-exhibits">
+        <div class="exhibit-card">
+          <div class="exhibit-name">The Haptic Chamber</div>
+          <div class="exhibit-desc">You feel bass before you understand it. A sealed room where subsonic frequencies travel through the floor, walls, and air. Whale calls. Thunderstorms. The opening notes of a symphony. Unforgettable.</div>
+        </div>
+        <div class="exhibit-card">
+          <div class="exhibit-name">The Waveform Gallery</div>
+          <div class="exhibit-desc">Sound waves made visible. Giant interactive installations reveal how frequency, amplitude, and resonance work — science you can see and touch.</div>
+        </div>
+        <div class="exhibit-card">
+          <div class="exhibit-name">Body and Bass</div>
+          <div class="exhibit-desc">Why does bass feel different in your chest than treble does in your ears? The biology of low-frequency perception — from inner ear anatomy to why certain sounds make you want to move.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="audio-partner-box reveal">
+    <div class="audio-partner-title">Audio Equipment Partner — Founding Partnership</div>
+    <p class="audio-partner-body">The Science of Bass Museum is anchored by a world-class professional audio equipment company as a Founding Partner. Their technology powers every listening experience in the building — from the Haptic Chamber to the Recording Lab — and their Innovation Suite on the third floor is the most technically sophisticated exhibit space in the museum. This is a partnership built on shared passion for sound. Their equipment doesn't just play music in the building. It is the subject of the building. That alignment creates something no amount of sponsorship money alone can buy: authenticity.</p>
+  </div>
+</section>
+
+<!-- LAND BRIDGE -->
+<section class="bridge-section" id="bridge">
+  <div class="section-label">Connecting the city</div>
+  <h2 class="section-title reveal">The Land Bridge.<br>Downtown meets the lake.</h2>
+  <div class="gold-rule reveal"></div>
+  <p class="section-body reveal">For decades, Cleveland's lakefront has been separated from its downtown by a rail corridor that felt insurmountable. The Land Bridge ends that separation permanently — a landscaped, pedestrian and cycling crossing that makes the North Coast campus a genuine extension of downtown, not an island you drive to.</p>
+
+  <div class="bridge-visual reveal">
+    <div class="bridge-track"></div>
+    <div class="bridge-arc"></div>
+
+    <div class="bridge-node" style="left:4%;">
+      <div class="bridge-dot"></div>
+      <div class="bridge-node-label">Public<br>Square</div>
+    </div>
+    <div class="bridge-node" style="left:20%;">
+      <div class="bridge-dot"></div>
+      <div class="bridge-node-label">Mall C</div>
+      <div class="bridge-node-sub">City Hall · Convention Ctr</div>
+    </div>
+    <div class="bridge-node" style="left:38%;">
+      <div class="bridge-dot" style="border-color:var(--sky);"></div>
+      <div class="bridge-node-label" style="color:var(--sky);">Rock Hall</div>
+      <div class="bridge-node-sub">Science Center</div>
+    </div>
+    <div class="bridge-node" style="left:56%;">
+      <div class="bridge-dot" style="background:var(--gold);border-color:var(--gold);"></div>
+      <div class="bridge-node-label">The Land Bridge</div>
+      <div class="bridge-node-sub">Rail corridor crossing</div>
+    </div>
+    <div class="bridge-node" style="left:78%;">
+      <div class="bridge-dot" style="border-color:#9FE1CB;"></div>
+      <div class="bridge-node-label" style="color:#9FE1CB;">North Coast<br>Campus</div>
+    </div>
+    <div class="bridge-node" style="left:94%;">
+      <div class="bridge-dot" style="border-color:rgba(133,193,233,0.5);"></div>
+      <div class="bridge-node-label" style="color:var(--sky);">Lake<br>Erie</div>
+    </div>
+  </div>
+
+  <div class="bridge-benefits">
+    <div class="bridge-benefit reveal">
+      <div class="bridge-benefit-title">A 15-minute walk from Public Square</div>
+      <div class="bridge-benefit-body">The campus becomes a genuine neighborhood amenity — not a destination you need to plan a trip to. Lunch at the food hall. An evening at the museum. Pickleball on a weekday morning.</div>
+    </div>
+    <div class="bridge-benefit reveal">
+      <div class="bridge-benefit-title">One civic campus, finally unified</div>
+      <div class="bridge-benefit-body">City Hall, the Convention Center, the Rock Hall, the Science Center, and the new North Coast campus become one continuous walkable district. The kind of civic core that defines great American cities.</div>
+    </div>
+    <div class="bridge-benefit reveal">
+      <div class="bridge-benefit-title">A green spine for the city</div>
+      <div class="bridge-benefit-body">The bridge isn't just a crossing — it's a landscaped linear park with native plantings, seating, and views of both the skyline and the lake. The walk becomes a destination in itself.</div>
+    </div>
+  </div>
+</section>
+
+<!-- RECREATION -->
+<section class="rec-section" id="recreation">
+  <div class="section-label">For everyone</div>
+  <h2 class="section-title reveal">A campus that belongs<br>to Cleveland.</h2>
+  <div class="gold-rule reveal"></div>
+  <p class="section-body reveal">World-class cultural institutions are most powerful when they sit alongside spaces that serve everyday community life. The North Coast campus is designed for the Clevelander who comes for pickleball on Tuesday, a school field trip on Thursday, and a concert on Saturday night.</p>
+
+  <div class="rec-grid">
+    <div class="rec-card reveal">
+      <div class="rec-icon">🏓</div>
+      <div class="rec-card-title">Pickleball Courts</div>
+      <div class="rec-card-body">Four dedicated courts, lit for evening play, managed for community leagues and open recreation. The fastest-growing sport in America, on the lakefront.</div>
+    </div>
+    <div class="rec-card reveal">
+      <div class="rec-icon">🏀</div>
+      <div class="rec-card-title">Basketball Courts</div>
+      <div class="rec-card-body">Two full-size courts with youth programming partnerships through Cleveland Recreation Department. Open access with league scheduling.</div>
+    </div>
+    <div class="rec-card reveal">
+      <div class="rec-icon">🌿</div>
+      <div class="rec-card-title">Green Space</div>
+      <div class="rec-card-body">Native plantings, open lawn, and a signature fountain in the Civic Plaza. The kind of public green space Cleveland's lakefront has never had.</div>
+    </div>
+    <div class="rec-card reveal">
+      <div class="rec-icon">🍽️</div>
+      <div class="rec-card-title">Cleveland Food Hall</div>
+      <div class="rec-card-body">Year-round enclosed market hall with local vendors — West Side Market sensibility in a lakefront setting. Seasonal waterfront terrace dining.</div>
+    </div>
+  </div>
+</section>
+
+<!-- BUDGET -->
+<section class="budget-section" id="budget">
+  <div class="section-label">The investment</div>
+  <h2 class="section-title reveal">Built to last.<br>Funded to succeed.</h2>
+  <div class="gold-rule reveal"></div>
+  <p class="section-body reveal">A preliminary cost model based on current Cleveland market conditions, comparable cultural venue projects nationally, and a smart roof design decision that saved $50 million before we broke ground.</p>
+
+  <div class="budget-bars reveal">
+    <div class="budget-row">
+      <div class="budget-label">Rock Hall Performance Center</div>
+      <div class="budget-bar-wrap">
+        <div class="budget-bar-fill" style="width:62%;background:rgba(83,74,183,0.6);color:#C5C0F5;">Performance Center</div>
+      </div>
+      <div class="budget-range">$490–600M</div>
+    </div>
+    <div class="budget-row">
+      <div class="budget-label">Science of Bass Museum</div>
+      <div class="budget-bar-wrap">
+        <div class="budget-bar-fill" style="width:30%;background:rgba(29,158,117,0.6);color:#9FE1CB;">Museum</div>
+      </div>
+      <div class="budget-range">$280–340M</div>
+    </div>
+    <div class="budget-row">
+      <div class="budget-label">Land Bridge + Site + Plaza + Recreation</div>
+      <div class="budget-bar-wrap">
+        <div class="budget-bar-fill" style="width:20%;background:rgba(201,168,76,0.5);color:#FAC775;">Site</div>
+      </div>
+      <div class="budget-range">$180–220M</div>
+    </div>
+    <div class="budget-row">
+      <div class="budget-label">Design, Fees, Contingency</div>
+      <div class="budget-bar-wrap">
+        <div class="budget-bar-fill" style="width:25%;background:rgba(150,150,150,0.4);color:#D3D1C7;">Soft costs</div>
+      </div>
+      <div class="budget-range">$270–330M</div>
+    </div>
+  </div>
+
+  <div class="budget-total-box reveal">
+    <div>
+      <div class="budget-total-label">Total preliminary investment estimate</div>
+      <div style="font-size:13px;color:rgba(245,242,236,0.4);margin-top:6px;">Preliminary order-of-magnitude · accuracy ±25% · excludes land acquisition</div>
+    </div>
+    <div class="budget-total-amount">$1.2–1.5B</div>
+  </div>
+
+  <div class="budget-note reveal">
+    Funding strategy: Federal grants (EDA, RAISE, Historic Tax Credits, New Markets Tax Credits) · Ohio Cultural Facilities Commission · City of Cleveland and Cuyahoga County bonding · Naming rights and Founding Partner capital · Private philanthropy capital campaign · TIF district revenue from surrounding development · Revenue-backed bonds secured against Performance Center event income. Detailed pro forma to be developed in Phase 2 following partner LOI execution.
+  </div>
+</section>
+
+<!-- PARTNERS -->
+<section class="partner-section" id="partners">
+  <div class="section-label">Founding partners</div>
+  <h2 class="section-title reveal">Three organizations.<br>One shared mission.</h2>
+  <div class="gold-rule reveal"></div>
+  <p class="section-body reveal">The Science of Bass Museum and Rock Hall Performance Center are built on a three-way Founding Partnership that no single institution could achieve alone. Each partner brings something irreplaceable.</p>
+
+  <div class="partner-grid">
+    <div class="partner-card rock reveal">
+      <div class="partner-name">Rock and Roll Hall of Fame</div>
+      <div class="partner-role">Cultural + programming partner</div>
+      <ul class="partner-points">
+        <li>Permanent home for the Annual Induction Ceremony</li>
+        <li>Curatorial expertise for Bass in Culture galleries</li>
+        <li>Global audience and membership network</li>
+        <li>Joint ticketing and marketing infrastructure</li>
+        <li>Year-round programming calendar</li>
+      </ul>
+    </div>
+    <div class="partner-card science reveal">
+      <div class="partner-name">Great Lakes Science Center</div>
+      <div class="partner-role">STEM education partner</div>
+      <ul class="partner-points">
+        <li>Exhibit design and fabrication expertise</li>
+        <li>K-12 school partnership network</li>
+        <li>Joint NSF and IMLS grant applications</li>
+        <li>Curatorial staff and education programming</li>
+        <li>Community science engagement infrastructure</li>
+      </ul>
+    </div>
+    <div class="partner-card audio reveal">
+      <div class="partner-name">Audio Equipment Partner</div>
+      <div class="partner-role">Technology + innovation partner</div>
+      <ul class="partner-points">
+        <li>Working sound systems throughout the museum</li>
+        <li>8,000 sq ft Innovation Suite on third floor</li>
+        <li>Co-development of audio engineering curriculum</li>
+        <li>Engineer participation in education programs</li>
+        <li>The sound of the entire North Coast campus</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- TIMELINE -->
+<section class="timeline-section" id="timeline">
+  <div class="section-label">The path forward</div>
+  <h2 class="section-title reveal">From vision to<br>opening night.</h2>
+  <div class="gold-rule reveal"></div>
+
+  <div class="timeline reveal">
+    <div class="timeline-item">
+      <div class="timeline-phase">Phase 1 · 2026 Q2–Q3</div>
+      <div class="timeline-title">Alignment and commitment</div>
+      <div class="timeline-body">All three Founding Partners execute a Letter of Intent. A joint Steering Committee is formed. The City of Cleveland and Cuyahoga County are formally engaged. A master planning architect is retained. Federal and state pre-development funding applications are filed.</div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-phase">Phase 2 · 2026 Q4–2027 Q2</div>
+      <div class="timeline-title">Planning and capital campaign launch</div>
+      <div class="timeline-body">Financial pro forma completed. Partnership agreement executed. Exhibit design firm selected for the Science of Bass Museum. Capital campaign publicly launched. Ohio Cultural Facilities Commission application submitted. Community engagement begins.</div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-phase">Phase 3 · 2027 Q3–2028 Q4</div>
+      <div class="timeline-title">Design and documentation</div>
+      <div class="timeline-body">Full architectural design development for all buildings and site. Audio equipment partner finalizes all system specifications. Exhibit fabrication contracts awarded. Construction documents completed. Permits filed. Pre-construction begins.</div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-phase">Phase 4 · 2029–2030</div>
+      <div class="timeline-title">Construction</div>
+      <div class="timeline-body">Site work begins immediately following stadium removal. Building construction proceeds in parallel with exhibit fabrication and installation. Land Bridge construction coordinated with City infrastructure schedule. BASSBOSS systems installed and commissioned.</div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-phase">Phase 5 · 2030 Q4</div>
+      <div class="timeline-title">Opening</div>
+      <div class="timeline-body">Soft opening for Founding Partners, members, and community preview. Public grand opening of the Science of Bass Museum and North Coast Campus. First Rock Hall Induction Ceremony in the new Performance Center. Cleveland reclaims its lakefront — permanently.</div>
+    </div>
+  </div>
+</section>
+
+<!-- CLOSING -->
+<section class="closing-section" id="closing">
+  <div class="closing-bg"></div>
+  <div class="closing-content reveal">
+    <div class="closing-eyebrow">Cleveland · Lake Erie · 2030</div>
+    <h2 class="closing-title">The sound of a city<br>finding its future.</h2>
+    <p class="closing-body">The North Coast is not just a development project. It is a statement about who Cleveland is and who Cleveland intends to be. A city that owns its cultural identity, commands its music industry, and builds for its people. A city where the Induction Ceremony comes home, where the Midwest Music Conference writes the industry's future, and where the Great Lakes Music Gathering reminds the world that great music was always made here. A city that finally, completely, belongs to its lake.</p>
+    <div class="closing-stats">
+      <div>
+        <div class="closing-stat-num">12,000</div>
+        <div class="closing-stat-label">Seat performance center</div>
+      </div>
+      <div>
+        <div class="closing-stat-num">60K</div>
+        <div class="closing-stat-label">Sq ft museum</div>
+      </div>
+      <div>
+        <div class="closing-stat-num">2</div>
+        <div class="closing-stat-label">Signature annual events</div>
+      </div>
+      <div>
+        <div class="closing-stat-num">85K+</div>
+        <div class="closing-stat-label">Annual event attendees</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-logo">Cleveland North Coast · 2030</div>
+  <div class="footer-note">Presented to the City of Cleveland · Preliminary planning document · May 2026 · Confidential</div>
+</footer>
+
+<script>
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => {
+          entry.target.classList.add('visible');
+        }, 80);
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12 });
+
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      e.preventDefault();
+      const target = document.querySelector(a.getAttribute('href'));
+      if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+</script>
+</body>
+</html>

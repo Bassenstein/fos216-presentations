@@ -1,0 +1,1810 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>North Coast Events — MMC & GLSMG Cleveland</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Mono:wght@400;500&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+/* ── TOKENS ─────────────────────────────────────────────────── */
+:root {
+  --navy:       #042C53;
+  --navy-mid:   #0C447C;
+  --navy-light: #185FA5;
+  --teal:       #04342C;
+  --teal-mid:   #0F6E56;
+  --teal-bright:#1D9E75;
+  --teal-light: #5DCAA5;
+  --teal-pale:  #9FE1CB;
+  --teal-ghost: #E1F5EE;
+  --gold:       #C8951A;
+  --gold-light: #F5C842;
+  --white:      #FFFFFF;
+  --off-white:  #F0F9F5;
+  --slate:      #475569;
+  --muted:      #94A3B8;
+  --civic:      #1B3A6B;
+  --civic-mid:  #2B5BA8;
+  --science:    #04342C;
+  --bg:         #03111E;
+  --bg2:        #061825;
+  --surface:    #0B2238;
+  --border:     rgba(93,202,165,.18);
+  --font-display: 'Playfair Display', Georgia, serif;
+  --font-body:    'DM Sans', sans-serif;
+  --font-mono:    'DM Mono', monospace;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--white);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+/* scrollbar */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--teal-mid); border-radius: 2px; }
+
+/* ── NAV ─────────────────────────────────────────────────────── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: .9rem 2.5rem;
+  background: rgba(3,17,30,.85);
+  backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--border);
+}
+.nav-logo {
+  font-family: var(--font-mono);
+  font-size: .72rem;
+  letter-spacing: .12em;
+  color: var(--teal-light);
+  text-transform: uppercase;
+}
+.nav-links { display: flex; gap: 2rem; }
+.nav-links a {
+  font-size: .78rem;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  text-decoration: none;
+  transition: color .2s;
+}
+.nav-links a:hover { color: var(--teal-light); }
+
+/* ── HERO ────────────────────────────────────────────────────── */
+.hero {
+  min-height: 100vh;
+  display: flex; flex-direction: column; justify-content: flex-end;
+  padding: 0 2.5rem 5rem;
+  position: relative;
+  overflow: hidden;
+}
+.hero-lake {
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse 120% 60% at 50% 110%, rgba(29,158,117,.18) 0%, transparent 65%),
+    radial-gradient(ellipse 80% 40% at 20% 80%, rgba(4,52,44,.4) 0%, transparent 55%),
+    linear-gradient(180deg, #020C14 0%, #042C53 55%, #04342C 100%);
+}
+.hero-grid {
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(rgba(29,158,117,.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(29,158,117,.05) 1px, transparent 1px);
+  background-size: 60px 60px;
+  mask-image: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,.6) 40%, transparent 100%);
+}
+.hero-scan {
+  position: absolute; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--teal-light), transparent);
+  animation: scan 8s ease-in-out infinite;
+  opacity: .4;
+}
+@keyframes scan {
+  0%   { top: 0; opacity: 0; }
+  10%  { opacity: .4; }
+  90%  { opacity: .4; }
+  100% { top: 100%; opacity: 0; }
+}
+.hero-content { position: relative; z-index: 2; max-width: 960px; }
+.hero-eyebrow {
+  font-family: var(--font-mono);
+  font-size: .72rem;
+  letter-spacing: .2em;
+  color: var(--teal-light);
+  text-transform: uppercase;
+  margin-bottom: 1.2rem;
+  opacity: 0;
+  animation: fadeUp .8s .3s forwards;
+}
+.hero-title {
+  font-family: var(--font-display);
+  font-size: clamp(3.2rem, 7vw, 6.4rem);
+  font-weight: 900;
+  line-height: 1.02;
+  margin-bottom: .6rem;
+  opacity: 0;
+  animation: fadeUp .8s .5s forwards;
+}
+.hero-title em {
+  font-style: italic;
+  color: var(--teal-light);
+}
+.hero-amp {
+  display: inline-block;
+  color: var(--gold-light);
+  margin: 0 .15em;
+}
+.hero-subtitle {
+  font-size: 1.15rem;
+  color: var(--teal-pale);
+  max-width: 620px;
+  margin-bottom: 2.5rem;
+  font-weight: 300;
+  opacity: 0;
+  animation: fadeUp .8s .7s forwards;
+}
+.hero-badges {
+  display: flex; gap: 1rem; flex-wrap: wrap;
+  opacity: 0; animation: fadeUp .8s .9s forwards;
+}
+.badge {
+  font-family: var(--font-mono);
+  font-size: .72rem;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  padding: .45rem 1.1rem;
+  border-radius: 2px;
+  border: 1px solid;
+}
+.badge-mmc  { border-color: var(--navy-light); color: var(--teal-pale); background: rgba(24,95,165,.18); }
+.badge-glsmg{ border-color: var(--teal-mid); color: var(--teal-pale); background: rgba(15,110,86,.18); }
+.badge-date { border-color: var(--gold); color: var(--gold-light); background: rgba(200,149,26,.12); }
+.hero-scroll {
+  position: absolute; bottom: 2rem; left: 50%; transform: translateX(-50%);
+  font-family: var(--font-mono); font-size: .65rem;
+  letter-spacing: .15em; color: var(--muted); text-transform: uppercase;
+  display: flex; flex-direction: column; align-items: center; gap: .5rem;
+  opacity: 0; animation: fadeUp .8s 1.2s forwards;
+}
+.scroll-line {
+  width: 1px; height: 40px;
+  background: linear-gradient(to bottom, var(--teal-mid), transparent);
+  animation: scrollPulse 2s ease-in-out infinite;
+}
+@keyframes scrollPulse { 0%,100%{opacity:.3} 50%{opacity:1} }
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── SECTION BASE ────────────────────────────────────────────── */
+section {
+  padding: 7rem 2.5rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+.section-label {
+  font-family: var(--font-mono);
+  font-size: .68rem;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: var(--teal-mid);
+  margin-bottom: 1rem;
+  display: flex; align-items: center; gap: .8rem;
+}
+.section-label::after {
+  content: ''; flex: 1; height: 1px;
+  background: linear-gradient(to right, var(--teal-mid), transparent);
+}
+.section-title {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 4vw, 3.2rem);
+  font-weight: 700;
+  line-height: 1.1;
+  margin-bottom: 1.5rem;
+}
+.section-title em { font-style: italic; color: var(--teal-light); }
+
+/* ── FULL-WIDTH DIVIDERS ─────────────────────────────────────── */
+.wave-divider {
+  width: 100%; overflow: hidden;
+  line-height: 0;
+}
+.wave-divider svg { display: block; width: 100%; }
+
+/* ── ORIGIN STRIP ────────────────────────────────────────────── */
+.origin-strip {
+  background: var(--bg2);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  padding: 5rem 2.5rem;
+}
+.origin-inner { max-width: 1200px; margin: 0 auto; }
+.origin-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 2px;
+  margin-top: 3rem;
+  background: var(--border);
+  border: 1px solid var(--border);
+}
+.origin-card {
+  background: var(--bg);
+  padding: 2rem;
+  position: relative;
+  overflow: hidden;
+  transition: background .25s;
+}
+.origin-card:hover { background: var(--surface); }
+.origin-num {
+  font-family: var(--font-display);
+  font-size: 5rem;
+  font-weight: 900;
+  color: rgba(29,158,117,.08);
+  position: absolute;
+  top: -.5rem; right: 1rem;
+  line-height: 1;
+  pointer-events: none;
+  user-select: none;
+}
+.origin-card-label {
+  font-family: var(--font-mono);
+  font-size: .65rem;
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  color: var(--teal-bright);
+  margin-bottom: .75rem;
+}
+.origin-card h3 {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-bottom: .6rem;
+  color: var(--white);
+}
+.origin-card p {
+  font-size: .9rem;
+  color: var(--muted);
+  line-height: 1.65;
+}
+
+/* ── TWO PILLARS ─────────────────────────────────────────────── */
+.pillars {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1px;
+  background: var(--border);
+  border: 1px solid var(--border);
+  margin-top: 3rem;
+}
+.pillar {
+  padding: 3rem 2.5rem;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all .3s;
+}
+.pillar-mmc  { background: var(--navy); }
+.pillar-glsmg{ background: var(--teal); }
+.pillar:hover .pillar-glow { opacity: 1; }
+.pillar-glow {
+  position: absolute; inset: 0;
+  opacity: 0; transition: opacity .4s;
+  pointer-events: none;
+}
+.pillar-mmc  .pillar-glow { background: radial-gradient(ellipse at 30% 50%, rgba(24,95,165,.25), transparent 70%); }
+.pillar-glsmg .pillar-glow{ background: radial-gradient(ellipse at 70% 50%, rgba(29,158,117,.25), transparent 70%); }
+.pillar-accent {
+  width: 100%; height: 3px;
+  margin-bottom: 2rem;
+}
+.pillar-mmc  .pillar-accent { background: linear-gradient(to right, var(--gold-light), transparent); }
+.pillar-glsmg .pillar-accent{ background: linear-gradient(to right, var(--teal-bright), transparent); }
+.pillar-tag {
+  font-family: var(--font-mono);
+  font-size: .65rem;
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  padding: .3rem .7rem;
+  border: 1px solid;
+  display: inline-block;
+  margin-bottom: 1.2rem;
+}
+.pillar-mmc  .pillar-tag { border-color: var(--gold); color: var(--gold-light); }
+.pillar-glsmg .pillar-tag { border-color: var(--teal-bright); color: var(--teal-light); }
+.pillar h2 {
+  font-family: var(--font-display);
+  font-size: 2rem;
+  font-weight: 900;
+  margin-bottom: .5rem;
+}
+.pillar-days {
+  font-family: var(--font-mono);
+  font-size: .72rem;
+  letter-spacing: .12em;
+  color: var(--muted);
+  margin-bottom: 1.5rem;
+  text-transform: uppercase;
+}
+.pillar ul {
+  list-style: none;
+  display: flex; flex-direction: column; gap: .6rem;
+}
+.pillar ul li {
+  font-size: .9rem;
+  color: var(--teal-pale);
+  padding-left: 1.2rem;
+  position: relative;
+  line-height: 1.5;
+}
+.pillar ul li::before {
+  content: '→';
+  position: absolute; left: 0;
+  color: var(--teal-bright);
+  font-size: .8rem;
+}
+.pillar-stat {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(255,255,255,.08);
+  display: flex; gap: 2rem;
+}
+.ps-num {
+  font-family: var(--font-display);
+  font-size: 2.4rem;
+  font-weight: 900;
+  line-height: 1;
+}
+.pillar-mmc  .ps-num { color: var(--gold-light); }
+.pillar-glsmg .ps-num { color: var(--teal-bright); }
+.ps-label { font-size: .8rem; color: var(--muted); margin-top: .2rem; }
+
+/* ── SCHEDULE TABS ───────────────────────────────────────────── */
+.schedule-section {
+  background: var(--bg2);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  padding: 6rem 2.5rem;
+}
+.schedule-inner { max-width: 1200px; margin: 0 auto; }
+.tab-nav {
+  display: flex; gap: 0;
+  border: 1px solid var(--border);
+  margin-top: 2.5rem;
+  overflow-x: auto;
+}
+.tab-btn {
+  flex: 1; min-width: 130px;
+  background: none; border: none;
+  padding: 1.1rem 1.2rem;
+  cursor: pointer;
+  border-right: 1px solid var(--border);
+  transition: background .2s;
+  text-align: left;
+}
+.tab-btn:last-child { border-right: none; }
+.tab-btn:hover { background: var(--surface); }
+.tab-btn.active { background: var(--surface); }
+.tab-day {
+  font-family: var(--font-mono);
+  font-size: .65rem;
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  margin-bottom: .3rem;
+}
+.tab-btn.active .tab-day { color: var(--teal-bright); }
+.tab-btn:not(.active) .tab-day { color: var(--muted); }
+.tab-name {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--white);
+}
+.tab-type {
+  font-size: .72rem;
+  color: var(--muted);
+  margin-top: .2rem;
+}
+.tab-btn.active .tab-indicator {
+  display: block; width: 100%;
+  height: 2px; background: var(--teal-bright);
+  margin-top: .8rem;
+}
+.tab-btn:not(.active) .tab-indicator { display: none; }
+
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
+.schedule-grid {
+  margin-top: 2rem;
+  display: flex; flex-direction: column; gap: 0;
+  border: 1px solid var(--border);
+  border-top: 2px solid var(--teal-mid);
+}
+.sched-row {
+  display: grid;
+  grid-template-columns: 90px 1fr;
+  gap: 0;
+  border-bottom: 1px solid var(--border);
+  transition: background .2s;
+}
+.sched-row:last-child { border-bottom: none; }
+.sched-row:hover { background: var(--surface); }
+.sched-time {
+  padding: 1.1rem 1rem;
+  font-family: var(--font-mono);
+  font-size: .7rem;
+  letter-spacing: .08em;
+  color: var(--teal-light);
+  border-right: 1px solid var(--border);
+  display: flex; align-items: flex-start;
+  padding-top: 1.2rem;
+}
+.sched-event {
+  padding: 1rem 1.5rem;
+}
+.sched-event-title {
+  font-size: .95rem;
+  font-weight: 500;
+  color: var(--white);
+  line-height: 1.4;
+  margin-bottom: .2rem;
+}
+.sched-event-sub {
+  font-size: .78rem;
+  color: var(--muted);
+}
+
+/* ── STATS ───────────────────────────────────────────────────── */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+  background: var(--border);
+  border: 1px solid var(--border);
+  margin-top: 3rem;
+}
+.stat-card {
+  background: var(--bg);
+  padding: 2.2rem 1.8rem;
+  position: relative; overflow: hidden;
+  transition: background .25s;
+}
+.stat-card:hover { background: var(--surface); }
+.stat-card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(to right, var(--teal-bright), transparent);
+}
+.stat-num {
+  font-family: var(--font-display);
+  font-size: 3rem;
+  font-weight: 900;
+  line-height: 1;
+  margin-bottom: .3rem;
+  background: linear-gradient(135deg, var(--white), var(--teal-pale));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.stat-label {
+  font-family: var(--font-mono);
+  font-size: .68rem;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+/* ── SITE PLAN ───────────────────────────────────────────────── */
+.site-plan-section {
+  background: var(--bg2);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  padding: 6rem 2.5rem;
+}
+.site-plan-inner { max-width: 1200px; margin: 0 auto; }
+
+.site-map-wrapper {
+  margin-top: 3rem;
+  position: relative;
+}
+.site-map {
+  width: 100%;
+  background: #0B2035;
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  padding: 0;
+  position: relative;
+  overflow: hidden;
+  min-height: 520px;
+}
+
+/* water */
+.map-lake {
+  position: absolute; top: 0; left: 0; right: 0; height: 38%;
+  background: linear-gradient(180deg, #0A2D4A 0%, #0E3D60 70%, #0B3252 100%);
+  display: flex; align-items: center;
+}
+.map-lake::after {
+  content: '';
+  position: absolute; bottom: 0; left: 0; right: 0; height: 18px;
+  background: repeating-linear-gradient(
+    90deg,
+    rgba(93,202,165,.12) 0px, rgba(93,202,165,.12) 30px,
+    transparent 30px, transparent 60px
+  );
+}
+.lake-label {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 900;
+  color: rgba(93,202,165,.25);
+  letter-spacing: .25em;
+  padding: 0 2rem;
+  user-select: none;
+}
+
+/* land */
+.map-land {
+  position: absolute; left: 0; right: 0; bottom: 0; height: 65%;
+  background: #0C2818;
+  border-top: 2px solid rgba(93,202,165,.22);
+}
+
+/* waterfront strip */
+.map-waterfront {
+  position: absolute;
+  left: 0; right: 0;
+  top: 36%; height: 4.5%;
+  background: rgba(29,158,117,.18);
+  border-top: 1px solid rgba(93,202,165,.3);
+  border-bottom: 1px solid rgba(93,202,165,.3);
+  display: flex; align-items: center;
+  padding: 0 1.2rem;
+  z-index: 4;
+}
+.waterfront-label {
+  font-family: var(--font-mono);
+  font-size: .55rem;
+  letter-spacing: .15em;
+  color: rgba(93,202,165,.7);
+  text-transform: uppercase;
+}
+
+/* map zones */
+.map-zone {
+  position: absolute;
+  border-radius: 1px;
+  cursor: pointer;
+  transition: filter .2s, transform .2s;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: .4rem .3rem;
+  overflow: hidden;
+}
+.map-zone:hover {
+  filter: brightness(1.25);
+  transform: scale(1.03);
+  z-index: 20;
+}
+.map-zone-key {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 1rem;
+  line-height: 1;
+  margin-bottom: 2px;
+}
+.map-zone-name {
+  font-family: var(--font-mono);
+  font-size: .5rem;
+  letter-spacing: .05em;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
+/* tooltip */
+.map-tooltip {
+  position: absolute;
+  background: #061825;
+  border: 1px solid var(--teal-mid);
+  padding: .8rem 1rem;
+  border-radius: 2px;
+  font-size: .8rem;
+  color: var(--white);
+  pointer-events: none;
+  z-index: 50;
+  max-width: 200px;
+  display: none;
+  box-shadow: 0 8px 24px rgba(0,0,0,.5);
+}
+.map-tooltip.visible { display: block; }
+.map-tooltip strong {
+  display: block;
+  font-family: var(--font-display);
+  font-size: .95rem;
+  color: var(--teal-light);
+  margin-bottom: .3rem;
+}
+.map-tooltip span {
+  color: var(--muted);
+  font-size: .75rem;
+}
+
+/* north arrow */
+.map-north {
+  position: absolute;
+  bottom: 1rem; right: 1rem;
+  width: 36px; height: 36px;
+  border: 1px solid var(--teal-mid);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  flex-direction: column;
+  font-family: var(--font-mono);
+  font-size: .6rem;
+  color: var(--teal-light);
+  z-index: 10;
+  background: var(--bg2);
+}
+
+/* legend */
+.map-legend {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+  gap: .5rem;
+  margin-top: 1.5rem;
+}
+.legend-item {
+  display: flex; align-items: center; gap: .6rem;
+  padding: .5rem .7rem;
+  border: 1px solid var(--border);
+  cursor: pointer;
+  transition: background .2s;
+  font-size: .78rem;
+}
+.legend-item:hover { background: var(--surface); }
+.legend-dot {
+  width: 10px; height: 10px;
+  border-radius: 1px;
+  flex-shrink: 0;
+}
+.legend-text { color: var(--muted); line-height: 1.3; }
+
+/* ── STAGES ──────────────────────────────────────────────────── */
+.stages-grid {
+  display: flex; flex-direction: column; gap: 0;
+  border: 1px solid var(--border);
+  margin-top: 2.5rem;
+}
+.stage-row {
+  display: grid;
+  grid-template-columns: 1fr 180px 120px;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid var(--border);
+  transition: background .2s;
+  gap: 1.5rem;
+}
+.stage-row:last-child { border-bottom: none; }
+.stage-row:hover { background: var(--surface); }
+.stage-info { display: flex; align-items: center; gap: 1rem; }
+.stage-dot {
+  width: 10px; height: 10px;
+  border-radius: 50%; flex-shrink: 0;
+}
+.stage-name { font-weight: 500; font-size: .95rem; }
+.stage-genre { font-size: .78rem; color: var(--muted); margin-top: .1rem; }
+.stage-bar-wrap { position: relative; height: 6px; background: rgba(255,255,255,.06); border-radius: 3px; }
+.stage-bar-fill { height: 100%; border-radius: 3px; transition: width .8s cubic-bezier(.16,1,.3,1); }
+.stage-cap {
+  font-family: var(--font-mono);
+  font-size: .78rem;
+  color: var(--teal-light);
+  text-align: right;
+}
+
+/* ── VENUE / WHY CLE ─────────────────────────────────────────── */
+.venue-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: var(--border);
+  border: 1px solid var(--border);
+  margin-top: 3rem;
+}
+.venue-card {
+  background: var(--bg);
+  padding: 1.8rem;
+  transition: background .25s;
+  position: relative;
+}
+.venue-card:hover { background: var(--surface); }
+.venue-card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 2px;
+}
+.venue-card:nth-child(1)::before { background: var(--gold-light); }
+.venue-card:nth-child(2)::before { background: var(--teal-bright); }
+.venue-card:nth-child(3)::before { background: var(--navy-light); }
+.venue-card:nth-child(4)::before { background: var(--teal-mid); }
+.venue-card:nth-child(5)::before { background: var(--gold); }
+.venue-card:nth-child(6)::before { background: #C0397C; }
+.venue-icon {
+  font-size: 1.6rem; margin-bottom: .75rem;
+}
+.venue-card h4 {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-weight: 700;
+  margin-bottom: .4rem;
+  color: var(--white);
+}
+.venue-card p { font-size: .85rem; color: var(--muted); line-height: 1.55; }
+
+/* ── NORTH COAST LANDMARKS ───────────────────────────────────── */
+.landmarks-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 1.5rem;
+  margin-top: 3rem;
+}
+.landmark-card {
+  border: 1px solid var(--border);
+  padding: 2rem;
+  position: relative;
+  overflow: hidden;
+  transition: border-color .25s, background .25s;
+}
+.landmark-card:hover {
+  border-color: var(--teal-bright);
+  background: var(--surface);
+}
+.landmark-card.stadium {
+  border-color: var(--gold);
+  border-style: dashed;
+}
+.landmark-card.stadium:hover { border-color: var(--gold-light); }
+.landmark-badge {
+  font-family: var(--font-mono);
+  font-size: .62rem;
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  padding: .25rem .6rem;
+  border: 1px solid;
+  display: inline-block;
+  margin-bottom: 1rem;
+}
+.landmark-card.rock-hall .landmark-badge { border-color: var(--gold); color: var(--gold-light); }
+.landmark-card.science   .landmark-badge { border-color: var(--teal-bright); color: var(--teal-light); }
+.landmark-card.stadium   .landmark-badge { border-color: var(--gold); color: var(--gold-light); background: rgba(200,149,26,.08); }
+.landmark-card h3 {
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin-bottom: .6rem;
+  color: var(--white);
+}
+.landmark-card p { font-size: .88rem; color: var(--muted); line-height: 1.6; }
+.landmark-2030 {
+  margin-top: 1rem;
+  padding: .6rem .8rem;
+  background: rgba(200,149,26,.08);
+  border: 1px solid rgba(245,200,66,.2);
+  font-size: .8rem;
+  color: var(--gold-light);
+}
+
+/* ── ECONOMIC SECTION ────────────────────────────────────────── */
+.econ-section {
+  background: linear-gradient(180deg, var(--bg2) 0%, var(--teal) 100%);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  padding: 6rem 2.5rem;
+}
+.econ-inner { max-width: 1200px; margin: 0 auto; }
+.econ-hero {
+  display: flex; align-items: flex-end; gap: 2rem;
+  margin-top: 2rem; margin-bottom: 3.5rem;
+}
+.econ-number {
+  font-family: var(--font-display);
+  font-size: clamp(4rem, 9vw, 8rem);
+  font-weight: 900;
+  line-height: .9;
+  background: linear-gradient(135deg, var(--white), var(--teal-pale));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.econ-sub {
+  font-size: 1rem;
+  color: var(--teal-pale);
+  max-width: 280px;
+  line-height: 1.5;
+  padding-bottom: .5rem;
+}
+.econ-bars { display: flex; flex-direction: column; gap: .6rem; }
+.econ-bar-row { display: grid; grid-template-columns: 150px 1fr 60px; gap: 1rem; align-items: center; }
+.econ-bar-label { font-size: .78rem; color: var(--teal-pale); text-align: right; }
+.econ-bar-track { height: 8px; background: rgba(255,255,255,.06); border-radius: 4px; overflow: hidden; }
+.econ-bar-fill {
+  height: 100%;
+  background: linear-gradient(to right, var(--teal-bright), var(--teal-light));
+  border-radius: 4px;
+  transform: scaleX(0); transform-origin: left;
+  transition: transform 1.2s cubic-bezier(.16,1,.3,1);
+}
+.econ-bar-fill.animate { transform: scaleX(1); }
+.econ-bar-val {
+  font-family: var(--font-mono);
+  font-size: .75rem;
+  color: var(--teal-light);
+}
+
+/* ── COMMUNITY PARTNERSHIPS ──────────────────────────────────── */
+.partners-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: var(--border);
+  border: 1px solid var(--border);
+  margin-top: 3rem;
+}
+.partner-card {
+  background: var(--bg);
+  padding: 1.6rem;
+  transition: background .25s;
+}
+.partner-card:hover { background: var(--surface); }
+.partner-card h4 {
+  font-size: .92rem;
+  font-weight: 600;
+  color: var(--white);
+  margin-bottom: .4rem;
+}
+.partner-card p { font-size: .8rem; color: var(--muted); line-height: 1.55; }
+.partner-role {
+  font-family: var(--font-mono);
+  font-size: .6rem;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--teal-bright);
+  margin-bottom: .5rem;
+}
+
+/* ── TIMELINE ────────────────────────────────────────────────── */
+.timeline {
+  position: relative;
+  margin-top: 3rem;
+  padding-left: 2rem;
+}
+.timeline::before {
+  content: '';
+  position: absolute; left: 0; top: 0; bottom: 0; width: 1px;
+  background: linear-gradient(to bottom, var(--teal-bright), transparent);
+}
+.tl-item {
+  position: relative;
+  padding: 0 0 2.5rem 2rem;
+}
+.tl-item::before {
+  content: '';
+  position: absolute;
+  left: -5px; top: 4px;
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  border: 2px solid var(--teal-bright);
+  background: var(--bg);
+}
+.tl-item.highlight::before { background: var(--teal-bright); }
+.tl-phase {
+  font-family: var(--font-mono);
+  font-size: .68rem;
+  letter-spacing: .1em;
+  color: var(--teal-bright);
+  text-transform: uppercase;
+  margin-bottom: .3rem;
+}
+.tl-title {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: .3rem;
+  color: var(--white);
+}
+.tl-body { font-size: .85rem; color: var(--muted); }
+
+/* ── CLOSING CTA ─────────────────────────────────────────────── */
+.cta-section {
+  background: var(--navy);
+  border-top: 1px solid var(--border);
+  padding: 8rem 2.5rem;
+  text-align: center;
+  position: relative; overflow: hidden;
+}
+.cta-section::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse 80% 60% at 50% 100%, rgba(29,158,117,.15), transparent 65%);
+}
+.cta-inner { position: relative; z-index: 2; }
+.cta-eyebrow {
+  font-family: var(--font-mono);
+  font-size: .68rem;
+  letter-spacing: .2em;
+  color: var(--teal-mid);
+  text-transform: uppercase;
+  margin-bottom: 1.5rem;
+}
+.cta-title {
+  font-family: var(--font-display);
+  font-size: clamp(2.5rem, 6vw, 5rem);
+  font-weight: 900;
+  line-height: 1.05;
+  margin-bottom: 1.5rem;
+}
+.cta-title em { color: var(--teal-light); font-style: italic; }
+.cta-body {
+  font-size: 1rem;
+  color: var(--teal-pale);
+  max-width: 540px;
+  margin: 0 auto 3rem;
+  line-height: 1.7;
+}
+.cta-badges { display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap; }
+.cta-badge {
+  font-family: var(--font-mono);
+  font-size: .72rem;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  padding: .8rem 1.6rem;
+  border: 1px solid var(--teal-mid);
+  color: var(--teal-light);
+  transition: all .2s;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
+}
+.cta-badge:hover {
+  background: var(--teal-mid);
+  border-color: var(--teal-bright);
+  color: var(--white);
+}
+.cta-badge.primary {
+  background: var(--teal-bright);
+  border-color: var(--teal-bright);
+  color: var(--navy);
+  font-weight: 600;
+}
+.cta-badge.primary:hover { background: var(--teal-light); }
+
+/* ── FOOTER ──────────────────────────────────────────────────── */
+footer {
+  background: var(--bg);
+  border-top: 1px solid var(--border);
+  padding: 2.5rem;
+  display: flex; justify-content: space-between; align-items: center;
+  flex-wrap: wrap; gap: 1rem;
+}
+.footer-left {
+  font-family: var(--font-mono);
+  font-size: .65rem;
+  letter-spacing: .12em;
+  color: var(--muted);
+  text-transform: uppercase;
+}
+.footer-right {
+  font-family: var(--font-mono);
+  font-size: .65rem;
+  color: var(--teal-mid);
+}
+
+/* ── ANIMATIONS / REVEAL ─────────────────────────────────────── */
+.reveal {
+  opacity: 0; transform: translateY(32px);
+  transition: opacity .7s ease, transform .7s ease;
+}
+.reveal.visible {
+  opacity: 1; transform: translateY(0);
+}
+
+/* ── RESPONSIVE ──────────────────────────────────────────────── */
+@media (max-width: 900px) {
+  .pillars, .origin-grid, .stats-grid, .venue-grid,
+  .landmarks-grid, .partners-grid { grid-template-columns: 1fr; }
+  .stage-row { grid-template-columns: 1fr; gap: .5rem; }
+  .econ-bar-row { grid-template-columns: 110px 1fr 50px; }
+  .tab-nav { flex-wrap: wrap; }
+  .tab-btn { min-width: 100px; flex: 0 0 auto; }
+  nav { padding: .8rem 1.2rem; }
+  .nav-links { display: none; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">MMC · GLSMG · Cleveland, OH</div>
+  <div class="nav-links">
+    <a href="#about">About</a>
+    <a href="#pillars">Events</a>
+    <a href="#schedule">Schedule</a>
+    <a href="#site-plan">Site Plan</a>
+    <a href="#impact">Impact</a>
+    <a href="#timeline">Timeline</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-lake"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-scan"></div>
+  <div class="hero-content">
+    <p class="hero-eyebrow">Cleveland · North Coast Village · Lake Erie Shoreline · Late July</p>
+    <h1 class="hero-title">
+      Midwest Music<br>
+      <em>Conference</em>
+      <span class="hero-amp">&</span><br>
+      Great Lakes Science<br>
+      <em>and Music Gathering</em>
+    </h1>
+    <p class="hero-subtitle">The Great Lakes answer to WMC and Ultra. Four days. Two events. One North Coast vision built for the Midwest and destined for the world.</p>
+    <div class="hero-badges">
+      <span class="badge badge-mmc">MMC — Wed & Thu</span>
+      <span class="badge badge-glsmg">GLSMG — Fri & Sat</span>
+      <span class="badge badge-date">4 Days · 80,000/Day</span>
+    </div>
+  </div>
+  <div class="hero-scroll">
+    <div class="scroll-line"></div>
+    Scroll
+  </div>
+</div>
+
+<!-- ABOUT / ORIGIN -->
+<div id="about" class="origin-strip">
+  <div class="origin-inner">
+    <div class="section-label">The Concept</div>
+    <h2 class="section-title reveal">Where the <em>Midwest</em> becomes the world's stage</h2>
+    <p class="reveal" style="color:var(--muted);max-width:680px;font-size:1rem;line-height:1.75;">
+      The Midwest is the birthplace of house, techno, and rock — yet it has never had a world-class music industry event to call its own. No major music conference exists between SXSW and WMC. 22 million people live within a five-hour drive of Cleveland. This is the opportunity.
+    </p>
+
+    <div class="origin-grid" style="margin-top:3rem;">
+      <div class="origin-card reveal">
+        <div class="origin-num">01</div>
+        <div class="origin-card-label">The Gap</div>
+        <h3>No Flagship Event</h3>
+        <p>Detroit techno. Chicago house. Ohio hip-hop. The Midwest invented electronic music culture — and has no destination event to honor or monetize it. That changes now.</p>
+      </div>
+      <div class="origin-card reveal" style="transition-delay:.1s">
+        <div class="origin-num">02</div>
+        <div class="origin-card-label">The Venue</div>
+        <h3>North Coast Village</h3>
+        <p>Anchored by the Rock &amp; Roll Hall of Fame, the Great Lakes Science Center, and the soon-to-be-redeveloped stadium site — the finest underdeveloped festival ground in America.</p>
+      </div>
+      <div class="origin-card reveal" style="transition-delay:.2s">
+        <div class="origin-num">03</div>
+        <div class="origin-card-label">The Moment</div>
+        <h3>Science Meets Sound</h3>
+        <p>No other major event merges the music industry's most powerful conference with a lakefront science gathering. GLSMG Friday is unique in the festival landscape.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TWO PILLARS -->
+<section id="pillars">
+  <div class="section-label">Two Pillars</div>
+  <h2 class="section-title reveal">One <em>North Coast</em> vision, two world-class events</h2>
+
+  <div class="pillars reveal">
+    <!-- MMC -->
+    <div class="pillar pillar-mmc">
+      <div class="pillar-glow"></div>
+      <div class="pillar-accent"></div>
+      <span class="pillar-tag">MMC · Industry Event</span>
+      <h2>Midwest Music<br>Conference</h2>
+      <p class="pillar-days">Wednesday & Thursday · Credentialed Industry</p>
+      <ul>
+        <li>Keynotes &amp; panels across 6 industry tracks</li>
+        <li>Label, booking &amp; publishing deal rooms</li>
+        <li>Music tech &amp; gear expo floor</li>
+        <li>A&amp;R showcase — emerging Midwest talent</li>
+        <li>Sync licensing speed sessions</li>
+        <li>MMC closing night party — Thursday evening</li>
+      </ul>
+      <div class="pillar-stat">
+        <div>
+          <div class="ps-num">250+</div>
+          <div class="ps-label">Conference speakers</div>
+        </div>
+        <div>
+          <div class="ps-num">6</div>
+          <div class="ps-label">Industry tracks</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- GLSMG -->
+    <div class="pillar pillar-glsmg">
+      <div class="pillar-glow"></div>
+      <div class="pillar-accent"></div>
+      <span class="pillar-tag">GLSMG · Public Event</span>
+      <h2>Great Lakes Science<br>&amp; Music Gathering</h2>
+      <p class="pillar-days">Friday & Saturday · Open to the Public</p>
+      <ul>
+        <li>Science presentations, keynotes &amp; demos — Friday</li>
+        <li>8 music stages across North Coast Village — Saturday</li>
+        <li>Headliner-driven with deep underground programming</li>
+        <li>Sunrise sets on Lake Erie — no rival can match this</li>
+        <li>Science expo floor · VIP hospitality · brand village</li>
+        <li>Saturday closing fireworks over Lake Erie</li>
+      </ul>
+      <div class="pillar-stat">
+        <div>
+          <div class="ps-num">80K</div>
+          <div class="ps-label">Peak daily capacity</div>
+        </div>
+        <div>
+          <div class="ps-num">8</div>
+          <div class="ps-label">Music stages</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SCHEDULE -->
+<div id="schedule" class="schedule-section">
+  <div class="schedule-inner">
+    <div class="section-label">4-Day Program</div>
+    <h2 class="section-title reveal">The Full <em>Schedule</em></h2>
+
+    <div class="tab-nav reveal">
+      <button class="tab-btn active" onclick="switchTab('wed',this)">
+        <div class="tab-day">Wednesday</div>
+        <div class="tab-name">MMC Day 1</div>
+        <div class="tab-type">Industry Conference</div>
+        <div class="tab-indicator"></div>
+      </button>
+      <button class="tab-btn" onclick="switchTab('thu',this)">
+        <div class="tab-day">Thursday</div>
+        <div class="tab-name">MMC Day 2</div>
+        <div class="tab-type">Industry Conference</div>
+        <div class="tab-indicator"></div>
+      </button>
+      <button class="tab-btn" onclick="switchTab('fri',this)">
+        <div class="tab-day">Friday</div>
+        <div class="tab-name">GLSMG Science Day</div>
+        <div class="tab-type">Science &amp; Innovation</div>
+        <div class="tab-indicator"></div>
+      </button>
+      <button class="tab-btn" onclick="switchTab('sat',this)">
+        <div class="tab-day">Saturday</div>
+        <div class="tab-name">GLSMG Music Day</div>
+        <div class="tab-type">Live Music Festival</div>
+        <div class="tab-indicator"></div>
+      </button>
+    </div>
+
+    <div id="tab-wed" class="tab-panel active">
+      <div class="schedule-grid" style="border-top-color:var(--navy-light);">
+        <div class="sched-row"><div class="sched-time">8:00 AM</div><div class="sched-event"><div class="sched-event-title">Registration &amp; badge pickup opens</div><div class="sched-event-sub">Huntington Convention Center · Industry credential check-in</div></div></div>
+        <div class="sched-row"><div class="sched-time">10:00 AM</div><div class="sched-event"><div class="sched-event-title">MMC Opening Keynote: The Midwest Sound — Past, Present &amp; Global Future</div><div class="sched-event-sub">Main ballroom · Keynote address + panel discussion</div></div></div>
+        <div class="sched-row"><div class="sched-time">12:00 PM</div><div class="sched-event"><div class="sched-event-title">Lunch networking &amp; gear expo floor opens</div><div class="sched-event-sub">Exhibition hall · Hardware, software &amp; music tech demos begin</div></div></div>
+        <div class="sched-row"><div class="sched-time">2:00 PM</div><div class="sched-event"><div class="sched-event-title">Afternoon panels: Business, Technology &amp; Culture tracks</div><div class="sched-event-sub">Breakout rooms · Label deals · Streaming economics · Midwest legacy</div></div></div>
+        <div class="sched-row"><div class="sched-time">5:00 PM</div><div class="sched-event"><div class="sched-event-title">A&amp;R Showcase — emerging Midwest artists</div><div class="sched-event-sub">Industry buyers, booking agents &amp; label reps invited</div></div></div>
+        <div class="sched-row"><div class="sched-time">7:00 PM</div><div class="sched-event"><div class="sched-event-title">MMC Welcome Reception — Skyline Rooftop, North Coast Village</div><div class="sched-event-sub">Networking reception · Lake Erie views · Badge required</div></div></div>
+      </div>
+    </div>
+
+    <div id="tab-thu" class="tab-panel">
+      <div class="schedule-grid" style="border-top-color:var(--navy-mid);">
+        <div class="sched-row"><div class="sched-time">9:00 AM</div><div class="sched-event"><div class="sched-event-title">Full conference day — all 6 tracks, panels &amp; workshops</div><div class="sched-event-sub">Education · Policy &amp; Equity · Innovation · Artist Dev · Business · Tech</div></div></div>
+        <div class="sched-row"><div class="sched-time">11:00 AM</div><div class="sched-event"><div class="sched-event-title">Sync licensing speed sessions &amp; label deal rooms</div><div class="sched-event-sub">One-on-one meetings · Curated matchmaking · Publishing executives</div></div></div>
+        <div class="sched-row"><div class="sched-time">1:00 PM</div><div class="sched-event"><div class="sched-event-title">Music tech demo stage &amp; startup pitch competition</div><div class="sched-event-sub">AI in music · Spatial audio · Gear innovation · Investor panel</div></div></div>
+        <div class="sched-row"><div class="sched-time">3:00 PM</div><div class="sched-event"><div class="sched-event-title">Education &amp; Advocacy tracks — artist dev &amp; equity panels</div><div class="sched-event-sub">Copyright reform · Mental health in music · Women &amp; BIPOC leadership</div></div></div>
+        <div class="sched-row"><div class="sched-time">6:00 PM</div><div class="sched-event"><div class="sched-event-title">MMC Closing Ceremony — awards &amp; industry recognition</div><div class="sched-event-sub">Midwest Music Impact Awards · Hall of Recognition induction</div></div></div>
+        <div class="sched-row"><div class="sched-time">8:00 PM</div><div class="sched-event"><div class="sched-event-title">MMC Closing Night Party — The Marina Deck</div><div class="sched-event-sub">Waterfront reception · Live sets begin · Gateway to GLSMG weekend</div></div></div>
+      </div>
+    </div>
+
+    <div id="tab-fri" class="tab-panel">
+      <div class="schedule-grid" style="border-top-color:var(--teal-bright);">
+        <div class="sched-row"><div class="sched-time">9:00 AM</div><div class="sched-event"><div class="sched-event-title">Science Expo opens — Great Lakes Science Center + Village grounds</div><div class="sched-event-sub">Partner institutions activated · CMSD &amp; Tri-C student showcase</div></div></div>
+        <div class="sched-row"><div class="sched-time">10:00 AM</div><div class="sched-event"><div class="sched-event-title">Keynote: Great Lakes Climate &amp; Innovation</div><div class="sched-event-sub">CWRU / Cleveland State University speakers · Environmental science</div></div></div>
+        <div class="sched-row"><div class="sched-time">12:00 PM</div><div class="sched-event"><div class="sched-event-title">Student science presentations — CMSD / Tri-C pipeline showcase</div><div class="sched-event-sub">K-12 &amp; community college student research · Public exhibition</div></div></div>
+        <div class="sched-row"><div class="sched-time">2:00 PM</div><div class="sched-event"><div class="sched-event-title">Demo stages: clean energy, robotics, biotech &amp; environmental science</div><div class="sched-event-sub">Interactive exhibits · Partner institution pavilions</div></div></div>
+        <div class="sched-row"><div class="sched-time">4:00 PM</div><div class="sched-event"><div class="sched-event-title">Science-meets-music panel: Sound technology, acoustics &amp; AI</div><div class="sched-event-sub">Bridge session connecting GLSMG's two pillars</div></div></div>
+        <div class="sched-row"><div class="sched-time">7:00 PM</div><div class="sched-event"><div class="sched-event-title">Opening night music sets — Marina Deck &amp; Erie Horizon Stage</div><div class="sched-event-sub">Science Day closes · Music evening begins · Lakefront atmosphere</div></div></div>
+      </div>
+    </div>
+
+    <div id="tab-sat" class="tab-panel">
+      <div class="schedule-grid" style="border-top-color:var(--teal-mid);">
+        <div class="sched-row"><div class="sched-time">12:00 PM</div><div class="sched-event"><div class="sched-event-title">All 8 music stages activate — gates open to public</div><div class="sched-event-sub">North Coast Village full footprint · General admission &amp; VIP</div></div></div>
+        <div class="sched-row"><div class="sched-time">2:00 PM</div><div class="sched-event"><div class="sched-event-title">Breakwater Stage: Hip-Hop &amp; R&amp;B programming begins</div><div class="sched-event-sub">8,000 cap · Midwest rap &amp; soul artists featured</div></div></div>
+        <div class="sched-row"><div class="sched-time">4:00 PM</div><div class="sched-event"><div class="sched-event-title">The Warehouse underground: techno &amp; house programming</div><div class="sched-event-sub">5,000 cap · Detroit &amp; Chicago legacy honored</div></div></div>
+        <div class="sched-row"><div class="sched-time">7:00 PM</div><div class="sched-event"><div class="sched-event-title">Lake Erie Main Stage: headliner sets begin</div><div class="sched-event-sub">50,000 capacity · Lakefront facing · World-class production</div></div></div>
+        <div class="sched-row"><div class="sched-time">10:00 PM</div><div class="sched-event"><div class="sched-event-title">Closing headliner — Lake Erie Main Stage</div><div class="sched-event-sub">Sunrise set option · Waterfront spectacle · 50K on the lakefront</div></div></div>
+        <div class="sched-row"><div class="sched-time">Midnight</div><div class="sched-event"><div class="sched-event-title">Closing fireworks over Lake Erie</div><div class="sched-event-sub">Visible from downtown Cleveland · Annual signature moment</div></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SCALE STATS -->
+<section id="stats">
+  <div class="section-label">The Numbers</div>
+  <h2 class="section-title reveal">Scale at a <em>Glance</em></h2>
+  <div class="stats-grid reveal">
+    <div class="stat-card"><div class="stat-num">4</div><div class="stat-label">Event Days</div></div>
+    <div class="stat-card"><div class="stat-num">80K</div><div class="stat-label">Peak Daily Attendance</div></div>
+    <div class="stat-card"><div class="stat-num">8</div><div class="stat-label">Music Stages</div></div>
+    <div class="stat-card"><div class="stat-num">150+</div><div class="stat-label">Performing Artists</div></div>
+    <div class="stat-card"><div class="stat-num">250+</div><div class="stat-label">Conference Speakers</div></div>
+    <div class="stat-card"><div class="stat-num">30+</div><div class="stat-label">States Represented</div></div>
+    <div class="stat-card"><div class="stat-num">$45M</div><div class="stat-label">Est. Year 1 Economic Impact</div></div>
+    <div class="stat-card"><div class="stat-num">22M</div><div class="stat-label">People Within 5-Hour Drive</div></div>
+  </div>
+</section>
+
+<!-- STAGES -->
+<div style="background:var(--bg2);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:6rem 2.5rem;">
+  <div style="max-width:1200px;margin:0 auto;">
+    <div class="section-label">GLSMG Saturday</div>
+    <h2 class="section-title reveal">8 Stages. <em>Total Sonic Immersion.</em></h2>
+    <div class="stages-grid reveal">
+      <div class="stage-row">
+        <div class="stage-info">
+          <div class="stage-dot" style="background:#1D9E75;"></div>
+          <div><div class="stage-name">Lake Erie Main Stage</div><div class="stage-genre">EDM · Pop · Headliners · Lakefront facing</div></div>
+        </div>
+        <div class="stage-bar-wrap"><div class="stage-bar-fill" style="width:100%;background:#1D9E75;"></div></div>
+        <div class="stage-cap">50,000</div>
+      </div>
+      <div class="stage-row">
+        <div class="stage-info">
+          <div class="stage-dot" style="background:#185FA5;"></div>
+          <div><div class="stage-name">North Coast Mega Stage</div><div class="stage-genre">Electronic · Bass · House · Indoor/outdoor hybrid</div></div>
+        </div>
+        <div class="stage-bar-wrap"><div class="stage-bar-fill" style="width:50%;background:#185FA5;"></div></div>
+        <div class="stage-cap">25,000</div>
+      </div>
+      <div class="stage-row">
+        <div class="stage-info">
+          <div class="stage-dot" style="background:#C0392B;"></div>
+          <div><div class="stage-name">Breakwater Stage</div><div class="stage-genre">Hip-Hop · R&amp;B · Trap · Midwest rap</div></div>
+        </div>
+        <div class="stage-bar-wrap"><div class="stage-bar-fill" style="width:16%;background:#C0392B;"></div></div>
+        <div class="stage-cap">8,000</div>
+      </div>
+      <div class="stage-row">
+        <div class="stage-info">
+          <div class="stage-dot" style="background:#C0397C;"></div>
+          <div><div class="stage-name">Erie Horizon Stage</div><div class="stage-genre">Indie · Alt · Midwest Emo · Alternative</div></div>
+        </div>
+        <div class="stage-bar-wrap"><div class="stage-bar-fill" style="width:12%;background:#C0397C;"></div></div>
+        <div class="stage-cap">6,000</div>
+      </div>
+      <div class="stage-row">
+        <div class="stage-info">
+          <div class="stage-dot" style="background:#534AB7;"></div>
+          <div><div class="stage-name">The Warehouse (Underground)</div><div class="stage-genre">Techno · Dark House · Experimental · Club format</div></div>
+        </div>
+        <div class="stage-bar-wrap"><div class="stage-bar-fill" style="width:10%;background:#534AB7;"></div></div>
+        <div class="stage-cap">5,000</div>
+      </div>
+      <div class="stage-row">
+        <div class="stage-info">
+          <div class="stage-dot" style="background:#B8700A;"></div>
+          <div><div class="stage-name">The Marina Deck</div><div class="stage-genre">Ambient · Downtempo · Lounge · Harbor pier</div></div>
+        </div>
+        <div class="stage-bar-wrap"><div class="stage-bar-fill" style="width:6%;background:#B8700A;"></div></div>
+        <div class="stage-cap">3,000</div>
+      </div>
+      <div class="stage-row">
+        <div class="stage-info">
+          <div class="stage-dot" style="background:#3B6D11;"></div>
+          <div><div class="stage-name">Skyline Rooftop</div><div class="stage-genre">VIP · Label events · Curated programming</div></div>
+        </div>
+        <div class="stage-bar-wrap"><div class="stage-bar-fill" style="width:3%;background:#3B6D11;"></div></div>
+        <div class="stage-cap">1,500</div>
+      </div>
+      <div class="stage-row">
+        <div class="stage-info">
+          <div class="stage-dot" style="background:#64748B;"></div>
+          <div><div class="stage-name">The Cuyahoga Club</div><div class="stage-genre">Invite-only · MMC artist lounge · Credentialed</div></div>
+        </div>
+        <div class="stage-bar-wrap"><div class="stage-bar-fill" style="width:1%;background:#64748B;"></div></div>
+        <div class="stage-cap">500</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SITE PLAN -->
+<div id="site-plan" class="site-plan-section">
+  <div class="site-plan-inner">
+    <div class="section-label">Preliminary Site Plan</div>
+    <h2 class="section-title reveal">North Coast Village — <em>Event Footprint</em></h2>
+    <p class="reveal" style="color:var(--muted);max-width:640px;font-size:.92rem;line-height:1.7;margin-bottom:0;">
+      The Rock &amp; Roll Hall of Fame, Great Lakes Science Center, and the soon-to-be-redeveloped Huntington Bank Ballpark site create a continuous event corridor from W. 3rd to E. 9th Street along the lakefront. Hover over zones to explore.
+    </p>
+
+    <div class="site-map-wrapper reveal">
+      <div class="site-map" id="siteMap">
+        <!-- Lake Erie -->
+        <div class="map-lake">
+          <span class="lake-label">LAKE &nbsp; ERIE</span>
+        </div>
+
+        <!-- Waterfront promenade -->
+        <div class="map-waterfront">
+          <span class="waterfront-label">Waterfront Promenade · North Coast Harbor</span>
+        </div>
+
+        <!-- Land mass -->
+        <div class="map-land"></div>
+
+        <!-- Landmark: Rock Hall (far west, lakefront) -->
+        <div class="map-zone" style="left:3%;top:22%;width:17%;height:19%;background:rgba(27,58,107,.85);border:2px solid #F5C842;"
+          onmouseenter="showTip(event,'Rock &amp; Roll Hall of Fame','Existing landmark · West lakefront anchor · MMC cultural programming partner · Opening night host venue')"
+          onmouseleave="hideTip()">
+          <div class="map-zone-key" style="color:#F5C842;">★</div>
+          <div class="map-zone-name" style="color:#F5C842;">Rock &amp; Roll<br>Hall of Fame</div>
+        </div>
+
+        <!-- Landmark: Science Center -->
+        <div class="map-zone" style="left:22%;top:22%;width:17%;height:19%;background:rgba(4,52,44,.85);border:2px solid #1D9E75;"
+          onmouseenter="showTip(event,'Great Lakes Science Center','Existing landmark · Science Expo home on Friday · CWRU &amp; CSU keynote venue · Student showcase pavilion')"
+          onmouseleave="hideTip()">
+          <div class="map-zone-key" style="color:#9FE1CB;">★</div>
+          <div class="map-zone-name" style="color:#9FE1CB;">Great Lakes<br>Science Center</div>
+        </div>
+
+        <!-- Landmark: Stadium (dashed, future) -->
+        <div class="map-zone" style="left:41%;top:18%;width:35%;height:26%;background:rgba(139,120,64,.25);border:2px dashed #C8951A;"
+          onmouseenter="showTip(event,'Huntington Bank Ballpark','Stadium removed 2030 · Future event field &amp; development corridor · Expands MMC/GLSMG footprint significantly from Year 2')"
+          onmouseleave="hideTip()">
+          <div class="map-zone-key" style="color:#C8951A;font-size:.8rem;">◇ 2030</div>
+          <div class="map-zone-name" style="color:#C8951A;">Huntington Bank Ballpark<br>→ Future Event Field</div>
+        </div>
+
+        <!-- Zone A: Main Stage (lakefront center, in water zone) -->
+        <div class="map-zone" style="left:21%;top:8%;width:19%;height:12%;background:rgba(29,158,117,.7);border:1px solid #1D9E75;"
+          onmouseenter="showTip(event,'A · Lake Erie Main Stage','50,000 capacity · Lakefront facing · Saturday headliners · Sunrise &amp; sunset sets on the water')"
+          onmouseleave="hideTip()">
+          <div class="map-zone-key">A</div>
+          <div class="map-zone-name">Main Stage 50K</div>
+        </div>
+
+        <!-- Zone B: Mega Stage (west grounds) -->
+        <div class="map-zone" style="left:3%;top:45%;width:17%;height:15%;background:rgba(43,91,168,.7);border:1px solid #185FA5;"
+          onmouseenter="showTip(event,'B · North Coast Mega Stage','25,000 capacity · Indoor/outdoor hybrid · Electronic &amp; bass music focus')"
+          onmouseleave="hideTip()">
+          <div class="map-zone-key">B</div>
+          <div class="map-zone-name">Mega Stage 25K</div>
+        </div>
+
+        <!-- Zone C: Warehouse (underground, west) -->
+        <div class="map-zone" style="left:3%;top:65%;width:14%;height:13%;background:rgba(83,74,183,.7);border:1px solid #534AB7;"
+          onmouseenter="showTip(event,'C · The Warehouse','5,000 capacity · Club format · Detroit techno &amp; Chicago house · Indoor underground venue')"
+          onmouseleave="hideTip()">
+          <div class="map-zone-key">C</div>
+          <div class="map-zone-name">Warehouse 5K</div>
+        </div>
+
+        <!-- Zone D: Science Expo (at Science Center, Fri) -->
+        <div class="map-zone" style="left:22%;top:45%;width:17%;height:15%;background:rgba(4,52,44,.8);border:2px solid #F5C842;"
+          onmouseenter="showTip(event,'D · Science Expo (Friday)','Great Lakes Science Center grounds · Student &amp; institutional presentations · CMSD / Tri-C / CSU / CWRU')"
+          onmouseleave="hideTip()">
+          <div class="map-zone-key" style="color:#F5C842;">D</div>
+          <div class="map-zone-name" style="color:#F5C842;">Science Expo<br>Friday Only</div>
+        </div>
+
+        <!-- Zone E: Breakwater Stage -->
+        <div class="map-zone" style="left:41%;top:45%;width:16%;height:14%;background:rgba(192,57,43,.7);border:1px solid #C0392B;"
+          onmouseenter="showTip(event,'E · Breakwater Stage','8,000 capacity · Hip-Hop, R&amp;B &amp; Trap · Midwest rap &amp; soul focus · Waterfront facing')"
+          onmouseleave="hideTip()">
+          <div class="map-zone-key">E</div>
+          <div class="map-zone-name">Breakwater 8K</div>
+        </div>
+
+        <!-- Zone F: Erie Horizon Stage -->
+        <div class="map-zone" style="left:22%;top:63%;width:17%;height:12%;background:rgba(192,57,124,.7);border:1px solid #C0397C;"
+          onmouseenter="showTip(event,'F · Erie Horizon Stage','6,000 capacity · Indie, Alt &amp; Midwest Emo · Discovery programming')"
+          onmouseleave="hideTip()">
+          <div class="map-zone-key">F</div>
+          <div class="map-zone-name">Erie Horizon 6K</div>
+        </div>
+
+        <!-- Zone G: Marina Deck -->
+        <div class="map-zone" style="left:41%;top:63%;width:14%;height:12%;background:rgba(184,112,10,.7);border:1px solid #B8700A;"
+          onmouseenter="showTip(event,'G · The Marina Deck','3,000 capacity · Harbor pier location · Ambient, Downtempo &amp; Lounge · Daytime atmosphere')"
+          onmouseleave="hideTip()">
+          <div class="map-zone-key">G</div>
+          <div class="map-zone-name">Marina Deck 3K</div>
+        </div>
+
+        <!-- Zone H: MMC Hub (bottom bar) -->
+        <div class="map-zone" style="left:3%;top:82%;width:74%;height:11%;background:rgba(27,58,107,.7);border:1px solid #F5C842;"
+          onmouseenter="showTip(event,'H · Huntington Convention Center','MMC Conference Hub · Wednesday &amp; Thursday · 1.8M sq ft · Attached hotel corridor · Walkable to all North Coast sites')"
+          onmouseleave="hideTip()">
+          <div class="map-zone-key" style="color:#F5C842;font-size:.8rem;">H</div>
+          <div class="map-zone-name" style="color:#F5C842;">Huntington Convention Center — MMC Hub (Wed/Thu)</div>
+        </div>
+
+        <!-- Parking strip -->
+        <div style="position:absolute;left:3%;top:77%;width:74%;height:4%;background:rgba(100,100,100,.2);border:1px solid rgba(100,100,100,.3);display:flex;align-items:center;justify-content:center;">
+          <span style="font-family:var(--font-mono);font-size:.45rem;letter-spacing:.1em;color:var(--muted);text-transform:uppercase;">Parking · RTA / Transit · W. 3rd St · E. 9th St · Memorial Shoreway</span>
+        </div>
+
+        <!-- North arrow -->
+        <div class="map-north">
+          <span style="font-size:.9rem;font-weight:900;">N</span>
+          <span>↑</span>
+        </div>
+
+        <!-- Tooltip -->
+        <div class="map-tooltip" id="mapTooltip"></div>
+      </div>
+
+      <!-- Legend -->
+      <div class="map-legend" style="margin-top:1.2rem;">
+        <div class="legend-item"><div class="legend-dot" style="background:#1B3A6B;border:1px solid #F5C842;"></div><div class="legend-text"><strong style="color:var(--white)">★ Rock &amp; Roll Hall of Fame</strong><br>Existing landmark</div></div>
+        <div class="legend-item"><div class="legend-dot" style="background:#04342C;border:1px solid #1D9E75;"></div><div class="legend-text"><strong style="color:var(--white)">★ Great Lakes Science Center</strong><br>Existing landmark</div></div>
+        <div class="legend-item"><div class="legend-dot" style="background:#8B7840;border:1px dashed #C8951A;"></div><div class="legend-text"><strong style="color:var(--white)">◇ Ballpark Site</strong><br>Removed 2030 → Future field</div></div>
+        <div class="legend-item"><div class="legend-dot" style="background:#1D9E75;"></div><div class="legend-text"><strong style="color:var(--white)">A Lake Erie Main Stage</strong><br>50,000 cap</div></div>
+        <div class="legend-item"><div class="legend-dot" style="background:#185FA5;"></div><div class="legend-text"><strong style="color:var(--white)">B North Coast Mega Stage</strong><br>25,000 cap</div></div>
+        <div class="legend-item"><div class="legend-dot" style="background:#534AB7;"></div><div class="legend-text"><strong style="color:var(--white)">C The Warehouse</strong><br>5,000 cap · Underground</div></div>
+        <div class="legend-item"><div class="legend-dot" style="background:#04342C;border:1px solid #F5C842;"></div><div class="legend-text"><strong style="color:var(--white)">D Science Expo (Fri)</strong><br>Great Lakes Science Center</div></div>
+        <div class="legend-item"><div class="legend-dot" style="background:#C0392B;"></div><div class="legend-text"><strong style="color:var(--white)">E Breakwater Stage</strong><br>8,000 cap</div></div>
+        <div class="legend-item"><div class="legend-dot" style="background:#C0397C;"></div><div class="legend-text"><strong style="color:var(--white)">F Erie Horizon Stage</strong><br>6,000 cap</div></div>
+        <div class="legend-item"><div class="legend-dot" style="background:#B8700A;"></div><div class="legend-text"><strong style="color:var(--white)">G Marina Deck</strong><br>3,000 cap · Harbor pier</div></div>
+        <div class="legend-item"><div class="legend-dot" style="background:#1B3A6B;border:1px solid #F5C842;"></div><div class="legend-text"><strong style="color:var(--white)">H Huntington Conv. Ctr</strong><br>MMC Hub — Wed &amp; Thu</div></div>
+      </div>
+
+      <p style="font-family:var(--font-mono);font-size:.6rem;color:var(--muted);margin-top:.8rem;letter-spacing:.08em;">
+        Schematic — not to scale · Stadium site shown as future development post-2030 · Subject to engineering &amp; city review
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- NORTH COAST LANDMARKS -->
+<section>
+  <div class="section-label">Venue Anchors</div>
+  <h2 class="section-title reveal">The <em>North Coast</em> Landmark Corridor</h2>
+  <p class="reveal" style="color:var(--muted);max-width:640px;font-size:.92rem;line-height:1.7;">
+    Three iconic institutions on one lakefront campus — each playing a distinct role in the MMC and GLSMG experience.
+  </p>
+  <div class="landmarks-grid">
+    <div class="landmark-card rock-hall reveal">
+      <span class="landmark-badge">MMC Cultural Partner</span>
+      <h3>Rock &amp; Roll Hall of Fame</h3>
+      <p>Existing lakefront landmark and the natural home for MMC's cultural programming. The opening night reception, Midwest legacy exhibitions, and the Wednesday evening host venue. A symbol of everything Cleveland has given the world musically.</p>
+    </div>
+    <div class="landmark-card science reveal" style="transition-delay:.1s">
+      <span class="landmark-badge">GLSMG Friday Anchor</span>
+      <h3>Great Lakes Science Center</h3>
+      <p>The Science Center grounds host the GLSMG's Friday science expo, student showcases, and institutional keynotes. Partner institutions — CWRU, Cleveland State, Tri-C, and CMSD — activate their pavilions across the Science Center campus.</p>
+    </div>
+    <div class="landmark-card stadium reveal" style="transition-delay:.2s">
+      <span class="landmark-badge">Future Development · Post-2030</span>
+      <h3>Huntington Bank Ballpark Site</h3>
+      <p>Home of the Cleveland Guardians until stadium removal in 2030. The cleared site creates a massive new event field adjacent to the Rock Hall and Science Center — doubling the available event footprint for MMC/GLSMG from Year 2 or 3 onward.</p>
+      <div class="landmark-2030">★ Stadium removed 2030 — Future event field + development opportunity</div>
+    </div>
+  </div>
+</section>
+
+<!-- WHY CLEVELAND -->
+<div style="background:var(--bg2);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:6rem 2.5rem;">
+  <div style="max-width:1200px;margin:0 auto;">
+    <div class="section-label">Competitive Advantage</div>
+    <h2 class="section-title reveal">Why <em>Cleveland Wins</em></h2>
+    <div class="venue-grid reveal">
+      <div class="venue-card">
+        <div class="venue-icon">🗺️</div>
+        <h4>22M People Within 5 Hours</h4>
+        <p>The largest drive-in catchment area of any major US music market. Detroit, Pittsburgh, Columbus, Cincinnati, and Toronto all within reach.</p>
+      </div>
+      <div class="venue-card">
+        <div class="venue-icon">🌊</div>
+        <h4>Lake Erie Waterfront</h4>
+        <p>Sunrise and sunset sets on the water — a visual and sonic signature rivals cannot copy. The closing fireworks over Lake Erie are a moment Ultra and WMC simply cannot replicate.</p>
+      </div>
+      <div class="venue-card">
+        <div class="venue-icon">🏟️</div>
+        <h4>Huntington Convention Center</h4>
+        <p>1.8M sq ft convention facility for MMC — walkable from all North Coast Village sites. Attached directly to the Hilton Cleveland Downtown.</p>
+      </div>
+      <div class="venue-card">
+        <div class="venue-icon">🏨</div>
+        <h4>13,000 Hotel Rooms</h4>
+        <p>Downtown Cleveland within walking distance of all venues. The hotel corridor along E. 4th and E. 9th streets fully supports peak-weekend demand.</p>
+      </div>
+      <div class="venue-card">
+        <div class="venue-icon">☀️</div>
+        <h4>Peak Summer Climate</h4>
+        <p>Late July averages 82°F in Cleveland — ideal outdoor festival weather with a cooling lake breeze. Far more comfortable than Miami in March.</p>
+      </div>
+      <div class="venue-card">
+        <div class="venue-icon">🎸</div>
+        <h4>Midwest Cultural Heritage</h4>
+        <p>Cleveland is the rock capital of America. Detroit techno and Chicago house are 90 minutes away. This event honors the music that actually built global culture.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ECONOMIC IMPACT -->
+<div id="impact" class="econ-section">
+  <div class="econ-inner">
+    <div class="section-label">Economic Impact</div>
+    <h2 class="section-title reveal">$45M+ <em>Year 1</em> Projected Impact</h2>
+    <div class="econ-hero">
+      <div class="econ-number">$45M+</div>
+      <div class="econ-sub">Estimated Year 1 direct economic impact for the City of Cleveland and Cuyahoga County</div>
+    </div>
+    <div class="econ-bars reveal" id="econBars">
+      <div class="econ-bar-row"><div class="econ-bar-label">Venue &amp; Ticketing</div><div class="econ-bar-track"><div class="econ-bar-fill" style="--w:92%" data-pct="0.92"></div></div><div class="econ-bar-val">$12.5M</div></div>
+      <div class="econ-bar-row"><div class="econ-bar-label">Sponsorships</div><div class="econ-bar-track"><div class="econ-bar-fill" style="--w:53%" data-pct="0.53"></div></div><div class="econ-bar-val">$7.2M</div></div>
+      <div class="econ-bar-row"><div class="econ-bar-label">Hotel / Lodging</div><div class="econ-bar-track"><div class="econ-bar-fill" style="--w:67%" data-pct="0.67"></div></div><div class="econ-bar-val">$9.2M</div></div>
+      <div class="econ-bar-row"><div class="econ-bar-label">Food &amp; Beverage</div><div class="econ-bar-track"><div class="econ-bar-fill" style="--w:57%" data-pct="0.57"></div></div><div class="econ-bar-val">$7.8M</div></div>
+      <div class="econ-bar-row"><div class="econ-bar-label">Retail &amp; Shopping</div><div class="econ-bar-track"><div class="econ-bar-fill" style="--w:33%" data-pct="0.33"></div></div><div class="econ-bar-val">$4.5M</div></div>
+      <div class="econ-bar-row"><div class="econ-bar-label">Transportation</div><div class="econ-bar-track"><div class="econ-bar-fill" style="--w:28%" data-pct="0.28"></div></div><div class="econ-bar-val">$3.8M</div></div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);border:1px solid var(--border);margin-top:3rem;" class="reveal">
+      <div style="background:rgba(0,0,0,.3);padding:1.5rem;text-align:center;">
+        <div style="font-family:var(--font-display);font-size:2rem;font-weight:900;color:var(--teal-light);">1,000+</div>
+        <div style="font-size:.78rem;color:var(--muted);margin-top:.3rem;">Hotel room nights per event weekend</div>
+      </div>
+      <div style="background:rgba(0,0,0,.3);padding:1.5rem;text-align:center;">
+        <div style="font-family:var(--font-display);font-size:2rem;font-weight:900;color:var(--teal-light);">300+</div>
+        <div style="font-size:.78rem;color:var(--muted);margin-top:.3rem;">Direct &amp; indirect jobs created</div>
+      </div>
+      <div style="background:rgba(0,0,0,.3);padding:1.5rem;text-align:center;">
+        <div style="font-family:var(--font-display);font-size:2rem;font-weight:900;color:var(--teal-light);">50M+</div>
+        <div style="font-size:.78rem;color:var(--muted);margin-top:.3rem;">Media impressions Year 1 projection</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MMC CONFERENCE TRACKS -->
+<section>
+  <div class="section-label">MMC Programming</div>
+  <h2 class="section-title reveal">Six Tracks. <em>Every Side</em> of the Industry.</h2>
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);border:1px solid var(--border);margin-top:2.5rem;" class="reveal">
+    <div style="background:var(--bg);padding:1.8rem;transition:background .2s;" onmouseenter="this.style.background='var(--surface)'" onmouseleave="this.style.background='var(--bg)'">
+      <div style="font-family:var(--font-mono);font-size:.62rem;letter-spacing:.15em;text-transform:uppercase;color:var(--navy-light);margin-bottom:.6rem;">Business</div>
+      <h4 style="font-family:var(--font-display);font-size:1.05rem;font-weight:700;margin-bottom:.5rem;color:var(--white);">Industry &amp; Commerce</h4>
+      <p style="font-size:.83rem;color:var(--muted);line-height:1.55;">Label deals · Sync licensing · Publishing · Streaming economics · Tour finance · Artist management</p>
+    </div>
+    <div style="background:var(--bg);padding:1.8rem;transition:background .2s;" onmouseenter="this.style.background='var(--surface)'" onmouseleave="this.style.background='var(--bg)'">
+      <div style="font-family:var(--font-mono);font-size:.62rem;letter-spacing:.15em;text-transform:uppercase;color:var(--teal-bright);margin-bottom:.6rem;">Technology</div>
+      <h4 style="font-family:var(--font-display);font-size:1.05rem;font-weight:700;margin-bottom:.5rem;color:var(--white);">Music Tech &amp; Production</h4>
+      <p style="font-size:.83rem;color:var(--muted);line-height:1.55;">AI in music · Spatial audio · Hardware demos · Studio workflow · Live sound innovation</p>
+    </div>
+    <div style="background:var(--bg);padding:1.8rem;transition:background .2s;" onmouseenter="this.style.background='var(--surface)'" onmouseleave="this.style.background='var(--bg)'">
+      <div style="font-family:var(--font-mono);font-size:.62rem;letter-spacing:.15em;text-transform:uppercase;color:#7F77DD;margin-bottom:.6rem;">Culture</div>
+      <h4 style="font-family:var(--font-display);font-size:1.05rem;font-weight:700;margin-bottom:.5rem;color:var(--white);">Midwest Sound &amp; Legacy</h4>
+      <p style="font-size:.83rem;color:var(--muted);line-height:1.55;">Detroit techno · Chicago house · Ohio hip-hop · Rock roots · Global influence mapping</p>
+    </div>
+    <div style="background:var(--bg);padding:1.8rem;transition:background .2s;" onmouseenter="this.style.background='var(--surface)'" onmouseleave="this.style.background='var(--bg)'">
+      <div style="font-family:var(--font-mono);font-size:.62rem;letter-spacing:.15em;text-transform:uppercase;color:var(--gold);margin-bottom:.6rem;">Education</div>
+      <h4 style="font-family:var(--font-display);font-size:1.05rem;font-weight:700;margin-bottom:.5rem;color:var(--white);">Artist Development</h4>
+      <p style="font-size:.83rem;color:var(--muted);line-height:1.55;">Booking · Personal branding · Social strategy · Mental health · Independent releases · Career longevity</p>
+    </div>
+    <div style="background:var(--bg);padding:1.8rem;transition:background .2s;" onmouseenter="this.style.background='var(--surface)'" onmouseleave="this.style.background='var(--bg)'">
+      <div style="font-family:var(--font-mono);font-size:.62rem;letter-spacing:.15em;text-transform:uppercase;color:#C0392B;margin-bottom:.6rem;">Policy</div>
+      <h4 style="font-family:var(--font-display);font-size:1.05rem;font-weight:700;margin-bottom:.5rem;color:var(--white);">Advocacy &amp; Equity</h4>
+      <p style="font-size:.83rem;color:var(--muted);line-height:1.55;">Copyright reform · Venue rights · BIPOC &amp; women in music · Community impact · Union labor</p>
+    </div>
+    <div style="background:var(--bg);padding:1.8rem;transition:background .2s;" onmouseenter="this.style.background='var(--surface)'" onmouseleave="this.style.background='var(--bg)'">
+      <div style="font-family:var(--font-mono);font-size:.62rem;letter-spacing:.15em;text-transform:uppercase;color:#C0397C;margin-bottom:.6rem;">Innovation</div>
+      <h4 style="font-family:var(--font-display);font-size:1.05rem;font-weight:700;margin-bottom:.5rem;color:var(--white);">New Frontiers</h4>
+      <p style="font-size:.83rem;color:var(--muted);line-height:1.55;">Immersive live experience · AR/VR concerts · Fan engagement platforms · Web3 in music</p>
+    </div>
+  </div>
+</section>
+
+<!-- COMMUNITY PARTNERSHIPS -->
+<div style="background:var(--bg2);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:6rem 2.5rem;">
+  <div style="max-width:1200px;margin:0 auto;">
+    <div class="section-label">Cleveland Institutions</div>
+    <h2 class="section-title reveal">Community &amp; <em>Educational Partners</em></h2>
+    <div class="partners-grid reveal">
+      <div class="partner-card">
+        <div class="partner-role">GLSMG Science Day · Student Pipeline</div>
+        <h4>Cleveland Metropolitan School District (CMSD)</h4>
+        <p>Student science showcase, GLSMG Friday pipeline program, and music pathway youth showcase. Field trip facilitation and curriculum tie-ins.</p>
+      </div>
+      <div class="partner-card">
+        <div class="partner-role">Workforce Pipeline · Sound Tech</div>
+        <h4>Cuyahoga Community College (Tri-C)</h4>
+        <p>Workforce pipeline, sound technology and music business curriculum tie-in, volunteer coordination, and student presenter opportunities.</p>
+      </div>
+      <div class="partner-card">
+        <div class="partner-role">Science Keynotes · Research Exhibition</div>
+        <h4>Cleveland State University</h4>
+        <p>GLSMG science track keynote speakers, research exhibition, and Great Lakes environmental science focus throughout Friday programming.</p>
+      </div>
+      <div class="partner-card">
+        <div class="partner-role">Science Co-Curator · Innovation</div>
+        <h4>Case Western Reserve University (CWRU)</h4>
+        <p>GLSMG science track co-curator, biotech and engineering demo stages, and innovation showcase across the Science Center grounds.</p>
+      </div>
+      <div class="partner-card">
+        <div class="partner-role">MMC Cultural Programming</div>
+        <h4>Rock &amp; Roll Hall of Fame</h4>
+        <p>MMC cultural programming partner, Midwest legacy exhibit integration, and opening night host venue for the Wednesday welcome reception.</p>
+      </div>
+      <div class="partner-card">
+        <div class="partner-role">MMC Primary Conference Venue</div>
+        <h4>Huntington Convention Center</h4>
+        <p>Primary MMC venue for Wednesday and Thursday — 1.8M sq ft facility directly attached to the Hilton Cleveland Downtown, walkable to all North Coast sites.</p>
+      </div>
+    </div>
+    <div style="margin-top:2rem;padding:1rem 1.5rem;background:rgba(27,58,107,.3);border:1px solid rgba(245,200,66,.2);font-size:.88rem;color:var(--gold-light);" class="reveal">
+      ★ MMC/GLSMG commits to a minimum 40% local vendor, contractor, and staffing spend — prioritizing Cleveland-based businesses and workforce.
+    </div>
+  </div>
+</div>
+
+<!-- TIMELINE -->
+<section id="timeline">
+  <div class="section-label">Road to Inaugural</div>
+  <h2 class="section-title reveal">Development <em>Timeline</em></h2>
+  <p class="reveal" style="color:var(--muted);max-width:560px;font-size:.92rem;line-height:1.7;">From city presentation to inaugural event — a 24-month path to Cleveland's biggest annual event.</p>
+  <div class="timeline reveal">
+    <div class="tl-item">
+      <div class="tl-phase">Q2 2026 — Now</div>
+      <div class="tl-title">City Presentation &amp; MOU Discussion</div>
+      <div class="tl-body">Present to City Council, Department of Economic Development, and Port Authority. Begin MOU framework for 5-year initial term.</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-phase">Q3 2026</div>
+      <div class="tl-title">Venue License Negotiation</div>
+      <div class="tl-body">North Coast Village exclusive use agreement, infrastructure capacity assessment, engineering review for power, water, and traffic management.</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-phase">Q4 2026</div>
+      <div class="tl-title">Permitting &amp; Infrastructure Planning</div>
+      <div class="tl-body">Noise ordinance variance, pyrotechnics approval, food vendor licensing, alcohol service coordination. CPD, CFD, and EMS liaison established.</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-phase">Q1 2027</div>
+      <div class="tl-title">Partnership LOIs &amp; Sponsor Commitments</div>
+      <div class="tl-body">Educational institution agreements signed. Presenting and platinum sponsor packages closed. Booking agency preferred vendor alignment.</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-phase">Q2 2027</div>
+      <div class="tl-title">Artist Booking &amp; Lineup Announcement</div>
+      <div class="tl-body">Headliner deals closed. MMC speaker roster announced. GLSMG science keynotes confirmed. Public lineup reveal and media launch.</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-phase">Q3–Q4 2027</div>
+      <div class="tl-title">Ticketing Launch &amp; Production Build</div>
+      <div class="tl-body">General admission and VIP sales open. MMC badge credentialing live. Site production build commences. Stage engineering and audio system installation.</div>
+    </div>
+    <div class="tl-item highlight">
+      <div class="tl-phase" style="color:var(--gold-light);">July 2028 — Inaugural Event</div>
+      <div class="tl-title" style="color:var(--gold-light);">MMC + GLSMG — First Annual Edition</div>
+      <div class="tl-body">Four days. 80,000 daily. The Midwest's greatest music event opens on the North Coast.</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-phase" style="color:var(--gold);">2030 — Major Expansion</div>
+      <div class="tl-title">Stadium Site Redevelopment Opens New Footprint</div>
+      <div class="tl-body">Removal of Huntington Bank Ballpark creates a massive new event field adjacent to the Rock Hall and Science Center — doubling the available grounds and enabling full Ultra-scale expansion.</div>
+    </div>
+  </div>
+</section>
+
+<!-- CLOSING CTA -->
+<div class="cta-section">
+  <div class="cta-inner">
+    <div class="cta-eyebrow">Cleveland · North Coast Village · Lake Erie</div>
+    <h2 class="cta-title">Let's put Cleveland<br><em>on the world's stage.</em></h2>
+    <p class="cta-body">The North Coast Village is the finest underdeveloped festival and convention asset in the American Midwest. With City partnership, MMC and GLSMG will establish Cleveland alongside Miami, Austin, and Las Vegas as a world-class event destination — building a legacy that grows for decades.</p>
+    <div class="cta-badges">
+      <a class="cta-badge primary" href="#">Industry Pitch Deck</a>
+      <a class="cta-badge" href="#">City of Cleveland Proposal</a>
+      <a class="cta-badge" href="#">partnerships@mmcglsmg.com</a>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-left">
+    Midwest Music Conference &amp; Great Lakes Science and Music Gathering<br>
+    Cleveland, Ohio · North Coast Village · Draft for Discussion · 2026
+  </div>
+  <div class="footer-right">
+    MMC · GLSMG · The FixOurStreets216 Project
+  </div>
+</footer>
+
+<script>
+// ── TAB SWITCHING ─────────────────────────────────────────────
+function switchTab(id, btn) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  btn.classList.add('active');
+}
+
+// ── TOOLTIP ───────────────────────────────────────────────────
+function showTip(e, title, body) {
+  const tip = document.getElementById('mapTooltip');
+  tip.innerHTML = `<strong>${title}</strong><span>${body}</span>`;
+  tip.classList.add('visible');
+  moveTip(e);
+}
+function moveTip(e) {
+  const tip = document.getElementById('mapTooltip');
+  const map = document.getElementById('siteMap');
+  const rect = map.getBoundingClientRect();
+  let x = e.clientX - rect.left + 12;
+  let y = e.clientY - rect.top + 12;
+  if (x + 210 > rect.width) x = e.clientX - rect.left - 215;
+  if (y + 100 > rect.height) y = e.clientY - rect.top - 105;
+  tip.style.left = x + 'px';
+  tip.style.top  = y + 'px';
+}
+function hideTip() {
+  document.getElementById('mapTooltip').classList.remove('visible');
+}
+document.getElementById('siteMap').addEventListener('mousemove', e => {
+  if (document.getElementById('mapTooltip').classList.contains('visible')) moveTip(e);
+});
+
+// ── SCROLL REVEAL ─────────────────────────────────────────────
+const revealEls = document.querySelectorAll('.reveal');
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+      observer.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.1 });
+revealEls.forEach(el => observer.observe(el));
+
+// ── ECON BAR ANIMATION ────────────────────────────────────────
+const econObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.querySelectorAll('.econ-bar-fill').forEach((bar, i) => {
+        setTimeout(() => bar.classList.add('animate'), i * 120);
+      });
+      econObserver.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.3 });
+const econBars = document.getElementById('econBars');
+if (econBars) econObserver.observe(econBars);
+</script>
+
+</body>
+</html>
