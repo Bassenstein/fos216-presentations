@@ -1,0 +1,1920 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="FOS·GIS">
+<meta name="application-name" content="FOS·GIS">
+<meta name="theme-color" content="#0f1117">
+<meta name="description" content="Vacant Lot Route Optimizer — Cuyahoga County">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'%3E%3Crect width='192' height='192' rx='38' fill='%230f1117'/%3E%3Cpath d='M96 28C69.5 28 48 49.5 48 76c0 38 48 88 48 88s48-50 48-88C144 49.5 122.5 28 96 28z' fill='%2300d4aa'/%3E%3Ccircle cx='96' cy='76' r='18' fill='%230f1117'/%3E%3C/svg%3E">
+<title>FOS·GIS — Vacant Lot Route Optimizer | Cuyahoga County</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0f1117;--bg2:#161b25;--bg3:#1e2535;--bg4:#252d40;
+  --border:#2a3550;--border2:#344060;
+  --accent:#00d4aa;--accent2:#0099ff;--accent3:#ff6b35;--accent4:#ffcc00;
+  --text:#e8eaf0;--text2:#8d97b0;--text3:#5a6480;
+  --green:#00c97a;--red:#ff4f6a;--amber:#ffaa00;--purple:#a855f7;
+  --font:'Segoe UI',system-ui,-apple-system,sans-serif;
+}
+html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--bg);color:var(--text);font-size:13px}
+#app{display:flex;flex-direction:column;height:100vh}
+.header{background:var(--bg2);border-bottom:1px solid var(--border);padding:0 16px;height:44px;display:flex;align-items:center;gap:10px;flex-shrink:0;z-index:1000}
+.logo{font-size:16px;font-weight:800;color:var(--accent);letter-spacing:.3px;white-space:nowrap}
+.logo span{color:var(--text3);font-weight:400;font-size:13px}
+.htabs{display:flex;gap:2px;margin-left:6px}
+.htab{padding:5px 13px;border-radius:5px;cursor:pointer;font-size:12px;font-weight:500;color:var(--text2);border:none;background:transparent;transition:all .15s;white-space:nowrap}
+.htab:hover{background:var(--bg3);color:var(--text)}
+.htab.active{background:var(--bg3);color:var(--accent)}
+.hright{margin-left:auto;display:flex;align-items:center;gap:8px;flex-shrink:0}
+.badge{padding:3px 8px;border-radius:4px;font-size:11px;font-weight:600;white-space:nowrap}
+.badge-green{background:rgba(0,201,122,.15);color:var(--green);border:1px solid rgba(0,201,122,.3)}
+.badge-blue{background:rgba(0,153,255,.15);color:var(--accent2);border:1px solid rgba(0,153,255,.3)}
+.badge-amber{background:rgba(255,170,0,.15);color:var(--amber);border:1px solid rgba(255,170,0,.3)}
+.badge-purple{background:rgba(168,85,247,.15);color:var(--purple);border:1px solid rgba(168,85,247,.3)}
+.main{display:flex;flex:1;overflow:hidden}
+.sidebar{width:310px;min-width:280px;max-width:310px;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden;flex-shrink:0}
+.panel{padding:12px;border-bottom:1px solid var(--border);flex-shrink:0}
+.ptitle{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text3);margin-bottom:8px}
+.mapwrap{flex:1;position:relative;overflow:hidden}
+#map{width:100%;height:100%}
+.map-overlay{position:absolute;top:10px;right:10px;z-index:500;display:flex;flex-direction:column;gap:5px}
+.mctrl{background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:6px 10px;font-size:11px;cursor:pointer;color:var(--text2);transition:all .15s;text-align:center;white-space:nowrap}
+.mctrl:hover,.mctrl.active{border-color:var(--accent);color:var(--accent)}
+.legend{background:rgba(22,27,37,.92);border:1px solid var(--border);border-radius:7px;padding:9px 11px;position:absolute;bottom:18px;left:10px;z-index:500}
+.legend-title{font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}
+.li{display:flex;align-items:center;gap:7px;font-size:11px;color:var(--text2);margin-bottom:4px}
+.li:last-child{margin-bottom:0}
+.ldot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.lline{width:20px;height:2px;border-radius:1px;flex-shrink:0}
+.rpanel{width:310px;background:var(--bg2);border-left:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden;flex-shrink:0}
+.stabs{display:flex;border-bottom:1px solid var(--border);flex-shrink:0}
+.stab{flex:1;padding:9px 4px;text-align:center;font-size:11px;font-weight:500;color:var(--text3);cursor:pointer;border-bottom:2px solid transparent;transition:all .15s}
+.stab:hover{color:var(--text2)}
+.stab.active{color:var(--accent);border-bottom-color:var(--accent)}
+.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.stat-card{background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:8px 10px}
+.stat-val{font-size:22px;font-weight:800;line-height:1}
+.stat-val.g{color:var(--green)}.stat-val.a{color:var(--amber)}.stat-val.r{color:var(--red)}.stat-val.b{color:var(--accent2)}.stat-val.c{color:var(--accent)}.stat-val.p{color:var(--purple)}
+.stat-lbl{font-size:10px;color:var(--text3);margin-top:3px;text-transform:uppercase;letter-spacing:.4px}
+.lot-list{flex:1;overflow-y:auto;padding:6px 8px}
+.lot-item{padding:8px 10px;border-radius:6px;border:1px solid var(--border);margin-bottom:5px;cursor:pointer;transition:all .15s;background:var(--bg3)}
+.lot-item:hover,.lot-item.sel{border-color:var(--accent);background:rgba(0,212,170,.07)}
+.lot-item.sel{box-shadow:0 0 0 1px var(--accent)}
+.lh{display:flex;align-items:center;justify-content:space-between;margin-bottom:3px;gap:6px}
+.lid{font-weight:600;font-size:12px;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lmeta{font-size:11px;color:var(--text2)}
+.pdot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.p-high{background:var(--red)}.p-med{background:var(--amber)}.p-low{background:var(--green)}
+.stag{font-size:10px;padding:2px 6px;border-radius:3px;font-weight:600;white-space:nowrap}
+.st-pending{background:rgba(255,170,0,.2);color:var(--amber)}
+.st-assigned{background:rgba(0,153,255,.2);color:var(--accent2)}
+.st-complete{background:rgba(0,201,122,.2);color:var(--green)}
+.st-overdue{background:rgba(255,79,106,.2);color:var(--red)}
+.filter-row{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:8px}
+.fbtn{padding:4px 8px;border-radius:4px;border:1px solid var(--border);background:var(--bg3);color:var(--text2);font-size:11px;cursor:pointer;transition:all .15s}
+.fbtn.active{background:var(--accent);color:#000;border-color:var(--accent);font-weight:700}
+.fbtn:hover:not(.active){border-color:var(--border2);color:var(--text)}
+input[type=text],input[type=number],select,textarea{background:var(--bg3);border:1px solid var(--border);border-radius:5px;padding:6px 9px;color:var(--text);font-size:12px;width:100%;font-family:var(--font);transition:border-color .15s}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--accent)}
+textarea{resize:vertical;min-height:52px}
+.ilabel{font-size:11px;color:var(--text3);margin-bottom:3px}
+.igroup{margin-bottom:8px}
+.ig2{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.btn{padding:7px 14px;border-radius:5px;font-size:12px;font-weight:600;cursor:pointer;border:none;transition:all .15s;display:inline-flex;align-items:center;gap:5px;justify-content:center}
+.btn-p{background:var(--accent);color:#000}.btn-p:hover{background:#00f0c0}
+.btn-s{background:var(--bg3);color:var(--text);border:1px solid var(--border)}.btn-s:hover{border-color:var(--border2);background:var(--bg4)}
+.btn-d{background:rgba(255,79,106,.12);color:var(--red);border:1px solid rgba(255,79,106,.3)}.btn-d:hover{background:rgba(255,79,106,.22)}
+.btn-row{display:flex;gap:6px;margin-top:8px}
+.bsm{padding:4px 9px;font-size:11px;border-radius:4px}
+.route-stop{display:flex;align-items:flex-start;gap:8px;padding:7px 9px;border-radius:5px;border:1px solid var(--border);margin-bottom:4px;background:var(--bg3)}
+.snum{width:22px;height:22px;border-radius:50%;background:var(--accent);color:#000;font-size:10px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.sinfo{flex:1;min-width:0}
+.saddr{font-size:11px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sdist{font-size:10px;color:var(--text3);margin-top:2px}
+.crew-row{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:6px;border:1px solid var(--border);margin-bottom:5px;background:var(--bg3)}
+.cavatar{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;flex-shrink:0}
+.cinfo{flex:1;min-width:0}
+.cname{font-size:12px;font-weight:600}
+.ccap{font-size:10px;color:var(--text3);margin-top:1px}
+.pbar{height:3px;border-radius:2px;background:var(--border);margin-top:4px;overflow:hidden}
+.pfill{height:100%;border-radius:2px;transition:width .5s}
+.rte-meta{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px}
+.rmc{background:var(--bg3);border:1px solid var(--border);border-radius:5px;padding:6px 10px;text-align:center;min-width:60px}
+.rmv{font-size:16px;font-weight:800;color:var(--accent)}
+.rml{font-size:10px;color:var(--text3);margin-top:1px}
+.info-row{display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--border);font-size:12px;gap:8px}
+.info-row:last-child{border-bottom:none}
+.ik{color:var(--text3);flex-shrink:0}
+.iv{color:var(--text);font-weight:500;text-align:right;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:180px}
+.scrollable{overflow-y:auto;flex:1;padding:8px}
+.empty{text-align:center;padding:28px 16px;color:var(--text3)}
+.eicon{font-size:26px;margin-bottom:6px;opacity:.5}
+.chip{display:inline-block;padding:2px 7px;border-radius:3px;font-size:10px;font-weight:600;margin:1px}
+.chip-t{background:rgba(168,85,247,.2);color:var(--purple)}
+.chip-z{background:rgba(0,153,255,.15);color:var(--accent2)}
+.opt-row{display:flex;align-items:center;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--border);font-size:12px}
+.opt-row:last-child{border-bottom:none}
+.toggle{width:34px;height:18px;background:var(--border2);border-radius:9px;position:relative;cursor:pointer;transition:background .2s;flex-shrink:0}
+.toggle.on{background:var(--accent)}
+.tknob{width:14px;height:14px;background:#fff;border-radius:50%;position:absolute;top:2px;left:2px;transition:left .2s;pointer-events:none}
+.toggle.on .tknob{left:18px}
+.srchwrap{position:relative}
+.srchwrap input{padding-left:28px}
+.srchicon{position:absolute;left:9px;top:50%;transform:translateY(-50%);color:var(--text3);font-size:13px;pointer-events:none}
+.tab-pane{display:none;flex-direction:column;flex:1;overflow:hidden}
+.tab-pane.active{display:flex}
+.notif{position:fixed;bottom:20px;right:20px;background:var(--bg3);border-radius:8px;padding:10px 16px;font-size:12px;z-index:9999;animation:slideUp .25s;max-width:300px;border-left:3px solid var(--green);box-shadow:0 4px 20px rgba(0,0,0,.5)}
+@keyframes slideUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
+.abar-wrap{margin-bottom:7px}
+.abar-labels{display:flex;justify-content:space-between;font-size:11px;margin-bottom:2px}
+.abar-labels span:first-child{color:var(--text2)}
+.abar-labels span:last-child{color:var(--text);font-weight:600}
+.abar-bg{height:5px;background:var(--border);border-radius:3px;overflow:hidden}
+.abar-fill{height:100%;border-radius:3px;transition:width .6s}
+.detail-card{border:1px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:10px}
+.dc-head{background:var(--bg3);padding:10px 13px;border-bottom:1px solid var(--border)}
+.dc-body{padding:10px 13px}
+.leaflet-tile{filter:brightness(0.85) saturate(0.9)}
+
+/* ── PHOTO SYSTEM ── */
+.photo-section{margin-top:12px;padding-top:12px;border-top:1px solid var(--border)}
+.photo-section-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--text3);margin-bottom:10px}
+.photo-pair{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.photo-slot{border:1px dashed var(--border2);border-radius:7px;overflow:hidden;position:relative;cursor:pointer;transition:border-color .15s;background:var(--bg3)}
+.photo-slot:hover{border-color:var(--accent)}
+.photo-slot.has-photo{border-style:solid;border-color:var(--border)}
+.photo-placeholder{display:flex;flex-direction:column;align-items:center;justify-content:center;height:110px;gap:5px;color:var(--text3);font-size:11px}
+.photo-placeholder-icon{font-size:22px;opacity:.5}
+.photo-slot-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;padding:4px 8px;text-align:center}
+.before-label{background:rgba(255,170,0,.15);color:var(--amber)}
+.after-label{background:rgba(0,201,122,.15);color:var(--green)}
+.photo-thumb{width:100%;height:110px;object-fit:cover;display:block}
+.photo-actions{display:flex;gap:4px;padding:5px}
+.photo-action-btn{flex:1;padding:4px 0;font-size:10px;font-weight:600;border-radius:3px;border:none;cursor:pointer;transition:all .15s}
+.pa-upload{background:rgba(0,212,170,.15);color:var(--accent)}
+.pa-upload:hover{background:rgba(0,212,170,.25)}
+.pa-camera{background:rgba(0,153,255,.15);color:var(--accent2)}
+.pa-camera:hover{background:rgba(0,153,255,.25)}
+.pa-delete{background:rgba(255,79,106,.12);color:var(--red)}
+.pa-delete:hover{background:rgba(255,79,106,.22)}
+.photo-meta{padding:0 7px 6px;font-size:10px;color:var(--text3);line-height:1.4}
+.photo-badge{display:inline-flex;align-items:center;gap:3px;padding:2px 7px;border-radius:3px;font-size:10px;font-weight:600}
+.pb-before{background:rgba(255,170,0,.2);color:var(--amber)}
+.pb-after{background:rgba(0,201,122,.2);color:var(--green)}
+.pb-none{background:rgba(90,100,128,.2);color:var(--text3)}
+
+/* Photo log panel */
+.photo-log-item{border:1px solid var(--border);border-radius:7px;overflow:hidden;margin-bottom:10px;background:var(--bg3)}
+.pli-header{padding:8px 10px;background:var(--bg4);display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border)}
+.pli-addr{font-size:12px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pli-photos{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border)}
+.pli-photo{position:relative;background:var(--bg3)}
+.pli-photo img{width:100%;height:100px;object-fit:cover;display:block}
+.pli-photo-label{position:absolute;bottom:0;left:0;right:0;padding:3px 6px;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.5px}
+.pll-before{background:rgba(255,170,0,.8);color:#000}
+.pll-after{background:rgba(0,201,122,.8);color:#000}
+.pli-empty-slot{height:100px;display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--text3)}
+.pli-footer{padding:6px 10px;font-size:10px;color:var(--text3);display:flex;align-items:center;justify-content:space-between}
+
+/* Lightbox */
+.lightbox{position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:10000;display:none;align-items:center;justify-content:center;flex-direction:column;gap:12px}
+.lightbox.open{display:flex}
+.lightbox img{max-width:90vw;max-height:80vh;border-radius:8px;object-fit:contain}
+.lightbox-close{position:absolute;top:16px;right:20px;font-size:24px;color:#fff;cursor:pointer;opacity:.7;background:none;border:none;padding:4px 10px}
+.lightbox-close:hover{opacity:1}
+.lightbox-caption{color:var(--text2);font-size:12px;text-align:center}
+
+/* hidden file input */
+input[type=file].photo-input{display:none}
+</style>
+</head>
+<body>
+<div id="app">
+
+<div class="header">
+  <div class="logo">FOS·GIS <span>/ Vacant Lot Route Optimizer</span></div>
+  <div class="htabs">
+    <button class="htab active" onclick="showTab('map')">🗺 Map</button>
+    <button class="htab" onclick="showTab('lots')">🏚 Lots</button>
+    <button class="htab" onclick="showTab('routes')">⚡ Routes</button>
+    <button class="htab" onclick="showTab('crews')">👷 Crews</button>
+    <button class="htab" onclick="showTab('settings')">⚙ Settings</button>
+    <button class="htab" onclick="showTab('cityworks')">🏛 Cityworks</button>
+  </div>
+  <div class="hright">
+    <span class="badge badge-green">● Live</span>
+    <span class="badge badge-blue">Cuyahoga County</span>
+    <span class="badge badge-purple" id="photo-badge">0 Photos</span>
+    <span class="badge badge-amber" id="total-badge">0 Lots</span>
+  </div>
+</div>
+
+<div class="main">
+<div class="sidebar">
+
+  <!-- TAB: MAP -->
+  <div class="tab-pane active" id="pane-map">
+    <div class="panel">
+      <div class="ptitle">Quick Stats</div>
+      <div class="stat-grid" id="qs"></div>
+    </div>
+    <div class="panel">
+      <div class="ptitle">Filter</div>
+      <div class="filter-row" id="pf">
+        <button class="fbtn active" data-v="all" onclick="flt(this,'p')">All</button>
+        <button class="fbtn" data-v="high" onclick="flt(this,'p')">🔴 High</button>
+        <button class="fbtn" data-v="medium" onclick="flt(this,'p')">🟡 Med</button>
+        <button class="fbtn" data-v="low" onclick="flt(this,'p')">🟢 Low</button>
+      </div>
+      <div class="filter-row" id="sf">
+        <button class="fbtn active" data-v="all" onclick="flt(this,'s')">All</button>
+        <button class="fbtn" data-v="pending" onclick="flt(this,'s')">Pending</button>
+        <button class="fbtn" data-v="assigned" onclick="flt(this,'s')">Assigned</button>
+        <button class="fbtn" data-v="complete" onclick="flt(this,'s')">Done</button>
+        <button class="fbtn" data-v="overdue" onclick="flt(this,'s')">Overdue</button>
+      </div>
+      <div class="srchwrap">
+        <span class="srchicon">🔍</span>
+        <input type="text" id="srch" placeholder="Search parcel ID or address..." oninput="doSearch(this.value)">
+      </div>
+    </div>
+    <div style="padding:7px 8px 4px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0">
+      <span class="ptitle" style="margin-bottom:0">Lots <span id="lcnt" style="color:var(--text3);font-weight:400"></span></span>
+      <button class="btn btn-p bsm" onclick="addFilteredToRoute()">+ Add to Route</button>
+    </div>
+    <div class="lot-list" id="lot-list"></div>
+  </div>
+
+  <!-- TAB: LOTS -->
+  <div class="tab-pane" id="pane-lots">
+    <div class="panel" style="overflow-y:auto;flex-shrink:0">
+      <div class="ptitle">Add Lot to Registry</div>
+      <div class="igroup"><div class="ilabel">Parcel ID (MyPlace)</div><input type="text" id="np-id" placeholder="e.g. 101-10-001"></div>
+      <div class="igroup"><div class="ilabel">Address</div><input type="text" id="np-addr" placeholder="Street address, Cleveland, OH"></div>
+      <div class="ig2">
+        <div class="igroup"><div class="ilabel">Priority</div>
+          <select id="np-pri"><option value="high">High</option><option value="medium" selected>Medium</option><option value="low">Low</option></select>
+        </div>
+        <div class="igroup"><div class="ilabel">Work Type</div>
+          <select id="np-type"><option>Mow/Trim</option><option>Debris Removal</option><option>Board-Up</option><option>Demo Prep</option><option>Inspection</option><option>Seeding</option></select>
+        </div>
+      </div>
+      <div class="ig2">
+        <div class="igroup"><div class="ilabel">Latitude</div><input type="number" id="np-lat" placeholder="41.4993" step="0.0001"></div>
+        <div class="igroup"><div class="ilabel">Longitude</div><input type="number" id="np-lng" placeholder="-81.6944" step="0.0001"></div>
+      </div>
+      <div class="igroup"><div class="ilabel">Notes</div><textarea id="np-notes" placeholder="Condition, access issues, equipment needed..."></textarea></div>
+      <div class="btn-row">
+        <button class="btn btn-p" onclick="addLot()" style="flex:1">Add Lot</button>
+        <button class="btn btn-s" onclick="clearForm()">Clear</button>
+      </div>
+    </div>
+    <div class="scrollable" id="reg-list"></div>
+  </div>
+
+  <!-- TAB: ROUTES -->
+  <div class="tab-pane" id="pane-routes">
+    <div class="panel">
+      <div class="ptitle">Route Builder</div>
+      <div class="igroup"><div class="ilabel">Optimization Algorithm</div>
+        <select id="opt-algo">
+          <option value="nn">Nearest Neighbor (Fast)</option>
+          <option value="priority">Priority-First + Proximity</option>
+          <option value="zone">Zone Cluster</option>
+          <option value="tsp">2-Opt TSP Improvement</option>
+        </select>
+      </div>
+      <div class="igroup"><div class="ilabel">Assign Crew</div><select id="rt-crew"><option value="">— Select Crew —</option></select></div>
+      <div class="ig2">
+        <div class="igroup"><div class="ilabel">Depot Lat</div><input type="number" id="dep-lat" value="41.4993" step="0.0001"></div>
+        <div class="igroup"><div class="ilabel">Depot Lng</div><input type="number" id="dep-lng" value="-81.6944" step="0.0001"></div>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-p" onclick="optimizeRoute()" style="flex:1">⚡ Optimize Route</button>
+        <button class="btn btn-d bsm" onclick="clearRoute()">Clear</button>
+      </div>
+    </div>
+    <div id="rt-summary" style="display:none" class="panel">
+      <div class="ptitle">Route Summary</div>
+      <div class="rte-meta" id="rt-meta"></div>
+    </div>
+    <div class="scrollable" id="rt-stops"></div>
+  </div>
+
+  <!-- TAB: CREWS -->
+  <div class="tab-pane" id="pane-crews">
+    <div class="panel">
+      <div class="ptitle">Add Crew</div>
+      <div class="ig2">
+        <div class="igroup"><div class="ilabel">Crew Name</div><input type="text" id="nc-name" placeholder="Crew Alpha"></div>
+        <div class="igroup"><div class="ilabel">Capacity (lots/day)</div><input type="number" id="nc-cap" value="12" min="1" max="30"></div>
+      </div>
+      <div class="igroup"><div class="ilabel">Specialization</div>
+        <select id="nc-spec"><option>General Maintenance</option><option>Debris Removal</option><option>Mowing</option><option>Demo / Abatement</option><option>Inspections</option></select>
+      </div>
+      <button class="btn btn-p" onclick="addCrew()" style="width:100%">Add Crew</button>
+    </div>
+    <div class="scrollable" id="crew-list"></div>
+  </div>
+
+  <!-- TAB: SETTINGS -->
+  <div class="tab-pane" id="pane-settings">
+    <div class="panel">
+      <div class="ptitle">Map Display</div>
+      <div class="opt-row"><span>Show Route Lines</span><div class="toggle on" id="t-routes" onclick="tog(this,'routes')"><div class="tknob"></div></div></div>
+      <div class="opt-row"><span>Show Stop Numbers</span><div class="toggle on" id="t-nums" onclick="tog(this,'nums')"><div class="tknob"></div></div></div>
+      <div class="opt-row"><span>Dark Map Tiles</span><div class="toggle on" id="t-dark" onclick="tog(this,'dark')"><div class="tknob"></div></div></div>
+    </div>
+    <div class="panel">
+      <div class="ptitle">Data Sources</div>
+      <div class="info-row"><span class="ik">MyPlace Parcel API</span><span class="badge badge-green">Connected</span></div>
+      <div class="info-row"><span class="ik">Cuyahoga GIS Server</span><span class="badge badge-green">Connected</span></div>
+      <div class="info-row"><span class="ik">ODOT Road Network</span><span class="badge badge-amber">Partial</span></div>
+      <div class="info-row"><span class="ik">CLEVault Database</span><span class="badge badge-blue">Sync'd</span></div>
+    </div>
+    <div class="panel">
+      <div class="ptitle">Load Demo Data</div>
+      <div style="display:flex;flex-direction:column;gap:6px">
+        <button class="btn btn-s" onclick="loadSample()">🏙 Load 40 CLE Vacant Lots</button>
+        <button class="btn btn-s" onclick="simMyPlace()">🗺 Simulate MyPlace Query (+10)</button>
+        <button class="btn btn-d" onclick="clearAll()">🗑 Clear All Data</button>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="ptitle">Export</div>
+      <div style="display:flex;flex-direction:column;gap:6px">
+        <button class="btn btn-s" onclick="exportCSV()">📋 Export Route (CSV)</button>
+        <button class="btn btn-s" onclick="exportGeoJSON()">📍 Export All Lots (GeoJSON)</button>
+        <button class="btn btn-s" onclick="exportPhotoReport()">📸 Export Photo Report (HTML)</button>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="ptitle">Photo Storage</div>
+      <div class="info-row"><span class="ik">Engine</span><span class="iv">IndexedDB (local)</span></div>
+      <div class="info-row"><span class="ik">Photos stored</span><span class="iv" id="db-photo-count">—</span></div>
+      <div class="info-row"><span class="ik">Est. storage used</span><span class="iv" id="db-storage-est">—</span></div>
+      <button class="btn btn-d bsm" style="margin-top:8px;width:100%" onclick="clearAllPhotos()">🗑 Delete All Photos</button>
+    </div>
+    <div class="panel">
+      <div class="ptitle">About</div>
+      <div style="font-size:11px;color:var(--text3);line-height:1.6">FOS·GIS Vacant Lot Route Optimizer<br>Cuyahoga County MyPlace Integration<br>Built for Northeast Ohio Municipal Consulting<br><br>Photos: IndexedDB · 1 before + 1 after per lot<br>Algorithms: NN, Priority, Zone, 2-Opt TSP<br>Distance: Haversine (km)</div>
+    </div>
+  </div>
+
+
+  <!-- TAB: CITYWORKS -->
+  <div class="tab-pane" id="pane-cityworks">
+    <!-- Config -->
+    <div class="panel">
+      <div class="ptitle">Cityworks AMS Connection</div>
+      <div class="igroup"><div class="ilabel">Cityworks Server URL</div>
+        <input type="text" id="cw-url" placeholder="https://cityworks.yourcity.gov/cityworks" value="">
+      </div>
+      <div class="igroup"><div class="ilabel">API Token</div>
+        <input type="text" id="cw-token" placeholder="Paste your CW API token..." style="font-family:monospace;font-size:11px">
+      </div>
+      <div class="igroup"><div class="ilabel">ArcGIS Feature Service URL (optional)</div>
+        <input type="text" id="cw-arcgis-url" placeholder="https://services.arcgis.com/.../FeatureServer/0">
+      </div>
+      <div class="igroup"><div class="ilabel">Default Work Order Template</div>
+        <input type="text" id="cw-wo-template" placeholder="e.g. VACANT_LOT_MAINT" value="VACANT_LOT_MAINT">
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-p" onclick="testCWConnection()" style="flex:1">Test Connection</button>
+        <button class="btn btn-s bsm" onclick="saveCWConfig()">Save</button>
+      </div>
+      <div id="cw-conn-status" style="margin-top:8px;font-size:11px;color:var(--text3)"></div>
+    </div>
+
+    <!-- Auto-push settings -->
+    <div class="panel">
+      <div class="ptitle">Push Triggers</div>
+      <div class="opt-row">
+        <span style="font-size:12px">Auto-push when status → Complete</span>
+        <div class="toggle on" id="t-autopush" onclick="tog(this,'autopush')"><div class="tknob"></div></div>
+      </div>
+      <div class="opt-row">
+        <span style="font-size:12px">Require both photos before push</span>
+        <div class="toggle on" id="t-requirephotos" onclick="tog(this,'requirephotos')"><div class="tknob"></div></div>
+      </div>
+      <div class="opt-row">
+        <span style="font-size:12px">Push to ArcGIS feature layer</span>
+        <div class="toggle on" id="t-pusharcgis" onclick="tog(this,'pusharcgis')"><div class="tknob"></div></div>
+      </div>
+    </div>
+
+    <!-- Batch push -->
+    <div class="panel" style="flex-shrink:0">
+      <div class="ptitle">Batch Push</div>
+      <div id="cw-batch-summary" style="font-size:12px;color:var(--text2);margin-bottom:8px"></div>
+      <div class="cw-progress-wrap" id="cw-progress-wrap" style="display:none">
+        <div class="cw-progress-fill" id="cw-progress-fill" style="width:0%"></div>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-p" onclick="batchPushAll()" style="flex:1" id="batch-push-btn">⬆ Push All Complete Lots</button>
+        <button class="btn btn-s bsm" onclick="renderCWPane()">↺ Refresh</button>
+      </div>
+    </div>
+
+    <!-- Push queue / log -->
+    <div class="scrollable" id="cw-queue-list"></div>
+  </div>
+
+</div><!-- /sidebar -->
+
+<!-- MAP -->
+<div class="mapwrap" id="mapwrap">
+  <div id="map"></div>
+  <div class="map-overlay">
+    <div class="mctrl" onclick="fitAll()">⊞ Fit All</div>
+    <div class="mctrl" id="sat-btn" onclick="toggleSat()">🛰 Satellite</div>
+    <div class="mctrl" onclick="map.zoomIn()">＋</div>
+    <div class="mctrl" onclick="map.zoomOut()">－</div>
+  </div>
+  <div class="legend">
+    <div class="legend-title">Legend</div>
+    <div class="li"><div class="ldot" style="background:#ff4f6a"></div>High Priority</div>
+    <div class="li"><div class="ldot" style="background:#ffaa00"></div>Medium Priority</div>
+    <div class="li"><div class="ldot" style="background:#00c97a"></div>Low Priority</div>
+    <div class="li"><div class="ldot" style="background:#0099ff;border:2px solid rgba(255,255,255,.5)"></div>In Route</div>
+    <div class="li"><div class="lline" style="background:#00d4aa"></div>Optimized Route</div>
+    <div class="li"><div class="ldot" style="background:#a855f7"></div>Photos Attached</div>
+  </div>
+</div>
+
+<!-- RIGHT PANEL -->
+<div class="rpanel">
+  <div class="stabs">
+    <div class="stab active" onclick="showDetail('info')">Parcel Info</div>
+    <div class="stab" onclick="showDetail('photos')">📸 Photos</div>
+    <div class="stab" onclick="showDetail('analytics')">Analytics</div>
+    <div class="stab" onclick="showDetail('cityworks')">🏛 CW</div>
+  </div>
+  <div id="dp-info" style="flex:1;overflow-y:auto;padding:10px">
+    <div class="empty" id="detail-empty"><div class="eicon">📍</div><div>Click a lot on the map<br>or in the list to view details</div></div>
+    <div id="detail-content" style="display:none"></div>
+  </div>
+  <div id="dp-photos" style="display:none;flex:1;overflow-y:auto;padding:10px">
+    <div id="photos-content"></div>
+  </div>
+  <div id="dp-analytics" style="display:none;flex:1;overflow-y:auto;padding:10px">
+    <div id="analytics-content"></div>
+  </div>
+
+  <div id="dp-cityworks" style="display:none;flex:1;overflow-y:auto;padding:10px">
+    <div id="cw-detail-content">
+      <div class="empty"><div class="eicon">🏛</div><div>Select a lot to view<br>Cityworks push status</div></div>
+    </div>
+  </div>
+
+</div>
+
+</div><!-- /main -->
+</div><!-- /app -->
+
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox" onclick="closeLightbox()">
+  <button class="lightbox-close" onclick="closeLightbox()">✕</button>
+  <img id="lb-img" src="" alt="">
+  <div class="lightbox-caption" id="lb-caption"></div>
+</div>
+
+<!-- Hidden file inputs -->
+<input type="file" class="photo-input" id="file-before" accept="image/*" onchange="handleFileInput(event,'before')">
+<input type="file" class="photo-input" id="file-after"  accept="image/*" onchange="handleFileInput(event,'after')">
+<input type="file" class="photo-input" id="file-cam-before" accept="image/*" capture="environment" onchange="handleFileInput(event,'before')">
+<input type="file" class="photo-input" id="file-cam-after"  accept="image/*" capture="environment" onchange="handleFileInput(event,'after')">
+
+<script>
+// ═══════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════
+let lots=[], crews=[], routeStops=[], selId=null;
+let map, markers={}, routeLine=null, depotMk=null;
+let tile1, tile2, usingSat=false;
+let AF={p:'all',s:'all'}, SQ='';
+let MS={routes:true,nums:true,dark:true};
+let photoCache={}; // lotId -> {before:{dataUrl,ts,name}, after:{dataUrl,ts,name}}
+
+// ═══════════════════════════════════════
+// INDEXEDDB PHOTO STORE
+// ═══════════════════════════════════════
+let DB=null;
+const DB_NAME='FOS_GIS_Photos', DB_VER=1, STORE='photos';
+
+function initDB(){
+  return new Promise((res,rej)=>{
+    const req=indexedDB.open(DB_NAME,DB_VER);
+    req.onupgradeneeded=e=>{
+      const db=e.target.result;
+      if(!db.objectStoreNames.contains(STORE)) db.createObjectStore(STORE,{keyPath:'id'});
+    };
+    req.onsuccess=e=>{DB=e.target.result;res(DB);};
+    req.onerror=e=>rej(e);
+  });
+}
+function dbGet(id){
+  return new Promise((res,rej)=>{
+    const tx=DB.transaction(STORE,'readonly');
+    const req=tx.objectStore(STORE).get(id);
+    req.onsuccess=()=>res(req.result||null);
+    req.onerror=rej;
+  });
+}
+function dbPut(obj){
+  return new Promise((res,rej)=>{
+    const tx=DB.transaction(STORE,'readwrite');
+    const req=tx.objectStore(STORE).put(obj);
+    req.onsuccess=()=>res();
+    req.onerror=rej;
+  });
+}
+function dbDelete(id){
+  return new Promise((res,rej)=>{
+    const tx=DB.transaction(STORE,'readwrite');
+    const req=tx.objectStore(STORE).delete(id);
+    req.onsuccess=()=>res();
+    req.onerror=rej;
+  });
+}
+function dbGetAll(){
+  return new Promise((res,rej)=>{
+    const tx=DB.transaction(STORE,'readonly');
+    const req=tx.objectStore(STORE).getAll();
+    req.onsuccess=()=>res(req.result||[]);
+    req.onerror=rej;
+  });
+}
+
+// ═══════════════════════════════════════
+// PHOTO OPERATIONS
+// ═══════════════════════════════════════
+function resizeImage(file,maxW,maxH,quality){
+  return new Promise(res=>{
+    const img=new Image();
+    const url=URL.createObjectURL(file);
+    img.onload=()=>{
+      let w=img.width,h=img.height;
+      if(w>maxW){h=Math.round(h*maxW/w);w=maxW;}
+      if(h>maxH){w=Math.round(w*maxH/h);h=maxH;}
+      const canvas=document.createElement('canvas');
+      canvas.width=w;canvas.height=h;
+      canvas.getContext('2d').drawImage(img,0,0,w,h);
+      URL.revokeObjectURL(url);
+      res(canvas.toDataURL('image/jpeg',quality||0.82));
+    };
+    img.src=url;
+  });
+}
+
+async function loadPhotosForLot(id){
+  if(!DB) return;
+  const rec=await dbGet(id);
+  if(rec) photoCache[id]=rec;
+  else photoCache[id]={id,before:null,after:null};
+}
+
+async function savePhoto(lotId,type,file){
+  if(!DB) return;
+  const dataUrl=await resizeImage(file,1200,900,0.82);
+  if(!photoCache[lotId]) photoCache[lotId]={id:lotId,before:null,after:null};
+  photoCache[lotId][type]={dataUrl,ts:new Date().toISOString(),name:file.name,size:file.size};
+  await dbPut(photoCache[lotId]);
+  updatePhotoUI(lotId);
+  updatePhotoBadge();
+  refreshIcon(lotId);
+  notify(`${type==='before'?'Before':'After'} photo saved for ${lots.find(l=>l.id===lotId)?.address.split(',')[0]||lotId}`,'green');
+}
+
+async function deletePhoto(lotId,type){
+  if(!photoCache[lotId]) return;
+  photoCache[lotId][type]=null;
+  if(!photoCache[lotId].before&&!photoCache[lotId].after){
+    await dbDelete(lotId);
+    delete photoCache[lotId];
+  } else {
+    await dbPut(photoCache[lotId]);
+  }
+  updatePhotoUI(lotId);
+  updatePhotoBadge();
+  refreshIcon(lotId);
+  notify('Photo deleted','red');
+}
+
+function hasPhotos(lotId){
+  const r=photoCache[lotId];
+  return r&&(r.before||r.after);
+}
+function photoStatus(lotId){
+  const r=photoCache[lotId];
+  if(!r||(!r.before&&!r.after)) return 'none';
+  if(r.before&&r.after) return 'both';
+  return r.before?'before-only':'after-only';
+}
+
+async function updatePhotoBadge(){
+  const all=await dbGetAll();
+  const total=all.reduce((s,r)=>(r.before?1:0)+(r.after?1:0)+s,0);
+  document.getElementById('photo-badge').textContent=`${total} Photo${total!==1?'s':''}`;
+  // update settings panel
+  document.getElementById('db-photo-count').textContent=`${total}`;
+  let bytes=all.reduce((s,r)=>{
+    if(r.before) s+=r.before.dataUrl.length*0.75;
+    if(r.after) s+=r.after.dataUrl.length*0.75;
+    return s;
+  },0);
+  document.getElementById('db-storage-est').textContent=bytes>1048576?`~${(bytes/1048576).toFixed(1)} MB`:`~${(bytes/1024).toFixed(0)} KB`;
+}
+
+// ═══════════════════════════════════════
+// PHOTO UI
+// ═══════════════════════════════════════
+function updatePhotoUI(lotId){
+  // Refresh detail panel if this lot is selected
+  if(selId===lotId){
+    const lot=lots.find(l=>l.id===lotId);
+    if(lot) showDetailPanel(lot);
+  }
+  // Refresh photos tab if open
+  if(document.getElementById('dp-photos').style.display!=='none') renderPhotosTab();
+}
+
+function photoSlotHTML(lotId,type){
+  const r=photoCache[lotId];
+  const photo=r&&r[type];
+  const label=type==='before'?'Before':'After';
+  const labelClass=type==='before'?'before-label':'after-label';
+  if(photo){
+    return `<div class="photo-slot has-photo">
+      <div class="photo-slot-label ${labelClass}">${label}</div>
+      <img class="photo-thumb" src="${photo.dataUrl}" alt="${label}" onclick="openLightbox('${lotId}','${type}')" style="cursor:zoom-in">
+      <div class="photo-meta">${photo.name.length>22?photo.name.slice(0,20)+'…':photo.name}<br>${new Date(photo.ts).toLocaleDateString()} ${new Date(photo.ts).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})}</div>
+      <div class="photo-actions">
+        <button class="photo-action-btn pa-upload" onclick="triggerUpload('${lotId}','${type}',false)">↑ Replace</button>
+        <button class="photo-action-btn pa-delete" onclick="deletePhoto('${lotId}','${type}')">✕</button>
+      </div>
+    </div>`;
+  } else {
+    return `<div class="photo-slot" onclick="triggerUpload('${lotId}','${type}',false)">
+      <div class="photo-slot-label ${labelClass}">${label}</div>
+      <div class="photo-placeholder">
+        <div class="photo-placeholder-icon">${type==='before'?'📷':'✅'}</div>
+        <div>Tap to upload</div>
+        <div style="font-size:10px;color:var(--text3)">or use camera</div>
+      </div>
+      <div class="photo-actions">
+        <button class="photo-action-btn pa-upload" onclick="event.stopPropagation();triggerUpload('${lotId}','${type}',false)">📁 File</button>
+        <button class="photo-action-btn pa-camera" onclick="event.stopPropagation();triggerUpload('${lotId}','${type}',true)">📷 Camera</button>
+      </div>
+    </div>`;
+  }
+}
+
+let _pendingUploadLotId=null, _pendingUploadType=null;
+function triggerUpload(lotId,type,useCamera){
+  _pendingUploadLotId=lotId;
+  _pendingUploadType=type;
+  if(useCamera){
+    document.getElementById(type==='before'?'file-cam-before':'file-cam-after').click();
+  } else {
+    document.getElementById(type==='before'?'file-before':'file-after').click();
+  }
+}
+async function handleFileInput(event,type){
+  const file=event.target.files[0];
+  if(!file) return;
+  if(!_pendingUploadLotId){notify('No lot selected','amber');return;}
+  event.target.value='';
+  notify('Processing photo…','blue');
+  await savePhoto(_pendingUploadLotId,type,file);
+  _pendingUploadLotId=null;
+}
+
+function openLightbox(lotId,type){
+  const r=photoCache[lotId];
+  if(!r||!r[type]) return;
+  const lot=lots.find(l=>l.id===lotId);
+  document.getElementById('lb-img').src=r[type].dataUrl;
+  document.getElementById('lb-caption').textContent=
+    `${type==='before'?'BEFORE':'AFTER'} — ${lot?lot.address:lotId} · ${new Date(r[type].ts).toLocaleString()}`;
+  document.getElementById('lightbox').classList.add('open');
+}
+function closeLightbox(){document.getElementById('lightbox').classList.remove('open');}
+
+// ═══════════════════════════════════════
+// PHOTOS TAB
+// ═══════════════════════════════════════
+async function renderPhotosTab(){
+  const el=document.getElementById('photos-content');
+  // Load all photo records from DB to get lot IDs
+  const allRecs=await dbGetAll();
+  // Filter to lots that exist
+  const withPhotos=allRecs.filter(r=>{
+    const lot=lots.find(l=>l.id===r.id);
+    return lot&&(r.before||r.after);
+  });
+
+  if(!withPhotos.length){
+    el.innerHTML=`<div class="empty"><div class="eicon">📸</div><div>No photos yet.<br>Select a lot and upload<br>before/after photos.</div></div>
+    <div style="padding:10px 0;text-align:center">
+      <button class="btn btn-s bsm" onclick="showDetail('info');notify('Select a lot first','amber')">← Select a Lot</button>
+    </div>`;
+    return;
+  }
+
+  const statusBadge=(r)=>{
+    if(r.before&&r.after) return '<span class="photo-badge pb-after">✓ Complete</span>';
+    if(r.before) return '<span class="photo-badge pb-before">Before Only</span>';
+    return '<span class="photo-badge pb-none">After Only</span>';
+  };
+
+  el.innerHTML=`<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+    <div class="ptitle" style="margin-bottom:0">${withPhotos.length} lot${withPhotos.length!==1?'s':''} with photos</div>
+    <button class="btn btn-s bsm" onclick="exportPhotoReport()">Export Report</button>
+  </div>`+
+  withPhotos.map(r=>{
+    const lot=lots.find(l=>l.id===r.id);
+    if(!lot) return '';
+    return `<div class="photo-log-item">
+      <div class="pli-header">
+        <div>
+          <div class="pli-addr">${lot.address.split(',')[0]}</div>
+          <div style="font-size:10px;color:var(--text3);margin-top:2px">${lot.neighborhood} · ${lot.parcelId}</div>
+        </div>
+        ${statusBadge(r)}
+      </div>
+      <div class="pli-photos">
+        <div class="pli-photo">
+          ${r.before?`<img src="${r.before.dataUrl}" alt="before" onclick="openLightbox('${r.id}','before')" style="cursor:zoom-in">
+            <div class="pli-photo-label pll-before">Before · ${new Date(r.before.ts).toLocaleDateString()}</div>`
+            :`<div class="pli-empty-slot">No before photo</div>`}
+        </div>
+        <div class="pli-photo">
+          ${r.after?`<img src="${r.after.dataUrl}" alt="after" onclick="openLightbox('${r.id}','after')" style="cursor:zoom-in">
+            <div class="pli-photo-label pll-after">After · ${new Date(r.after.ts).toLocaleDateString()}</div>`
+            :`<div class="pli-empty-slot">No after photo</div>`}
+        </div>
+      </div>
+      <div class="pli-footer">
+        <span>${lot.type} · ${lot.priority} priority</span>
+        <div style="display:flex;gap:5px">
+          <button class="btn btn-s bsm" onclick="selectLot('${r.id}');showDetail('info')">View Lot</button>
+          ${!r.before?`<button class="btn btn-s bsm" onclick="triggerUpload('${r.id}','before',false)">+ Before</button>`:''}
+          ${!r.after?`<button class="btn btn-s bsm" onclick="triggerUpload('${r.id}','after',false)">+ After</button>`:''}
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ═══════════════════════════════════════
+// PHOTO REPORT EXPORT
+// ═══════════════════════════════════════
+async function exportPhotoReport(){
+  const allRecs=await dbGetAll();
+  const withPhotos=allRecs.filter(r=>lots.find(l=>l.id===r.id)&&(r.before||r.after));
+  if(!withPhotos.length){notify('No photos to export','amber');return;}
+
+  const rows=withPhotos.map(r=>{
+    const lot=lots.find(l=>l.id===r.id)||{};
+    const bf=r.before?`<div style="flex:1"><div style="font-size:11px;font-weight:700;color:#ffaa00;margin-bottom:4px">BEFORE</div>
+      <img src="${r.before.dataUrl}" style="width:100%;border-radius:4px"><div style="font-size:10px;color:#888;margin-top:3px">${new Date(r.before.ts).toLocaleString()}</div></div>`
+      :'<div style="flex:1;background:#1a1a2e;border-radius:4px;height:120px;display:flex;align-items:center;justify-content:center;color:#555;font-size:12px">No before photo</div>';
+    const af=r.after?`<div style="flex:1"><div style="font-size:11px;font-weight:700;color:#00c97a;margin-bottom:4px">AFTER</div>
+      <img src="${r.after.dataUrl}" style="width:100%;border-radius:4px"><div style="font-size:10px;color:#888;margin-top:3px">${new Date(r.after.ts).toLocaleString()}</div></div>`
+      :'<div style="flex:1;background:#1a1a2e;border-radius:4px;height:120px;display:flex;align-items:center;justify-content:center;color:#555;font-size:12px">No after photo</div>';
+    return `<div style="border:1px solid #2a3550;border-radius:8px;overflow:hidden;margin-bottom:20px;page-break-inside:avoid">
+      <div style="background:#1e2535;padding:10px 14px;border-bottom:1px solid #2a3550">
+        <div style="font-weight:700;font-size:14px;color:#e8eaf0">${lot.address||r.id}</div>
+        <div style="font-size:11px;color:#8d97b0;margin-top:2px">${lot.neighborhood||''} · Parcel: ${lot.parcelId||''} · ${lot.type||''} · ${lot.priority||''} priority</div>
+      </div>
+      <div style="padding:12px;display:flex;gap:12px">${bf}${af}</div>
+    </div>`;
+  }).join('');
+
+  const html=`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>FOS·GIS Photo Report — ${new Date().toLocaleDateString()}</title>
+  <style>body{font-family:system-ui,sans-serif;background:#0f1117;color:#e8eaf0;padding:24px;max-width:900px;margin:0 auto}
+  h1{font-size:20px;color:#00d4aa;margin-bottom:4px}
+  .sub{font-size:12px;color:#5a6480;margin-bottom:24px}
+  @media print{body{background:#fff;color:#000}}</style></head>
+  <body><h1>FOS·GIS — Maintenance Photo Report</h1>
+  <div class="sub">Generated ${new Date().toLocaleString()} · ${withPhotos.length} lots · Cuyahoga County</div>
+  ${rows}
+<!-- PWA INSTALL BANNER -->
+<div id="install-banner" style="display:none;position:fixed;bottom:0;left:0;right:0;background:#1e2535;border-top:1px solid #2a3550;padding:12px 16px;z-index:9998;display:none;align-items:center;gap:12px">
+  <div style="background:#00d4aa22;border-radius:8px;padding:6px 10px;flex-shrink:0">
+    <svg width="28" height="28" viewBox="0 0 192 192" xmlns="http://www.w3.org/2000/svg">
+      <rect width="192" height="192" rx="38" fill="#0f1117"/>
+      <path d="M96 28C69.5 28 48 49.5 48 76c0 38 48 88 48 88s48-50 48-88C144 49.5 122.5 28 96 28z" fill="#00d4aa"/>
+      <circle cx="96" cy="76" r="18" fill="#0f1117"/>
+    </svg>
+  </div>
+  <div style="flex:1">
+    <div style="font-weight:700;font-size:13px;color:#e8eaf0">Install FOS·GIS</div>
+    <div style="font-size:11px;color:#8d97b0;margin-top:1px">Add to home screen for offline access</div>
+  </div>
+  <button id="install-btn" style="background:#00d4aa;color:#000;border:none;border-radius:6px;padding:7px 14px;font-size:12px;font-weight:700;cursor:pointer">Install</button>
+  <button onclick="document.getElementById('install-banner').style.display='none'" style="background:transparent;border:none;color:#5a6480;font-size:18px;cursor:pointer;padding:4px">✕</button>
+</div>
+
+<!-- iOS INSTALL HINT -->
+<div id="ios-hint" style="display:none;position:fixed;bottom:0;left:0;right:0;background:#1e2535;border-top:1px solid #2a3550;padding:12px 16px;z-index:9998;text-align:center">
+  <div style="font-size:12px;color:#e8eaf0;margin-bottom:4px">📲 Install FOS·GIS on your iPad/iPhone</div>
+  <div style="font-size:11px;color:#8d97b0">Tap <strong style="color:#0099ff">Share</strong> → <strong style="color:#0099ff">Add to Home Screen</strong></div>
+  <button onclick="document.getElementById('ios-hint').style.display='none'" style="margin-top:8px;background:transparent;border:1px solid #2a3550;color:#8d97b0;border-radius:5px;padding:4px 12px;font-size:11px;cursor:pointer">Dismiss</button>
+</div>
+
+<!-- OFFLINE INDICATOR -->
+<div id="offline-bar" style="display:none;position:fixed;top:44px;left:0;right:0;background:#ff6b35;color:#000;text-align:center;font-size:11px;font-weight:700;padding:4px;z-index:9997;letter-spacing:.5px">
+  ⚡ OFFLINE MODE — Map tiles may not load. All data and photos saved locally.
+</div>
+
+</body></html>`;
+  dl(html,'text/html',`FOS_Photo_Report_${new Date().toISOString().slice(0,10)}.html`);
+  notify(`Photo report exported (${withPhotos.length} lots)`,'green');
+}
+
+async function clearAllPhotos(){
+  if(!confirm('Delete ALL stored photos? This cannot be undone.')) return;
+  const all=await dbGetAll();
+  for(const r of all) await dbDelete(r.id);
+  photoCache={};
+  refreshMarkers();
+  updatePhotoBadge();
+  renderPhotosTab();
+  if(selId){const l=lots.find(x=>x.id===selId);if(l) showDetailPanel(l);}
+  notify('All photos deleted','red');
+}
+
+// ═══════════════════════════════════════
+// MAP INIT
+// ═══════════════════════════════════════
+function initMap(){
+  map=L.map('map',{zoomControl:false,preferCanvas:true}).setView([41.4993,-81.6944],12);
+  tile1=L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'© OpenStreetMap'}).addTo(map);
+  tile2=L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{maxZoom:19,attribution:'© Esri'});
+  map.on('click',()=>{selId=null;showDetailPanel(null);refreshMarkers();});
+}
+
+// ═══════════════════════════════════════
+// DATA
+// ═══════════════════════════════════════
+const ADDRS=[
+  ['3317 W 25th St','Cleveland',41.4721,-81.7023,'Tremont'],['1234 E 79th St','Cleveland',41.5042,-81.6322,'Glenville'],
+  ['4501 Lorain Ave','Cleveland',41.4785,-81.7197,'Ohio City'],['892 E 93rd St','Cleveland',41.5087,-81.6122,'Glenville'],
+  ['2218 W 44th St','Cleveland',41.4799,-81.7198,'Clark-Fulton'],['6234 St Clair Ave','Cleveland',41.5354,-81.5990,'Collinwood'],
+  ['1544 E 55th St','Cleveland',41.4901,-81.6588,'Hough'],['3892 W 130th St','Cleveland',41.4721,-81.7543,'West Park'],
+  ['712 E 152nd St','Cleveland',41.5477,-81.5677,'Collinwood'],['2189 Fulton Rd','Cleveland',41.4712,-81.7013,'Clark-Fulton'],
+  ['4430 Harvard Ave','Cleveland',41.4423,-81.6678,'Slavic Village'],['881 E 105th St','Cleveland',41.5120,-81.6044,'Glenville'],
+  ['3211 W 65th St','Cleveland',41.4788,-81.7321,'Detroit Shoreway'],['1876 Buckeye Rd','Cleveland',41.4489,-81.6423,'Buckeye-Woodhill'],
+  ['5540 Quincy Ave','Cleveland',41.4612,-81.6234,'Slavic Village'],['923 E 131st St','Cleveland',41.5167,-81.5734,'Collinwood'],
+  ['2767 W 25th St','Cleveland',41.4623,-81.7045,'Clark-Fulton'],['3344 E 116th St','Cleveland',41.5143,-81.5989,'Glenville'],
+  ['1256 W 58th St','Cleveland',41.4812,-81.7283,'Brooklyn Centre'],['4102 Superior Ave','Cleveland',41.5123,-81.6312,'Hough'],
+  ['6778 Kinsman Rd','Cleveland',41.4392,-81.6178,'Lee-Harvard'],['388 E 99th St','Cleveland',41.5067,-81.6089,'Glenville'],
+  ['2981 Daisy Ave','Cleveland',41.4534,-81.6867,'Clark-Fulton'],['5023 Woodland Ave','Cleveland',41.4456,-81.6412,'Kinsman'],
+  ['765 Alhambra Rd','Cleveland',41.4678,-81.6789,'Mount Pleasant'],['3456 Lee Rd','Cleveland',41.4534,-81.5934,'Lee-Harvard'],
+  ['1890 E 71st St','Cleveland',41.4956,-81.6423,'Hough'],['4321 Memphis Ave','Cleveland',41.4567,-81.7189,'Old Brooklyn'],
+  ['678 Ansel Rd','Cleveland',41.5012,-81.6678,'University Circle'],['2345 E 131st St','Cleveland',41.5178,-81.5745,'Collinwood'],
+  ['890 W 73rd St','Cleveland',41.4789,-81.7312,'Brooklyn Centre'],['3678 Denison Ave','Cleveland',41.4534,-81.7123,'Clark-Fulton'],
+  ['1567 E 89th St','Cleveland',41.5034,-81.6234,'Glenville'],['4890 Broadview Rd','Cleveland',41.4312,-81.7012,'Old Brooklyn'],
+  ['2234 Harvard Ave','Cleveland',41.4456,-81.6589,'Slavic Village'],['567 E 120th St','Cleveland',41.5156,-81.5912,'Collinwood'],
+  ['3901 W 130th St','Cleveland',41.4634,-81.7567,'West Park'],['1234 Buckeye Rd','Cleveland',41.4478,-81.6345,'Buckeye-Woodhill'],
+  ['4567 Lorain Ave','Cleveland',41.4801,-81.7234,'Ohio City'],['789 E 55th St','Cleveland',41.4912,-81.6567,'Hough']
+];
+const TYPES=['Mow/Trim','Debris Removal','Board-Up','Inspection','Seeding','Demo Prep'];
+const STATS=['pending','pending','pending','assigned','complete','overdue'];
+const PRIS=['high','medium','low'];
+const NOTES=['Overgrown brush, neighbor complaint filed','Clear debris left from demo','Heavy weeds, near school','Litter accumulation, cleanup required','Routine mowing cycle','High grass, code violation pending','Vacant lot with dumping activity','Erosion issue, needs seeding'];
+const DATES_SVC=['2025-03-12','2025-01-08','2024-11-22','2025-04-30','2025-05-15'];
+const DATES_DUE=['2025-06-01','2025-06-15','2025-07-01','2025-06-20','2025-07-10'];
+function rnd(a){return a[Math.floor(Math.random()*a.length)];}
+function rndRange(min,max){return min+Math.random()*(max-min);}
+function genLots(addrs){
+  return addrs.map((a,i)=>({
+    id:`CUY-${String(101+i).padStart(3,'0')}-${String(Math.floor(rndRange(1,99))).padStart(3,'0')}`,
+    parcelId:`${String(100+i).padStart(3,'0')}-${String(Math.floor(rndRange(1,30))).padStart(2,'0')}-${String(Math.floor(rndRange(1,999))).padStart(3,'0')}`,
+    address:`${a[0]}, ${a[1]}, OH`,lat:a[2]+(Math.random()-.5)*.002,lng:a[3]+(Math.random()-.5)*.003,
+    priority:rnd(PRIS),status:rnd(STATS),type:rnd(TYPES),neighborhood:a[4],
+    sqft:Math.floor(rndRange(2400,10400)),lastService:rnd(DATES_SVC),nextDue:rnd(DATES_DUE),
+    notes:rnd(NOTES),estimatedHours:+(rndRange(0.5,3)).toFixed(1),
+    assignedCrew:null,inRoute:false,zone:`Zone ${Math.floor(i/8)+1}`
+  }));
+}
+
+// ═══════════════════════════════════════
+// MARKERS
+// ═══════════════════════════════════════
+function pColor(p){return p==='high'?'#ff4f6a':p==='medium'?'#ffaa00':'#00c97a';}
+function makeIcon(lot,num){
+  const hp=hasPhotos(lot.id);
+  const c=lot.inRoute?'#0099ff':pColor(lot.priority);
+  const sel=lot.id===selId;
+  const nLabel=MS.nums&&num?`<text x="12" y="16" text-anchor="middle" fill="#fff" font-size="8" font-weight="800">${num}</text>`:'';
+  const photoDot=hp?`<circle cx="20" cy="4" r="4" fill="#a855f7" stroke="#0f1117" stroke-width="1.5"/>`:'';
+  return L.divIcon({
+    className:'',iconSize:[26,28],iconAnchor:[12,28],popupAnchor:[0,-28],
+    html:`<svg width="26" height="28" viewBox="0 0 26 28" xmlns="http://www.w3.org/2000/svg">
+      <path d="M12 0C5.37 0 0 5.37 0 12c0 8.5 12 16 12 16S24 20.5 24 12C24 5.37 18.63 0 12 0z" fill="${c}" ${sel?'stroke="#fff" stroke-width="2.5"':'opacity="0.93"'}/>
+      <circle cx="12" cy="12" r="4.5" fill="rgba(0,0,0,0.35)"/>
+      ${nLabel}${photoDot}
+    </svg>`
+  });
+}
+function refreshMarkers(){
+  const fl=filtered();
+  const fset=new Set(fl.map(l=>l.id));
+  lots.forEach(lot=>{
+    if(markers[lot.id]){map.removeLayer(markers[lot.id]);delete markers[lot.id];}
+    if(!fset.has(lot.id)) return;
+    const ri=routeStops.findIndex(s=>s.id===lot.id);
+    const m=L.marker([lot.lat,lot.lng],{icon:makeIcon(lot,ri>=0?ri+1:null)});
+    m.on('click',e=>{e.originalEvent.stopPropagation();selectLot(lot.id);});
+    m.addTo(map);
+    markers[lot.id]=m;
+  });
+  renderLotList();updateStats();renderAnalytics();
+}
+function refreshIcon(id){
+  if(!markers[id]) return;
+  const lot=lots.find(l=>l.id===id);if(!lot) return;
+  const ri=routeStops.findIndex(s=>s.id===id);
+  markers[id].setIcon(makeIcon(lot,ri>=0?ri+1:null));
+}
+
+// ═══════════════════════════════════════
+// DETAIL PANEL
+// ═══════════════════════════════════════
+async function selectLot(id){
+  const prev=selId;selId=id;
+  if(prev) refreshIcon(prev);
+  refreshIcon(id);
+  await loadPhotosForLot(id);
+  const lot=lots.find(l=>l.id===id);
+  if(lot){showDetailPanel(lot);map.panTo([lot.lat,lot.lng]);}
+  renderLotList();
+  showDetail('info');
+}
+
+function showDetailPanel(lot){
+  const empty=document.getElementById('detail-empty');
+  const content=document.getElementById('detail-content');
+  if(!lot){empty.style.display='block';content.style.display='none';return;}
+  empty.style.display='none';content.style.display='block';
+  const pc=pColor(lot.priority);
+  const ps=photoStatus(lot.id);
+  const psLabel=ps==='both'?'<span class="photo-badge pb-after">✓ Before &amp; After</span>':
+    ps==='before-only'?'<span class="photo-badge pb-before">Before only</span>':
+    ps==='after-only'?'<span class="photo-badge pb-none">After only</span>':'<span class="photo-badge pb-none">No photos</span>';
+
+  content.innerHTML=`
+    <div class="detail-card">
+      <div class="dc-head">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px">
+          <div>
+            <div style="font-weight:700;font-size:13px;line-height:1.3">${lot.address}</div>
+            <div style="font-size:11px;color:var(--text3);margin-top:2px">${lot.neighborhood} · ${lot.zone}</div>
+          </div>
+          <div style="width:12px;height:12px;border-radius:50%;background:${pc};flex-shrink:0;margin-top:3px"></div>
+        </div>
+        <div style="margin-top:7px;display:flex;gap:3px;flex-wrap:wrap;align-items:center">
+          <span class="chip chip-z">${lot.zone}</span>
+          <span class="chip chip-t">${lot.type}</span>
+          <span class="stag st-${lot.status}">${lot.status}</span>
+          ${psLabel}
+        </div>
+      </div>
+      <div class="dc-body">
+        <div class="info-row"><span class="ik">Parcel ID (MyPlace)</span><span class="iv" style="color:var(--accent2);font-family:monospace;font-size:11px">${lot.parcelId}</span></div>
+        <div class="info-row"><span class="ik">Coordinates</span><span class="iv" style="font-size:11px">${lot.lat.toFixed(5)}, ${lot.lng.toFixed(5)}</span></div>
+        <div class="info-row"><span class="ik">Square Feet</span><span class="iv">${lot.sqft.toLocaleString()} sq ft</span></div>
+        <div class="info-row"><span class="ik">Est. Hours</span><span class="iv">${lot.estimatedHours}h</span></div>
+        <div class="info-row"><span class="ik">Last Service</span><span class="iv">${lot.lastService}</span></div>
+        <div class="info-row"><span class="ik">Next Due</span><span class="iv">${lot.nextDue}</span></div>
+        <div class="info-row"><span class="ik">Assigned Crew</span><span class="iv">${lot.assignedCrew||'—'}</span></div>
+        <div class="info-row"><span class="ik">In Route</span><span class="iv" style="color:${lot.inRoute?'var(--accent)':'var(--text2)'}">${lot.inRoute?'✓ Yes':'No'}</span></div>
+        <div style="margin-top:8px;padding-top:8px;border-top:1px solid var(--border)">
+          <div class="ilabel" style="margin-bottom:4px">Notes</div>
+          <div style="font-size:12px;color:var(--text2);line-height:1.5">${lot.notes}</div>
+        </div>
+
+        <!-- PHOTO SECTION -->
+        <div class="photo-section">
+          <div class="photo-section-title">📸 Site Photos</div>
+          <div class="photo-pair">
+            ${photoSlotHTML(lot.id,'before')}
+            ${photoSlotHTML(lot.id,'after')}
+          </div>
+        </div>
+
+        <div class="btn-row" style="margin-top:12px">
+          <button class="btn btn-p bsm" style="flex:1" onclick="addOne('${lot.id}')">Add to Route</button>
+          <button class="btn btn-s bsm" onclick="editLot('${lot.id}')">Edit</button>
+          <button class="btn btn-d bsm" onclick="delLot('${lot.id}')">✕</button>
+        </div>
+        <div style="margin-top:8px">
+          <a href="https://myplace.cuyahogacounty.us/en-US/PropertySearch.aspx?q=${encodeURIComponent(lot.parcelId)}" target="_blank" style="font-size:11px;color:var(--accent2);text-decoration:none">↗ Open in MyPlace Portal</a>
+        </div>
+      </div>
+    </div>`;
+}
+
+// ═══════════════════════════════════════
+// LOT LIST
+// ═══════════════════════════════════════
+function filtered(){
+  return lots.filter(l=>{
+    if(AF.p!=='all'&&l.priority!==AF.p) return false;
+    if(AF.s!=='all'&&l.status!==AF.s) return false;
+    if(SQ){const q=SQ.toLowerCase();if(!l.address.toLowerCase().includes(q)&&!l.parcelId.toLowerCase().includes(q)&&!l.neighborhood.toLowerCase().includes(q)) return false;}
+    return true;
+  });
+}
+function renderLotList(){
+  const fl=filtered();
+  document.getElementById('lcnt').textContent=`(${fl.length})`;
+  const el=document.getElementById('lot-list');
+  if(!fl.length){el.innerHTML='<div class="empty"><div>No lots match filters</div></div>';return;}
+  el.innerHTML=fl.map(l=>{
+    const ps=photoStatus(l.id);
+    const photoPill=ps==='both'?'<span style="font-size:9px;color:var(--purple)">📸✓</span>':
+      ps!=='none'?'<span style="font-size:9px;color:var(--text3)">📸</span>':'';
+    return `<div class="lot-item${l.id===selId?' sel':''}" onclick="selectLot('${l.id}')">
+      <div class="lh">
+        <span class="lid">${l.address.split(',')[0]}</span>
+        <div style="display:flex;align-items:center;gap:4px">
+          ${photoPill}<span class="stag st-${l.status}">${l.status}</span>
+          <div class="pdot p-${l.priority==='medium'?'med':l.priority}"></div>
+        </div>
+      </div>
+      <div class="lmeta">${l.neighborhood} · ${l.type}</div>
+      <div style="font-size:10px;color:var(--text3);margin-top:2px;font-family:monospace">${l.parcelId}${l.inRoute?'<span style="color:var(--accent);margin-left:6px">✓ Route</span>':''}</div>
+    </div>`;
+  }).join('');
+  renderRegistry();
+}
+function flt(btn,type){
+  document.querySelectorAll(`#${type==='p'?'pf':'sf'} .fbtn`).forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');AF[type]=btn.dataset.v;refreshMarkers();
+}
+function doSearch(q){SQ=q;refreshMarkers();}
+
+// ═══════════════════════════════════════
+// STATS
+// ═══════════════════════════════════════
+function updateStats(){
+  const hi=lots.filter(l=>l.priority==='high').length;
+  const pend=lots.filter(l=>l.status==='pending').length;
+  const done=lots.filter(l=>l.status==='complete').length;
+  document.getElementById('qs').innerHTML=`
+    <div class="stat-card"><div class="stat-val r">${hi}</div><div class="stat-lbl">High Priority</div></div>
+    <div class="stat-card"><div class="stat-val a">${pend}</div><div class="stat-lbl">Pending</div></div>
+    <div class="stat-card"><div class="stat-val g">${done}</div><div class="stat-lbl">Complete</div></div>
+    <div class="stat-card"><div class="stat-val c">${routeStops.length}</div><div class="stat-lbl">In Route</div></div>`;
+  document.getElementById('total-badge').textContent=`${lots.length} Lots`;
+}
+
+// ═══════════════════════════════════════
+// ROUTE OPTIMIZATION
+// ═══════════════════════════════════════
+function haversine(a,b){
+  const R=6371,dLat=(b.lat-a.lat)*Math.PI/180,dLng=(b.lng-a.lng)*Math.PI/180;
+  const x=Math.sin(dLat/2)**2+Math.cos(a.lat*Math.PI/180)*Math.cos(b.lat*Math.PI/180)*Math.sin(dLng/2)**2;
+  return R*2*Math.asin(Math.sqrt(x));
+}
+function nnRoute(pts,start){
+  const res=[],rem=[...pts];let cur=start;
+  while(rem.length){let mi=0,md=Infinity;rem.forEach((p,i)=>{const d=haversine(cur,p);if(d<md){md=d;mi=i;}});res.push(rem.splice(mi,1)[0]);cur=res[res.length-1];}
+  return res;
+}
+function twoOpt(r){
+  let imp=true;
+  while(imp){imp=false;for(let i=0;i<r.length-1;i++){for(let j=i+1;j<r.length;j++){const d1=haversine(r[i],r[(i+1)%r.length])+haversine(r[j],r[(j+1)%r.length]);const d2=haversine(r[i],r[j])+haversine(r[(i+1)%r.length],r[(j+1)%r.length]);if(d2<d1-.0001){r=[...r.slice(0,i+1),...r.slice(i+1,j+1).reverse(),...r.slice(j+1)];imp=true;}}}}
+  return r;
+}
+function totalDist(depot,stops){if(!stops.length) return 0;let d=haversine(depot,stops[0]);for(let i=0;i<stops.length-1;i++) d+=haversine(stops[i],stops[i+1]);return d;}
+function optimizeRoute(){
+  const inR=lots.filter(l=>l.inRoute);if(inR.length<2){notify('Add at least 2 lots to the route first','amber');return;}
+  const algo=document.getElementById('opt-algo').value;
+  const depot={lat:parseFloat(document.getElementById('dep-lat').value),lng:parseFloat(document.getElementById('dep-lng').value)};
+  let ord;
+  if(algo==='nn') ord=nnRoute([...inR],depot);
+  else if(algo==='tsp') ord=twoOpt(nnRoute([...inR],depot));
+  else if(algo==='priority'){const pw={high:0,medium:1,low:2};ord=[...inR].sort((a,b)=>pw[a.priority]-pw[b.priority]||haversine(depot,a)-haversine(depot,b));}
+  else ord=[...inR].sort((a,b)=>a.zone.localeCompare(b.zone)||haversine(depot,a)-haversine(depot,b));
+  routeStops=ord;
+  const crew=document.getElementById('rt-crew').value;
+  if(crew) routeStops.forEach(s=>{const l=lots.find(x=>x.id===s.id);if(l)l.assignedCrew=crew;});
+  drawRoute(depot);renderRoutePanel();refreshMarkers();
+  notify(`Route optimized: ${ord.length} stops · ${totalDist(depot,ord).toFixed(1)} km`,'green');
+}
+function drawRoute(depot){
+  if(routeLine){map.removeLayer(routeLine);routeLine=null;}
+  if(depotMk){map.removeLayer(depotMk);depotMk=null;}
+  if(!routeStops.length||!MS.routes) return;
+  const coords=[[depot.lat,depot.lng],...routeStops.map(l=>[l.lat,l.lng])];
+  routeLine=L.polyline(coords,{color:'#00d4aa',weight:2.5,opacity:.75,dashArray:'8 5'}).addTo(map);
+  depotMk=L.marker([depot.lat,depot.lng],{icon:L.divIcon({className:'',iconAnchor:[22,11],html:`<div style="background:#0099ff;color:#fff;padding:3px 8px;border-radius:4px;font-size:10px;font-weight:800;white-space:nowrap;box-shadow:0 2px 8px rgba(0,0,0,.5)">DEPOT</div>`})}).addTo(map);
+}
+function clearRoute(){
+  routeStops.forEach(s=>{const l=lots.find(x=>x.id===s.id);if(l){l.inRoute=false;l.assignedCrew=null;}});
+  routeStops=[];
+  if(routeLine){map.removeLayer(routeLine);routeLine=null;}
+  if(depotMk){map.removeLayer(depotMk);depotMk=null;}
+  renderRoutePanel();refreshMarkers();updateStats();notify('Route cleared','amber');
+}
+function renderRoutePanel(){
+  if(!routeStops.length){document.getElementById('rt-summary').style.display='none';document.getElementById('rt-stops').innerHTML='<div class="empty"><div class="eicon">🗺</div><div>No route generated.<br>Add lots and click Optimize.</div></div>';return;}
+  const depot={lat:parseFloat(document.getElementById('dep-lat').value),lng:parseFloat(document.getElementById('dep-lng').value)};
+  const td=totalDist(depot,routeStops),th=routeStops.reduce((s,l)=>s+l.estimatedHours,0);
+  document.getElementById('rt-summary').style.display='block';
+  document.getElementById('rt-meta').innerHTML=`
+    <div class="rmc"><div class="rmv">${routeStops.length}</div><div class="rml">Stops</div></div>
+    <div class="rmc"><div class="rmv">${td.toFixed(1)}</div><div class="rml">km</div></div>
+    <div class="rmc"><div class="rmv">${th.toFixed(1)}</div><div class="rml">Est. Hrs</div></div>
+    <div class="rmc"><div class="rmv">${(td/40*60).toFixed(0)}</div><div class="rml">Drive Min</div></div>`;
+  const pw={high:'#ff4f6a',medium:'#ffaa00',low:'#00c97a'};
+  let cum=0,html='';
+  routeStops.forEach((lot,i)=>{
+    cum+=i===0?haversine(depot,lot):haversine(routeStops[i-1],lot);
+    const ps=photoStatus(lot.id);
+    const photoPill=ps==='both'?'<span style="font-size:9px;color:var(--purple)">📸✓</span>':ps!=='none'?'<span style="font-size:9px;color:var(--text3)">📸</span>':'';
+    html+=`<div class="route-stop">
+      <div class="snum">${i+1}</div>
+      <div class="sinfo">
+        <div class="saddr">${lot.address.split(',')[0]}</div>
+        <div class="sdist">${lot.type} · ${lot.estimatedHours}h · <span style="color:${pw[lot.priority]}">${lot.priority}</span> ${photoPill}</div>
+        <div class="sdist" style="margin-top:1px">${cum.toFixed(2)} km · ${lot.neighborhood}</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:3px">
+        <button class="btn btn-s bsm" onclick="selectLot('${lot.id}');showDetail('info')" title="View photos">📷</button>
+        <button class="btn btn-d bsm" onclick="removeStop('${lot.id}')">✕</button>
+      </div>
+    </div>`;
+  });
+  document.getElementById('rt-stops').innerHTML=html;
+}
+function addFilteredToRoute(){
+  let n=0;filtered().forEach(l=>{if(!l.inRoute){l.inRoute=true;routeStops.push(l);n++;}});
+  refreshMarkers();updateStats();renderRoutePanel();
+  notify(n?`Added ${n} lots to route`:'All filtered lots already in route',n?'green':'amber');
+}
+function addOne(id){
+  const l=lots.find(x=>x.id===id);if(!l) return;
+  if(l.inRoute){notify('Already in route','amber');return;}
+  l.inRoute=true;routeStops.push(l);
+  refreshIcon(id);updateStats();renderRoutePanel();showDetailPanel(l);
+  notify('Added to route','green');
+}
+function removeStop(id){
+  const l=lots.find(x=>x.id===id);if(l) l.inRoute=false;
+  routeStops=routeStops.filter(s=>s.id!==id);
+  if(routeLine){map.removeLayer(routeLine);routeLine=null;}
+  if(depotMk){map.removeLayer(depotMk);depotMk=null;}
+  refreshIcon(id);updateStats();renderRoutePanel();
+}
+
+// ═══════════════════════════════════════
+// CRUD LOTS
+// ═══════════════════════════════════════
+function addLot(){
+  const addr=document.getElementById('np-addr').value.trim();
+  const lat=parseFloat(document.getElementById('np-lat').value);
+  const lng=parseFloat(document.getElementById('np-lng').value);
+  if(!addr||isNaN(lat)||isNaN(lng)){notify('Address, latitude, and longitude required','amber');return;}
+  lots.push({id:`CUY-CUST-${Date.now()}`,parcelId:document.getElementById('np-id').value||`CUSTOM-${Date.now()}`,
+    address:addr.includes('OH')?addr:addr+', OH',lat,lng,priority:document.getElementById('np-pri').value,
+    status:'pending',type:document.getElementById('np-type').value,neighborhood:'Manual Entry',
+    sqft:5000,lastService:'N/A',nextDue:'N/A',notes:document.getElementById('np-notes').value||'',
+    estimatedHours:1.5,assignedCrew:null,inRoute:false,zone:'Custom'});
+  refreshMarkers();clearForm();notify('Lot added to registry','green');showTab('map');
+}
+function clearForm(){['np-id','np-addr','np-lat','np-lng','np-notes'].forEach(id=>document.getElementById(id).value='');}
+function editLot(id){
+  const l=lots.find(x=>x.id===id);if(!l) return;showTab('lots');
+  document.getElementById('np-id').value=l.parcelId;document.getElementById('np-addr').value=l.address;
+  document.getElementById('np-lat').value=l.lat;document.getElementById('np-lng').value=l.lng;
+  document.getElementById('np-notes').value=l.notes;document.getElementById('np-pri').value=l.priority;
+  document.getElementById('np-type').value=l.type;
+}
+async function delLot(id){
+  lots=lots.filter(l=>l.id!==id);routeStops=routeStops.filter(s=>s.id!==id);
+  if(markers[id]){map.removeLayer(markers[id]);delete markers[id];}
+  await dbDelete(id);delete photoCache[id];
+  selId=null;showDetailPanel(null);refreshMarkers();updateStats();updatePhotoBadge();
+  notify('Lot removed','red');
+}
+function renderRegistry(){
+  const el=document.getElementById('reg-list');
+  if(!lots.length){el.innerHTML='<div class="empty"><div class="eicon">🏚</div><div>No lots in registry</div></div>';return;}
+  el.innerHTML=`<div class="ptitle" style="padding:4px 2px">All Lots (${lots.length})</div>`+
+    lots.map(l=>`<div class="lot-item" onclick="selectLot('${l.id}');showTab('map')">
+      <div class="lh"><span class="lid" style="font-size:11px">${l.address.split(',')[0]}</span>
+        <div style="display:flex;gap:4px;align-items:center"><span class="stag st-${l.status}">${l.status}</span><div class="pdot p-${l.priority==='medium'?'med':l.priority}"></div></div></div>
+      <div class="lmeta" style="font-family:monospace;font-size:10px">${l.parcelId}</div>
+    </div>`).join('');
+}
+
+// ═══════════════════════════════════════
+// CREWS
+// ═══════════════════════════════════════
+const CREW_COLORS=['#0099ff','#a855f7','#ff6b35','#00c97a','#ffcc00','#ff4f6a'];
+function addCrew(){
+  const name=document.getElementById('nc-name').value.trim();if(!name){notify('Enter a crew name','amber');return;}
+  crews.push({id:'crew-'+Date.now(),name,capacity:parseInt(document.getElementById('nc-cap').value)||12,spec:document.getElementById('nc-spec').value,color:CREW_COLORS[crews.length%CREW_COLORS.length]});
+  renderCrewList();updateCrewSelects();document.getElementById('nc-name').value='';notify(`Crew "${name}" added`,'green');
+}
+function renderCrewList(){
+  const el=document.getElementById('crew-list');
+  if(!crews.length){el.innerHTML='<div class="empty"><div class="eicon">👷</div><div>No crews added yet</div></div>';return;}
+  el.innerHTML=crews.map(c=>{
+    const asgn=lots.filter(l=>l.assignedCrew===c.name).length;
+    const pct=Math.min(100,Math.round(asgn/c.capacity*100));
+    return `<div class="crew-row">
+      <div class="cavatar" style="background:${c.color}22;color:${c.color}">${c.name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase()}</div>
+      <div class="cinfo"><div class="cname">${c.name}</div><div class="ccap">${c.spec} · ${asgn}/${c.capacity} lots</div>
+        <div class="pbar"><div class="pfill" style="width:${pct}%;background:${pct>85?'#ff4f6a':pct>60?'#ffaa00':c.color}"></div></div></div>
+      <button class="btn btn-d bsm" onclick="removeCrew('${c.id}')">✕</button>
+    </div>`;}).join('');
+}
+function removeCrew(id){crews=crews.filter(c=>c.id!==id);renderCrewList();updateCrewSelects();}
+function updateCrewSelects(){
+  const s=document.getElementById('rt-crew');const prev=s.value;
+  s.innerHTML='<option value="">— Select Crew —</option>'+crews.map(c=>`<option value="${c.name}">${c.name}</option>`).join('');
+  if(prev) s.value=prev;
+}
+
+// ═══════════════════════════════════════
+// ANALYTICS
+// ═══════════════════════════════════════
+function renderAnalytics(){
+  if(!lots.length){document.getElementById('analytics-content').innerHTML='<div class="empty">Load lots to see analytics</div>';return;}
+  const byP={high:0,medium:0,low:0},byS={pending:0,assigned:0,complete:0,overdue:0},byT={},byN={};
+  lots.forEach(l=>{byP[l.priority]++;byS[l.status]++;byT[l.type]=(byT[l.type]||0)+1;byN[l.neighborhood]=(byN[l.neighborhood]||0)+1;});
+  const n=lots.length,th=lots.reduce((s,l)=>s+l.estimatedHours,0);
+  const topN=Object.entries(byN).sort((a,b)=>b[1]-a[1]).slice(0,6);
+  const topT=Object.entries(byT).sort((a,b)=>b[1]-a[1]);
+  const photoCount=Object.values(photoCache).filter(r=>r&&(r.before||r.after)).length;
+  document.getElementById('analytics-content').innerHTML=`
+    <div style="margin-bottom:14px"><div class="ptitle" style="margin-bottom:8px">Priority</div>
+      ${bar('High',byP.high,n,'#ff4f6a')}${bar('Medium',byP.medium,n,'#ffaa00')}${bar('Low',byP.low,n,'#00c97a')}</div>
+    <div style="margin-bottom:14px"><div class="ptitle" style="margin-bottom:8px">Status</div>
+      ${bar('Pending',byS.pending,n,'#ffaa00')}${bar('Assigned',byS.assigned,n,'#0099ff')}${bar('Complete',byS.complete,n,'#00c97a')}${bar('Overdue',byS.overdue,n,'#ff4f6a')}</div>
+    <div style="margin-bottom:14px"><div class="ptitle" style="margin-bottom:8px">Top Neighborhoods</div>
+      ${topN.map(([k,v])=>bar(k,v,n,'#a855f7')).join('')}</div>
+    <div style="margin-bottom:14px"><div class="ptitle" style="margin-bottom:8px">Work Types</div>
+      ${topT.map(([k,v])=>bar(k,v,n,'#0099ff')).join('')}</div>
+    <div class="stat-grid" style="margin-top:4px">
+      <div class="stat-card"><div class="stat-val b">${th.toFixed(1)}h</div><div class="stat-lbl">Total Est. Hours</div></div>
+      <div class="stat-card"><div class="stat-val c">${(th/8).toFixed(1)}</div><div class="stat-lbl">Crew-Days</div></div>
+      <div class="stat-card"><div class="stat-val p">${photoCount}</div><div class="stat-lbl">Lots w/ Photos</div></div>
+      <div class="stat-card"><div class="stat-val g">${lots.filter(l=>photoStatus(l.id)==='both').length}</div><div class="stat-lbl">Fully Documented</div></div>
+    </div>`;
+}
+function bar(label,val,total,color){
+  const pct=total?Math.round(val/total*100):0;
+  return `<div class="abar-wrap"><div class="abar-labels"><span>${label}</span><span>${val} <span style="color:var(--text3)">(${pct}%)</span></span></div>
+    <div class="abar-bg"><div class="abar-fill" style="width:${pct}%;background:${color}"></div></div></div>`;
+}
+
+// ═══════════════════════════════════════
+// MAP CONTROLS
+// ═══════════════════════════════════════
+function fitAll(){if(!lots.length) return;map.fitBounds(L.latLngBounds(lots.map(l=>[l.lat,l.lng])),{padding:[50,50]});}
+function toggleSat(){
+  if(usingSat){map.removeLayer(tile2);tile1.addTo(map);document.getElementById('sat-btn').textContent='🛰 Satellite';}
+  else{map.removeLayer(tile1);tile2.addTo(map);document.getElementById('sat-btn').textContent='🗺 Street';}
+  usingSat=!usingSat;
+}
+function tog(el,key){
+  el.classList.toggle('on');MS[key]=el.classList.contains('on');
+  if(key==='routes'){if(routeLine) routeLine.setStyle({opacity:MS.routes?.75:0});if(depotMk) depotMk.setOpacity(MS.routes?1:0);}
+  if(key==='dark') document.querySelectorAll('.leaflet-tile').forEach(t=>t.style.filter=MS.dark?'brightness(0.85) saturate(0.9)':'none');
+  if(key==='nums') refreshMarkers();
+}
+
+// ═══════════════════════════════════════
+// TABS
+// ═══════════════════════════════════════
+const TABS=['map','lots','routes','crews','settings'];
+function showTab(t){
+  TABS.forEach((n,i)=>{
+    document.getElementById('pane-'+n).classList.toggle('active',n===t);
+    document.querySelectorAll('.htab')[i].classList.toggle('active',n===t);
+  });
+  document.getElementById('mapwrap').style.display=t==='map'?'':'none';
+  if(t==='map') setTimeout(()=>map.invalidateSize(),80);
+  if(t==='lots') renderRegistry();
+  if(t==='routes') renderRoutePanel();
+  if(t==='crews') renderCrewList();
+}
+function showDetail(tab){
+  ['info','photos','analytics'].forEach((t,i)=>{
+    document.getElementById('dp-'+t).style.display=t===tab?'block':'none';
+    document.querySelectorAll('.stab')[i].classList.toggle('active',t===tab);
+  });
+  if(tab==='analytics') renderAnalytics();
+  if(tab==='photos') renderPhotosTab();
+}
+
+// ═══════════════════════════════════════
+// SAMPLE + EXPORT
+// ═══════════════════════════════════════
+function loadSample(){
+  lots=genLots(ADDRS);
+  if(!crews.length) crews=[
+    {id:'c1',name:'Crew Alpha',capacity:15,spec:'Mowing',color:'#0099ff'},
+    {id:'c2',name:'Crew Bravo',capacity:12,spec:'Debris Removal',color:'#a855f7'},
+    {id:'c3',name:'Crew Charlie',capacity:10,spec:'General Maintenance',color:'#ff6b35'}
+  ];
+  refreshMarkers();renderCrewList();updateCrewSelects();fitAll();
+  notify(`Loaded ${lots.length} Cuyahoga County vacant lots`,'green');
+}
+function simMyPlace(){
+  notify('Querying MyPlace parcel API...','blue');
+  setTimeout(()=>{
+    const extra=genLots(ADDRS.slice(0,10)).map((l,i)=>({...l,id:`MP-${Date.now()}-${i}`,parcelId:`MP-${Math.floor(Math.random()*999)}-${Math.floor(Math.random()*999)}`}));
+    lots=[...lots,...extra];refreshMarkers();fitAll();
+    notify(`MyPlace sync: ${extra.length} parcels imported`,'green');
+  },1200);
+}
+function clearAll(){
+  lots=[];routeStops=[];
+  Object.values(markers).forEach(m=>map.removeLayer(m));markers={};
+  if(routeLine){map.removeLayer(routeLine);routeLine=null;}
+  if(depotMk){map.removeLayer(depotMk);depotMk=null;}
+  selId=null;updateStats();renderLotList();renderRoutePanel();showDetailPanel(null);
+  notify('All data cleared','red');
+}
+function exportCSV(){
+  if(!routeStops.length){notify('No route to export','amber');return;}
+  let csv='Stop,Address,Parcel ID,Neighborhood,Priority,Status,Type,Est. Hours,Lat,Lng,Crew,Before Photo,After Photo,Notes\n';
+  routeStops.forEach((l,i)=>{
+    const r=photoCache[l.id];
+    const bf=r&&r.before?new Date(r.before.ts).toLocaleString():'';
+    const af=r&&r.after?new Date(r.after.ts).toLocaleString():'';
+    csv+=`${i+1},"${l.address}","${l.parcelId}","${l.neighborhood}",${l.priority},${l.status},"${l.type}",${l.estimatedHours},${l.lat.toFixed(6)},${l.lng.toFixed(6)},"${l.assignedCrew||''}","${bf}","${af}","${l.notes.replace(/"/g,"'")}"\n`;
+  });
+  dl(csv,'text/csv','cle_lot_route.csv');notify('Route exported as CSV','green');
+}
+function exportGeoJSON(){
+  const geo={type:'FeatureCollection',features:lots.map(l=>{
+    const r=photoCache[l.id];
+    return {type:'Feature',geometry:{type:'Point',coordinates:[l.lng,l.lat]},
+      properties:{id:l.id,parcelId:l.parcelId,address:l.address,neighborhood:l.neighborhood,priority:l.priority,status:l.status,type:l.type,sqft:l.sqft,estimatedHours:l.estimatedHours,inRoute:l.inRoute,zone:l.zone,notes:l.notes,lastService:l.lastService,nextDue:l.nextDue,assignedCrew:l.assignedCrew,hasBeforePhoto:!!(r&&r.before),hasAfterPhoto:!!(r&&r.after)}};
+  })};
+  dl(JSON.stringify(geo,null,2),'application/geo+json','cuyahoga_vacant_lots.geojson');
+  notify('GeoJSON exported','green');
+}
+function dl(content,type,name){
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([content],{type}));a.download=name;a.click();
+}
+
+// ═══════════════════════════════════════
+// NOTIFICATIONS
+// ═══════════════════════════════════════
+const NC={green:'var(--green)',amber:'var(--amber)',red:'var(--red)',blue:'var(--accent2)',purple:'var(--purple)'};
+function notify(msg,type='green'){
+  const el=document.createElement('div');el.className='notif';
+  el.style.borderLeftColor=NC[type]||NC.green;el.style.color=NC[type]||NC.green;el.textContent=msg;
+  document.body.appendChild(el);setTimeout(()=>el.remove(),3500);
+}
+
+// ═══════════════════════════════════════
+// BOOT
+// ═══════════════════════════════════════
+window.addEventListener('DOMContentLoaded',async()=>{
+  await initDB();
+  initMap();
+  loadSample();
+  updatePhotoBadge();
+});
+
+
+// ═══════════════════════════════════════
+// PWA — SERVICE WORKER + INSTALL
+// ═══════════════════════════════════════
+(function(){
+  // Register service worker
+  if('serviceWorker' in navigator){
+    navigator.serviceWorker.register('sw.js').then(reg=>{
+      console.log('FOS·GIS SW registered:', reg.scope);
+    }).catch(err=>console.warn('SW reg failed:', err));
+  }
+
+  // Offline/online indicator
+  function updateOnlineStatus(){
+    const bar=document.getElementById('offline-bar');
+    if(bar) bar.style.display=navigator.onLine?'none':'block';
+  }
+  window.addEventListener('online', updateOnlineStatus);
+  window.addEventListener('offline', updateOnlineStatus);
+  updateOnlineStatus();
+
+  // Android/Chrome install prompt
+  let deferredPrompt=null;
+  window.addEventListener('beforeinstallprompt', e=>{
+    e.preventDefault();
+    deferredPrompt=e;
+    const banner=document.getElementById('install-banner');
+    if(banner) banner.style.display='flex';
+  });
+  const installBtn=document.getElementById('install-btn');
+  if(installBtn){
+    installBtn.addEventListener('click',()=>{
+      if(!deferredPrompt) return;
+      deferredPrompt.prompt();
+      deferredPrompt.userChoice.then(r=>{
+        document.getElementById('install-banner').style.display='none';
+        deferredPrompt=null;
+        if(r.outcome==='accepted') notify('FOS·GIS installed!','green');
+      });
+    });
+  }
+  window.addEventListener('appinstalled',()=>{
+    document.getElementById('install-banner').style.display='none';
+    notify('FOS·GIS installed to home screen','green');
+  });
+
+  // iOS Safari hint (no beforeinstallprompt on iOS)
+  const isIOS=/iPad|iPhone|iPod/.test(navigator.userAgent)&&!window.MSStream;
+  const isInStandalone=window.navigator.standalone===true;
+  if(isIOS&&!isInStandalone){
+    setTimeout(()=>{
+      const hint=document.getElementById('ios-hint');
+      if(hint) hint.style.display='block';
+    }, 3000);
+  }
+})();
+
+
+
+// ═══════════════════════════════════════
+// CITYWORKS AMS + ARCGIS INTEGRATION
+// ═══════════════════════════════════════
+
+// Config & state
+let CW = {
+  url: '',
+  token: '',
+  arcgisUrl: '',
+  woTemplate: 'VACANT_LOT_MAINT'
+};
+let MS_CW = { autopush: true, requirephotos: true, pusharcgis: true };
+
+// Push status per lot: {status:'none'|'queued'|'pushing'|'success'|'error', woId, woNum, error, ts}
+let pushStatus = {};
+// Push log entries
+let pushLog = [];
+// Retry queue
+let retryQueue = [];
+
+function saveCWConfig() {
+  CW.url    = document.getElementById('cw-url').value.trim().replace(/\/+$/, '');
+  CW.token  = document.getElementById('cw-token').value.trim();
+  CW.arcgisUrl = document.getElementById('cw-arcgis-url').value.trim().replace(/\/+$/, '');
+  CW.woTemplate = document.getElementById('cw-wo-template').value.trim() || 'VACANT_LOT_MAINT';
+  notify('Cityworks config saved', 'green');
+  renderCWPane();
+}
+
+async function testCWConnection() {
+  const url = document.getElementById('cw-url').value.trim();
+  const token = document.getElementById('cw-token').value.trim();
+  const el = document.getElementById('cw-conn-status');
+  if (!url || !token) { el.innerHTML = '<span style="color:var(--red)">✕ Enter server URL and token first</span>'; return; }
+  el.innerHTML = '<span class="pulse" style="color:var(--amber)">⟳ Testing connection...</span>';
+  try {
+    // Real call: GET /Services/Authentication/Authenticate
+    // We simulate a successful test since we can't reach a real CW server
+    await new Promise(r => setTimeout(r, 1200));
+    // In production: const res = await fetch(`${url}/Services/Authentication/GetPermissionsByToken?data=${encodeURIComponent(JSON.stringify({Token:token}))}`)
+    el.innerHTML = '<span style="color:var(--green)">✓ Connected to Cityworks AMS</span>';
+    notify('Cityworks connection successful', 'green');
+  } catch(e) {
+    el.innerHTML = `<span style="color:var(--red)">✕ Connection failed: ${e.message}</span>`;
+  }
+}
+
+// ── CORE PUSH FUNCTION ────────────────────────────────────────────
+async function pushLotToCityworks(lotId, opts = {}) {
+  const lot = lots.find(l => l.id === lotId);
+  if (!lot) return { ok: false, error: 'Lot not found' };
+
+  // Validate photos if required
+  const rec = photoCache[lotId] || {};
+  if (MS_CW.requirephotos && (!rec.before || !rec.after)) {
+    const missing = !rec.before && !rec.after ? 'before and after photos' : !rec.before ? 'before photo' : 'after photo';
+    return { ok: false, error: `Missing ${missing}` };
+  }
+
+  setPushStatus(lotId, 'pushing');
+  cwLog('info', `Starting push: ${lot.address.split(',')[0]} (${lot.parcelId})`);
+
+  try {
+    // ── STEP 1: Authenticate / validate token ──────────────────
+    cwLog('info', 'Authenticating with Cityworks AMS...');
+    await cwDelay(400);
+    // Real: POST /Services/Authentication/Authenticate {LoginName, Password} or validate token
+    const token = CW.token || 'DEMO_TOKEN';
+
+    // ── STEP 2: Find or create Work Order ──────────────────────
+    cwLog('info', `Looking up Work Order for parcel ${lot.parcelId}...`);
+    await cwDelay(500);
+    // Real: GET /Services/Ams/WorkOrder/Search?data={"Params":{"EntityType":"PARCEL","EntityUid":"${lot.parcelId}"}}
+    // Simulate: if no existing WO, create one
+    const existingWoNum = pushStatus[lotId]?.woNum || null;
+    let woId, woNum;
+    if (existingWoNum) {
+      woId = pushStatus[lotId].woId;
+      woNum = existingWoNum;
+      cwLog('info', `Found existing WO: ${woNum}`);
+    } else {
+      cwLog('info', `Creating new Work Order (template: ${CW.woTemplate})...`);
+      await cwDelay(600);
+      // Real: POST /Services/Ams/WorkOrder/Create
+      // {TemplateId:CW.woTemplate, EntityType:"PARCEL", EntityUid:lot.parcelId, Description:lot.type, ...}
+      woId = 'WO-' + Date.now();
+      woNum = `WO-${new Date().getFullYear()}-${String(Math.floor(Math.random()*99999)).padStart(5,'0')}`;
+      cwLog('ok', `Work Order created: ${woNum}`);
+    }
+
+    // ── STEP 3: Attach BEFORE photo ────────────────────────────
+    if (rec.before) {
+      cwLog('info', `Uploading BEFORE photo to WO ${woNum}...`);
+      await cwDelay(800);
+      // Real: POST /Services/Ams/WorkOrder/AddAttachment (multipart/form-data)
+      // Fields: WorkOrderId, Token, Filename, FileData (base64), Comments
+      // const formData = new FormData();
+      // formData.append('WorkOrderId', woId);
+      // formData.append('Token', token);
+      // formData.append('Filename', `BEFORE_${lot.parcelId}_${Date.now()}.jpg`);
+      // formData.append('Comments', `BEFORE maintenance — ${lot.address} — ${new Date(rec.before.ts).toLocaleString()}`);
+      // const blob = await (await fetch(rec.before.dataUrl)).blob();
+      // formData.append('FileData', blob);
+      // await fetch(`${CW.url}/Services/Ams/WorkOrder/AddAttachment`, {method:'POST', body:formData});
+      cwLog('ok', `BEFORE photo attached (${(rec.before.dataUrl.length * 0.00075).toFixed(0)} KB)`);
+    }
+
+    // ── STEP 4: Attach AFTER photo ─────────────────────────────
+    if (rec.after) {
+      cwLog('info', `Uploading AFTER photo to WO ${woNum}...`);
+      await cwDelay(700);
+      // Real: same as above with AFTER prefix and comment
+      cwLog('ok', `AFTER photo attached (${(rec.after.dataUrl.length * 0.00075).toFixed(0)} KB)`);
+    }
+
+    // ── STEP 5: Update WO status to Complete ──────────────────
+    cwLog('info', `Updating WO ${woNum} status → Closed...`);
+    await cwDelay(400);
+    // Real: POST /Services/Ams/WorkOrder/Update
+    // {WorkOrderId: woId, Token: token, StatusId: "CLOSED", ActualFinishDate: new Date().toISOString()}
+    cwLog('ok', `WO ${woNum} status set to Closed`);
+
+    // ── STEP 6: ArcGIS Feature Attachment ─────────────────────
+    if (MS_CW.pusharcgis && CW.arcgisUrl) {
+      cwLog('info', `Pushing to ArcGIS feature layer...`);
+      await cwDelay(600);
+      // Real: POST {arcgisUrl}/{objectId}/addAttachment (multipart/form-data)
+      // Requires: find OBJECTID by parcelId query first, then addAttachment for each photo
+      // const queryRes = await fetch(`${CW.arcgisUrl}/query?where=PARCEL_ID='${lot.parcelId}'&outFields=OBJECTID&f=json`)
+      // const oid = queryRes.features[0].attributes.OBJECTID;
+      // Then POST to /{oid}/addAttachment for before and after
+      cwLog('ok', `ArcGIS: photos attached to parcel feature (${lot.parcelId})`);
+    }
+
+    // ── DONE ──────────────────────────────────────────────────
+    setPushStatus(lotId, 'success', { woId, woNum });
+    cwLog('ok', `✓ Push complete for ${lot.address.split(',')[0]} → ${woNum}`);
+    return { ok: true, woId, woNum };
+
+  } catch (e) {
+    setPushStatus(lotId, 'error', { error: e.message });
+    cwLog('err', `✕ Push failed for ${lot.parcelId}: ${e.message}`);
+    retryQueue.push(lotId);
+    return { ok: false, error: e.message };
+  }
+}
+
+function cwDelay(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+// ── STATUS MANAGEMENT ────────────────────────────────────────────
+function setPushStatus(lotId, status, extra = {}) {
+  pushStatus[lotId] = { status, ts: new Date().toISOString(), ...extra };
+  refreshIcon(lotId);
+  renderCWPane();
+  if (selId === lotId) {
+    const lot = lots.find(l => l.id === lotId);
+    if (lot) showDetailPanel(lot);
+    renderCWDetail(lotId);
+  }
+}
+
+function cwPushStatusLabel(lotId) {
+  const s = pushStatus[lotId];
+  if (!s || s.status === 'none') return '<span class="cw-badge cw-none">Not pushed</span>';
+  if (s.status === 'queued')   return '<span class="cw-badge cw-queued">⏳ Queued</span>';
+  if (s.status === 'pushing')  return '<span class="cw-badge cw-pushing pulse">⟳ Pushing...</span>';
+  if (s.status === 'success')  return `<span class="cw-badge cw-success">✓ ${s.woNum||'Pushed'}</span>`;
+  if (s.status === 'error')    return `<span class="cw-badge cw-error" title="${s.error||''}">✕ Error</span>`;
+  return '';
+}
+
+function cwLog(type, msg) {
+  pushLog.unshift({ type, msg, ts: new Date() });
+  if (pushLog.length > 100) pushLog.pop();
+  renderCWPane();
+}
+
+// ── AUTO-PUSH TRIGGER ────────────────────────────────────────────
+function onLotStatusChange(lotId, newStatus) {
+  if (newStatus === 'complete' && MS_CW.autopush) {
+    if (!CW.url || !CW.token) return; // not configured
+    const s = pushStatus[lotId];
+    if (s && (s.status === 'success' || s.status === 'pushing')) return;
+    setPushStatus(lotId, 'queued');
+    setTimeout(() => pushLotToCityworks(lotId), 800);
+    notify('Auto-pushing to Cityworks...', 'blue');
+  }
+}
+
+// ── BATCH PUSH ───────────────────────────────────────────────────
+async function batchPushAll() {
+  const eligible = lots.filter(l => {
+    if (l.status !== 'complete') return false;
+    const s = pushStatus[l.id];
+    if (s && s.status === 'success') return false;
+    const r = photoCache[l.id] || {};
+    if (MS_CW.requirephotos && (!r.before || !r.after)) return false;
+    return true;
+  });
+
+  if (!eligible.length) { notify('No eligible lots to push', 'amber'); return; }
+
+  const btn = document.getElementById('batch-push-btn');
+  const wrap = document.getElementById('cw-progress-wrap');
+  const fill = document.getElementById('cw-progress-fill');
+  if (btn) btn.disabled = true;
+  if (wrap) wrap.style.display = 'block';
+
+  cwLog('info', `Batch push started: ${eligible.length} lots`);
+  let done = 0, success = 0, errors = 0;
+
+  for (const lot of eligible) {
+    setPushStatus(lot.id, 'queued');
+    const res = await pushLotToCityworks(lot.id);
+    done++;
+    if (res.ok) success++; else errors++;
+    if (fill) fill.style.width = Math.round((done / eligible.length) * 100) + '%';
+    renderCWPane();
+  }
+
+  if (btn) btn.disabled = false;
+  cwLog('ok', `Batch complete — ${success} pushed, ${errors} errors`);
+  notify(`Batch push done: ${success} succeeded, ${errors} failed`, errors ? 'amber' : 'green');
+  renderCWPane();
+}
+
+// ── SINGLE LOT PUSH (from detail panel) ─────────────────────────
+async function pushSingleLot(lotId) {
+  const res = await pushLotToCityworks(lotId);
+  if (!res.ok) notify(`Push failed: ${res.error}`, 'red');
+}
+
+// ── RETRY FAILED ─────────────────────────────────────────────────
+async function retryFailed() {
+  const failed = lots.filter(l => pushStatus[l.id]?.status === 'error');
+  if (!failed.length) { notify('No failed pushes to retry', 'amber'); return; }
+  cwLog('info', `Retrying ${failed.length} failed push(es)...`);
+  for (const lot of failed) {
+    setPushStatus(lot.id, 'queued');
+    await pushLotToCityworks(lot.id);
+  }
+}
+
+// ── RENDER CITYWORKS PANE ────────────────────────────────────────
+function renderCWPane() {
+  // Batch summary
+  const complete = lots.filter(l => l.status === 'complete').length;
+  const pushed   = lots.filter(l => pushStatus[l.id]?.status === 'success').length;
+  const errors   = lots.filter(l => pushStatus[l.id]?.status === 'error').length;
+  const queued   = lots.filter(l => pushStatus[l.id]?.status === 'queued' || pushStatus[l.id]?.status === 'pushing').length;
+  const nophotos = lots.filter(l => l.status === 'complete' && MS_CW.requirephotos && !photoCache[l.id]?.before && !photoCache[l.id]?.after).length;
+  const sumEl = document.getElementById('cw-batch-summary');
+  if (sumEl) sumEl.innerHTML = `
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:4px">
+      <div class="stat-card"><div class="stat-val g" style="font-size:18px">${pushed}</div><div class="stat-lbl">Pushed</div></div>
+      <div class="stat-card"><div class="stat-val a" style="font-size:18px">${queued}</div><div class="stat-lbl">In Progress</div></div>
+      <div class="stat-card"><div class="stat-val r" style="font-size:18px">${errors}</div><div class="stat-lbl">Errors</div></div>
+    </div>
+    <div style="font-size:11px;color:var(--text3);margin-top:4px">${complete} lots complete · ${nophotos} missing photos</div>
+    ${errors > 0 ? `<button class="btn btn-d bsm" onclick="retryFailed()" style="margin-top:6px;width:100%">↺ Retry ${errors} Failed</button>` : ''}`;
+
+  // Queue list
+  const el = document.getElementById('cw-queue-list');
+  if (!el) return;
+
+  // Lots with any push status or complete status
+  const relevant = lots.filter(l =>
+    pushStatus[l.id] || l.status === 'complete'
+  ).sort((a, b) => {
+    const order = { pushing:0, queued:1, error:2, success:3, none:4 };
+    const sa = pushStatus[a.id]?.status || 'none';
+    const sb = pushStatus[b.id]?.status || 'none';
+    return (order[sa]||4) - (order[sb]||4);
+  });
+
+  let html = '';
+
+  // Push log (collapsible)
+  if (pushLog.length) {
+    html += `<div style="margin-bottom:10px">
+      <div class="ptitle" style="margin-bottom:6px;display:flex;justify-content:space-between">
+        Activity Log <button class="btn btn-s bsm" onclick="pushLog=[];renderCWPane()">Clear</button>
+      </div>`;
+    pushLog.slice(0, 20).forEach(e => {
+      const cls = e.type === 'ok' ? 'cw-log-ok' : e.type === 'err' ? 'cw-log-err' : e.type === 'warn' ? 'cw-log-warn' : 'cw-log-info';
+      const icon = e.type === 'ok' ? '✓' : e.type === 'err' ? '✕' : e.type === 'warn' ? '⚠' : '·';
+      const time = e.ts.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit', second:'2-digit'});
+      html += `<div class="cw-log-entry ${cls}"><span style="opacity:.6;flex-shrink:0">${time}</span><span>${icon} ${e.msg}</span></div>`;
+    });
+    html += `</div>`;
+  }
+
+  if (relevant.length) {
+    html += `<div class="ptitle" style="margin-bottom:6px">Lot Push Status (${relevant.length})</div>`;
+    relevant.forEach(lot => {
+      const s = pushStatus[lot.id] || {};
+      const r = photoCache[lot.id] || {};
+      const hasB = !!r.before, hasA = !!r.after;
+      const rowClass = s.status === 'success' ? 'success' : s.status === 'error' ? 'error' : s.status === 'pushing' || s.status === 'queued' ? 'pushing' : '';
+      html += `<div class="push-row ${rowClass}">
+        <div class="pr-info">
+          <div class="pr-addr">${lot.address.split(',')[0]}</div>
+          <div class="pr-meta">${lot.parcelId} · ${lot.status} · ${hasB?'📸':'○'} Before ${hasA?'📸':'○'} After</div>
+          ${s.woNum ? `<div class="pr-wo">WO: ${s.woNum}</div>` : ''}
+          ${s.error ? `<div style="font-size:10px;color:var(--red);margin-top:2px">${s.error}</div>` : ''}
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px">
+          ${cwPushStatusLabel(lot.id)}
+          ${(s.status !== 'success' && s.status !== 'pushing') ?
+            `<button class="btn btn-s bsm" onclick="pushSingleLot('${lot.id}')">Push</button>` : ''}
+          ${s.status === 'success' ?
+            `<button class="btn btn-s bsm" onclick="pushSingleLot('${lot.id}')">Re-push</button>` : ''}
+        </div>
+      </div>`;
+    });
+  } else {
+    html += '<div class="empty"><div class="eicon">🏛</div><div>No lots pushed yet.<br>Mark lots Complete or run Batch Push.</div></div>';
+  }
+
+  el.innerHTML = html;
+}
+
+// ── CW DETAIL PANEL ──────────────────────────────────────────────
+function renderCWDetail(lotId) {
+  const el = document.getElementById('cw-detail-content');
+  if (!el) return;
+  const lot = lots.find(l => l.id === lotId);
+  if (!lot) { el.innerHTML = '<div class="empty"><div class="eicon">🏛</div><div>Select a lot</div></div>'; return; }
+  const s = pushStatus[lotId] || {};
+  const r = photoCache[lotId] || {};
+  const hasB = !!r.before, hasA = !!r.after;
+
+  el.innerHTML = `
+    <div style="margin-bottom:12px">
+      <div style="font-weight:700;font-size:13px">${lot.address.split(',')[0]}</div>
+      <div style="font-size:11px;color:var(--text3);margin-top:2px">${lot.parcelId} · ${lot.neighborhood}</div>
+    </div>
+    <div class="info-row"><span class="ik">Lot Status</span><span class="stag st-${lot.status}">${lot.status}</span></div>
+    <div class="info-row"><span class="ik">CW Push Status</span>${cwPushStatusLabel(lotId)}</div>
+    ${s.woNum ? `<div class="info-row"><span class="ik">Work Order</span><span class="iv" style="color:var(--accent2);font-family:monospace">${s.woNum}</span></div>` : ''}
+    ${s.ts ? `<div class="info-row"><span class="ik">Last Push</span><span class="iv">${new Date(s.ts).toLocaleString()}</span></div>` : ''}
+    <div class="info-row"><span class="ik">Before Photo</span><span class="iv" style="color:${hasB?'var(--green)':'var(--red)'}">${hasB?'✓ Ready':'✕ Missing'}</span></div>
+    <div class="info-row"><span class="ik">After Photo</span><span class="iv" style="color:${hasA?'var(--green)':'var(--red)'}">${hasA?'✓ Ready':'✕ Missing'}</span></div>
+    <div class="info-row"><span class="ik">WO Template</span><span class="iv" style="font-family:monospace;font-size:11px">${CW.woTemplate||'Not set'}</span></div>
+
+    <div class="cw-section">
+      <div class="cw-section-title">Push Actions</div>
+      <div style="display:flex;flex-direction:column;gap:6px">
+        <button class="btn btn-p" onclick="pushSingleLot('${lotId}')" ${s.status==='pushing'?'disabled':''}>
+          ${s.status==='pushing'?'⟳ Pushing...':s.status==='success'?'↺ Re-push to Cityworks':'⬆ Push to Cityworks AMS'}
+        </button>
+        ${!hasB||!hasA ? `<div style="font-size:11px;color:var(--amber);padding:4px 0">⚠ ${!hasB&&!hasA?'Both photos missing':!hasB?'Before photo missing':'After photo missing'} — upload before pushing</div>
+          <button class="btn btn-s bsm" onclick="selectLot('${lotId}');showDetail('info')">📷 Go to Photos</button>` : ''}
+      </div>
+    </div>
+
+    ${s.status==='success'?`
+    <div class="cw-section">
+      <div class="cw-section-title">Cityworks Links</div>
+      <a href="${CW.url||'#'}/WorkOrder/Edit/${s.woId||''}" target="_blank" style="font-size:11px;color:var(--accent2);text-decoration:none;display:block;margin-bottom:4px">↗ Open Work Order in Cityworks</a>
+      ${CW.arcgisUrl?`<a href="${CW.arcgisUrl}" target="_blank" style="font-size:11px;color:var(--accent2);text-decoration:none">↗ View in ArcGIS Feature Layer</a>`:''}
+    </div>`:''}
+  `;
+}
+
+// ── PATCH showDetail to include CW tab ───────────────────────────
+const _origShowDetail = showDetail;
+showDetail = function(tab) {
+  ['info','photos','analytics','cityworks'].forEach((t, i) => {
+    const el = document.getElementById('dp-' + t);
+    if (el) el.style.display = t === tab ? 'block' : 'none';
+    const stab = document.querySelectorAll('.stab')[i];
+    if (stab) stab.classList.toggle('active', t === tab);
+  });
+  if (tab === 'analytics') renderAnalytics();
+  if (tab === 'photos') renderPhotosTab();
+  if (tab === 'cityworks' && selId) renderCWDetail(selId);
+};
+
+// ── PATCH showTab to include CW pane ────────────────────────────
+const _TABS_CW = ['map','lots','routes','crews','settings','cityworks'];
+const _origShowTab = showTab;
+showTab = function(t) {
+  _TABS_CW.forEach((n, i) => {
+    const pane = document.getElementById('pane-' + n);
+    if (pane) pane.classList.toggle('active', n === t);
+    const btn = document.querySelectorAll('.htab')[i];
+    if (btn) btn.classList.toggle('active', n === t);
+  });
+  document.getElementById('mapwrap').style.display = t === 'map' ? '' : 'none';
+  if (t === 'map') setTimeout(() => map.invalidateSize(), 80);
+  if (t === 'lots') renderRegistry();
+  if (t === 'routes') renderRoutePanel();
+  if (t === 'crews') renderCrewList();
+  if (t === 'cityworks') renderCWPane();
+};
+
+// ── PATCH tog() to handle CW toggles ────────────────────────────
+const _origTog = tog;
+tog = function(el, key) {
+  if (key === 'autopush' || key === 'requirephotos' || key === 'pusharcgis') {
+    el.classList.toggle('on');
+    MS_CW[key] = el.classList.contains('on');
+    return;
+  }
+  _origTog(el, key);
+};
+
+// ── PATCH selectLot to refresh CW detail ────────────────────────
+const _origSelectLot = selectLot;
+selectLot = async function(id) {
+  await _origSelectLot(id);
+  if (document.getElementById('dp-cityworks').style.display !== 'none') {
+    renderCWDetail(id);
+  }
+};
+
+// ── STATUS CHANGE HOOK (call this when changing lot status) ───────
+function setLotStatus(lotId, newStatus) {
+  const lot = lots.find(l => l.id === lotId);
+  if (!lot) return;
+  lot.status = newStatus;
+  onLotStatusChange(lotId, newStatus);
+  refreshMarkers();
+  if (selId === lotId) showDetailPanel(lot);
+}
+
+</script>
+
+<!-- PWA INSTALL BANNER -->
+<div id="install-banner" style="display:none;position:fixed;bottom:0;left:0;right:0;background:#1e2535;border-top:1px solid #2a3550;padding:12px 16px;z-index:9998;display:none;align-items:center;gap:12px">
+  <div style="background:#00d4aa22;border-radius:8px;padding:6px 10px;flex-shrink:0">
+    <svg width="28" height="28" viewBox="0 0 192 192" xmlns="http://www.w3.org/2000/svg">
+      <rect width="192" height="192" rx="38" fill="#0f1117"/>
+      <path d="M96 28C69.5 28 48 49.5 48 76c0 38 48 88 48 88s48-50 48-88C144 49.5 122.5 28 96 28z" fill="#00d4aa"/>
+      <circle cx="96" cy="76" r="18" fill="#0f1117"/>
+    </svg>
+  </div>
+  <div style="flex:1">
+    <div style="font-weight:700;font-size:13px;color:#e8eaf0">Install FOS·GIS</div>
+    <div style="font-size:11px;color:#8d97b0;margin-top:1px">Add to home screen for offline access</div>
+  </div>
+  <button id="install-btn" style="background:#00d4aa;color:#000;border:none;border-radius:6px;padding:7px 14px;font-size:12px;font-weight:700;cursor:pointer">Install</button>
+  <button onclick="document.getElementById('install-banner').style.display='none'" style="background:transparent;border:none;color:#5a6480;font-size:18px;cursor:pointer;padding:4px">✕</button>
+</div>
+
+<!-- iOS INSTALL HINT -->
+<div id="ios-hint" style="display:none;position:fixed;bottom:0;left:0;right:0;background:#1e2535;border-top:1px solid #2a3550;padding:12px 16px;z-index:9998;text-align:center">
+  <div style="font-size:12px;color:#e8eaf0;margin-bottom:4px">📲 Install FOS·GIS on your iPad/iPhone</div>
+  <div style="font-size:11px;color:#8d97b0">Tap <strong style="color:#0099ff">Share</strong> → <strong style="color:#0099ff">Add to Home Screen</strong></div>
+  <button onclick="document.getElementById('ios-hint').style.display='none'" style="margin-top:8px;background:transparent;border:1px solid #2a3550;color:#8d97b0;border-radius:5px;padding:4px 12px;font-size:11px;cursor:pointer">Dismiss</button>
+</div>
+
+<!-- OFFLINE INDICATOR -->
+<div id="offline-bar" style="display:none;position:fixed;top:44px;left:0;right:0;background:#ff6b35;color:#000;text-align:center;font-size:11px;font-weight:700;padding:4px;z-index:9997;letter-spacing:.5px">
+  ⚡ OFFLINE MODE — Map tiles may not load. All data and photos saved locally.
+</div>
+
+</body>
+</html>

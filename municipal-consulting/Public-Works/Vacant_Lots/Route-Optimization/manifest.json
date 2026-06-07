@@ -1,0 +1,33 @@
+{
+  "name": "FOS·GIS — Vacant Lot Route Optimizer",
+  "short_name": "FOS·GIS",
+  "description": "Cuyahoga County vacant lot maintenance route optimization and GIS system",
+  "start_url": "./FOS_GIS_Route_Optimizer.html",
+  "display": "standalone",
+  "orientation": "landscape",
+  "background_color": "#0f1117",
+  "theme_color": "#0f1117",
+  "categories": ["utilities", "productivity"],
+  "icons": [
+    {
+      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'%3E%3Crect width='192' height='192' rx='38' fill='%230f1117'/%3E%3Cpath d='M96 28C69.5 28 48 49.5 48 76c0 38 48 88 48 88s48-50 48-88C144 49.5 122.5 28 96 28z' fill='%2300d4aa'/%3E%3Ccircle cx='96' cy='76' r='18' fill='%230f1117'/%3E%3C/svg%3E",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Map View",
+      "short_name": "Map",
+      "url": "./FOS_GIS_Route_Optimizer.html#map"
+    },
+    {
+      "name": "Route Builder",
+      "short_name": "Route",
+      "url": "./FOS_GIS_Route_Optimizer.html#routes"
+    }
+  ],
+  "screenshots": [],
+  "prefer_related_applications": false
+}

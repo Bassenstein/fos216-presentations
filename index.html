@@ -30,7 +30,6 @@
     -webkit-font-smoothing: antialiased;
   }
 
-  /* Header */
   header {
     padding: 56px 32px 48px;
     border-bottom: 1px solid var(--border);
@@ -47,13 +46,6 @@
     pointer-events: none;
   }
 
-  .logo-row {
-    display: flex;
-    align-items: baseline;
-    gap: 14px;
-    margin-bottom: 10px;
-  }
-
   .wordmark {
     font-family: 'Bebas Neue', sans-serif;
     font-size: clamp(42px, 8vw, 72px);
@@ -62,9 +54,7 @@
     line-height: 1;
   }
 
-  .wordmark span {
-    color: var(--gold);
-  }
+  .wordmark span { color: var(--gold); }
 
   .tagline {
     font-size: 13px;
@@ -99,7 +89,6 @@
     background: rgba(200,168,75,0.06);
   }
 
-  /* Section label */
   .section-label {
     font-size: 11px;
     font-weight: 500;
@@ -110,33 +99,41 @@
     border-bottom: 1px solid var(--border);
   }
 
-  /* Project grid */
   .grid {
-    padding: 0 20px 80px;
+    padding: 20px 20px 80px;
   }
 
-  /* Project card */
   .card {
     background: var(--steel);
     border: 1px solid var(--border);
     border-radius: var(--radius);
     margin: 16px 0;
     overflow: hidden;
-    transition: border-color 0.2s, transform 0.15s;
     cursor: pointer;
     text-decoration: none;
     display: block;
     -webkit-tap-highlight-color: transparent;
+    opacity: 0;
+    transform: translateY(16px);
+    animation: fadeUp 0.45s ease forwards;
   }
+
+  .card:nth-child(1) { animation-delay: 0.05s; }
+  .card:nth-child(2) { animation-delay: 0.11s; }
+  .card:nth-child(3) { animation-delay: 0.17s; }
+  .card:nth-child(4) { animation-delay: 0.23s; }
+  .card:nth-child(5) { animation-delay: 0.29s; }
+  .card:nth-child(6) { animation-delay: 0.35s; }
+  .card:nth-child(7) { animation-delay: 0.41s; }
+
+  @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
 
   .card:active {
     transform: scale(0.985);
     border-color: var(--gold-dim);
   }
 
-  .card-inner {
-    padding: 22px 22px 18px;
-  }
+  .card-inner { padding: 22px 22px 18px; }
 
   .card-top {
     display: flex;
@@ -201,7 +198,6 @@
     color: var(--gold);
   }
 
-  /* Status bar */
   .status-bar {
     display: flex;
     align-items: center;
@@ -210,18 +206,14 @@
   }
 
   .dot {
-    width: 7px;
-    height: 7px;
+    width: 7px; height: 7px;
     border-radius: 50%;
     background: var(--gold);
     animation: pulse 2.5s ease-in-out infinite;
     flex-shrink: 0;
   }
 
-  @keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.35; }
-  }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.35} }
 
   .status-text {
     font-size: 11px;
@@ -231,41 +223,13 @@
     color: var(--gold);
   }
 
-  /* Divider with label */
-  .divider {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin: 28px 0 4px;
-    padding: 0 0;
-  }
-
-  .divider span {
-    font-size: 10px;
-    font-weight: 500;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: var(--muted);
-    white-space: nowrap;
-  }
-
-  .divider::before, .divider::after {
-    content: '';
-    flex: 1;
-    height: 1px;
-    background: var(--border);
-  }
-
-  /* Value bar */
   .value-row {
     display: flex;
     gap: 16px;
     margin: 10px 0 14px;
   }
 
-  .value-item {
-    flex: 1;
-  }
+  .value-item { flex: 1; }
 
   .value-num {
     font-family: 'Bebas Neue', sans-serif;
@@ -284,7 +248,56 @@
     text-transform: uppercase;
   }
 
-  /* Footer */
+  /* Document links inside card */
+  .doc-links {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+
+  .doc-link {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    background: var(--steel-light);
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    text-decoration: none;
+    color: var(--white);
+    font-size: 13px;
+    font-weight: 400;
+    transition: border-color 0.15s, background 0.15s;
+  }
+
+  .doc-link:active {
+    background: rgba(200,168,75,0.08);
+    border-color: var(--gold-dim);
+  }
+
+  .doc-link-icon {
+    font-size: 16px;
+    flex-shrink: 0;
+    opacity: 0.7;
+  }
+
+  .doc-link-text { flex: 1; }
+
+  .doc-link-label {
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-top: 1px;
+  }
+
+  .doc-link-arrow {
+    font-size: 14px;
+    color: var(--gold);
+    opacity: 0.7;
+  }
+
   footer {
     padding: 28px 32px;
     border-top: 1px solid var(--border);
@@ -310,30 +323,16 @@
     opacity: 0.6;
   }
 
-  /* Stagger animation */
-  .card {
-    opacity: 0;
-    transform: translateY(16px);
-    animation: fadeUp 0.45s ease forwards;
-  }
-
-  .card:nth-child(1) { animation-delay: 0.05s; }
-  .card:nth-child(2) { animation-delay: 0.12s; }
-  .card:nth-child(3) { animation-delay: 0.19s; }
-  .card:nth-child(4) { animation-delay: 0.26s; }
-  .card:nth-child(5) { animation-delay: 0.33s; }
-  .card:nth-child(6) { animation-delay: 0.40s; }
-
-  @keyframes fadeUp {
-    to { opacity: 1; transform: translateY(0); }
-  }
-
   @media (min-width: 640px) {
     header { padding: 64px 48px 52px; }
-    .grid { padding: 0 36px 80px; display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-    .card { margin: 0; }
     .section-label { padding: 40px 48px 16px; }
-    .grid { padding-top: 20px; padding-left: 36px; padding-right: 36px; }
+    .grid {
+      padding: 20px 36px 80px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    .card { margin: 0; }
     .card:active { transform: scale(0.97); }
   }
 </style>
@@ -341,11 +340,9 @@
 <body>
 
 <header>
-  <div class="logo-row">
-    <div class="wordmark">FOS <span>216</span></div>
-  </div>
+  <div class="wordmark">FOS <span>216</span></div>
   <div class="tagline">Fix Our Streets 216 — Cleveland, Ohio</div>
-  <div class="tagline" style="margin-top:4px; font-size:12px;">Municipal Consulting · Infrastructure · Civic Innovation</div>
+  <div class="tagline" style="margin-top:4px;font-size:12px;">Municipal Consulting · Infrastructure · Civic Innovation</div>
   <div class="header-meta">
     <div class="pill gold">Active Projects</div>
     <div class="pill">Cleveland, OH</div>
@@ -369,13 +366,51 @@
         <div class="card-icon">🌊</div>
       </div>
       <div class="card-desc">
-        Comprehensive lakefront redevelopment master plan for Cleveland's North Coast. Includes Rock Hall Performance Center, Science of Bass Museum, BASSBOSS Innovation Suite, Land Bridge, and Food Hall.
+        Comprehensive lakefront redevelopment master plan for Cleveland's North Coast. Rock Hall Performance Center, Science of Bass Museum, BASSBOSS Innovation Suite, Land Bridge, and Food Hall.
       </div>
       <div class="card-footer">
         <div class="tag active">Master Plan</div>
         <div class="tag">Entertainment</div>
         <div class="tag">Lakefront</div>
-        <div class="tag">Multi-session</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Burke Lakefront Energy Campus -->
+  <div class="card">
+    <div class="card-inner">
+      <div class="status-bar"><div class="dot"></div><div class="status-text">Concept Stage</div></div>
+      <div class="card-top">
+        <div>
+          <div class="card-category">Energy · Education · Lakefront · Burke Airport</div>
+          <div class="card-title">Burke Lakefront<br>Energy Campus</div>
+        </div>
+        <div class="card-icon">🔥</div>
+      </div>
+      <div class="value-row">
+        <div class="value-item">
+          <div class="value-num">2GW</div>
+          <div class="value-label">Power Capacity</div>
+        </div>
+        <div class="value-item">
+          <div class="value-num">450ac</div>
+          <div class="value-label">Site Area</div>
+        </div>
+        <div class="value-item">
+          <div class="value-num">$302M</div>
+          <div class="value-label">Est. Annual Revenue</div>
+        </div>
+      </div>
+      <div class="card-desc">
+        Production-first redevelopment of Burke Lakefront Airport. FastOx waste-to-energy gasification, green hydrogen production via PEM electrolysis, hydrogen-fueled turbine generation for CPP Industrial, Education Campus anchored by Case Western and Tri-C, public lakefront park, and one preserved runway for active flight operations.
+      </div>
+      <div class="card-footer">
+        <div class="tag active">City of Cleveland</div>
+        <div class="tag active">CPP</div>
+        <div class="tag">FastOx</div>
+        <div class="tag">Green Hydrogen</div>
+        <div class="tag">DOE Hydrogen Hub</div>
+        <div class="tag">Education</div>
       </div>
     </div>
   </div>
@@ -496,6 +531,24 @@
       </div>
       <div class="card-desc">
         First RPM-based acoustic pre-detection system nationally. Earthworks M30 G2 mics → Raspberry Pi 5 PyTorch CNN → Kafka/Redis/FastAPI pipeline → CommandCentral + Skydio X10 dispatch.
+      </div>
+      <div class="doc-links">
+        <a class="doc-link" href="STDS/street-takeover-detector.html">
+          <span class="doc-link-icon">📄</span>
+          <span class="doc-link-text">
+            Street Takeover Detector
+            <div class="doc-link-label">System Design</div>
+          </span>
+          <span class="doc-link-arrow">→</span>
+        </a>
+        <a class="doc-link" href="STDS/stds-rtcc-integration.html">
+          <span class="doc-link-icon">🔗</span>
+          <span class="doc-link-text">
+            STDS — RTCC Integration
+            <div class="doc-link-label">Integration Architecture</div>
+          </span>
+          <span class="doc-link-arrow">→</span>
+        </a>
       </div>
       <div class="card-footer">
         <div class="tag active">First in Nation</div>

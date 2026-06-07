@@ -1,0 +1,1525 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Mall C Coffee House — FOS 216 Project Brief</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --cream: #F5F0E8;
+    --espresso: #1A0F00;
+    --caramel: #C8883A;
+    --sage: #4A5C3A;
+    --steel: #2C3E50;
+    --rust: #8B3A1A;
+    --glass-blue: #378ADD;
+    --glass-tint: rgba(55,138,221,0.12);
+    --warm-white: #FDFAF5;
+    --ink: #1A1410;
+    --light-sage: #E8EDE0;
+    --font-display: 'Playfair Display', Georgia, serif;
+    --font-mono: 'DM Mono', 'Courier New', monospace;
+    --font-body: 'Libre Baskerville', Georgia, serif;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--cream);
+    color: var(--ink);
+    font-family: var(--font-body);
+    font-size: 15px;
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* ── GRAIN OVERLAY ── */
+  body::before {
+    content: '';
+    position: fixed; inset: 0; z-index: 0;
+    pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    background-size: 128px 128px;
+    opacity: 0.45;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 18px 40px;
+    background: rgba(245,240,232,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(26,15,0,0.08);
+  }
+
+  .nav-logo {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--caramel);
+  }
+
+  .nav-links {
+    display: flex; gap: 32px; list-style: none;
+  }
+
+  .nav-links a {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink);
+    text-decoration: none;
+    opacity: 0.6;
+    transition: opacity 0.2s;
+  }
+  .nav-links a:hover { opacity: 1; }
+
+  /* ── HERO ── */
+  .hero {
+    position: relative;
+    min-height: 100vh;
+    display: flex; flex-direction: column; justify-content: flex-end;
+    padding: 0 60px 80px;
+    overflow: hidden;
+    background: var(--espresso);
+  }
+
+  .hero-bg {
+    position: absolute; inset: 0;
+    background: 
+      radial-gradient(ellipse 80% 60% at 20% 50%, rgba(200,136,58,0.18) 0%, transparent 70%),
+      radial-gradient(ellipse 60% 80% at 80% 30%, rgba(74,92,58,0.2) 0%, transparent 60%),
+      linear-gradient(160deg, #1A0F00 0%, #0D0800 60%, #1A1410 100%);
+  }
+
+  /* Architectural grid lines */
+  .hero-grid {
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(200,136,58,0.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(200,136,58,0.06) 1px, transparent 1px);
+    background-size: 60px 60px;
+  }
+
+  /* Container silhouette */
+  .hero-containers {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 55%;
+    overflow: hidden;
+  }
+
+  .hero-containers svg {
+    width: 100%; height: 100%;
+  }
+
+  .hero-content {
+    position: relative; z-index: 2;
+    max-width: 720px;
+  }
+
+  .hero-eyebrow {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--caramel);
+    margin-bottom: 20px;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.2s forwards;
+  }
+
+  .hero-title {
+    font-family: var(--font-display);
+    font-size: clamp(52px, 8vw, 100px);
+    font-weight: 900;
+    line-height: 0.92;
+    color: var(--warm-white);
+    margin-bottom: 28px;
+    opacity: 0;
+    animation: fadeUp 0.9s 0.35s forwards;
+  }
+
+  .hero-title em {
+    font-style: italic;
+    color: var(--caramel);
+  }
+
+  .hero-sub {
+    font-family: var(--font-body);
+    font-size: 16px;
+    font-style: italic;
+    color: rgba(253,250,245,0.6);
+    margin-bottom: 48px;
+    opacity: 0;
+    animation: fadeUp 0.9s 0.5s forwards;
+  }
+
+  .hero-stats {
+    display: flex; gap: 48px;
+    opacity: 0;
+    animation: fadeUp 0.9s 0.65s forwards;
+  }
+
+  .stat {
+    display: flex; flex-direction: column; gap: 4px;
+  }
+
+  .stat-num {
+    font-family: var(--font-display);
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--caramel);
+    line-height: 1;
+  }
+
+  .stat-label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(253,250,245,0.45);
+  }
+
+  .hero-scroll {
+    position: absolute; bottom: 32px; right: 60px; z-index: 2;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: rgba(253,250,245,0.35);
+    display: flex; flex-direction: column; align-items: center; gap: 12px;
+    animation: fadeUp 1s 1s forwards; opacity: 0;
+  }
+
+  .scroll-line {
+    width: 1px; height: 48px;
+    background: linear-gradient(to bottom, rgba(200,136,58,0.6), transparent);
+    animation: scrollPulse 2s 1.5s infinite;
+  }
+
+  /* ── SECTION BASE ── */
+  section {
+    position: relative; z-index: 1;
+    padding: 100px 60px;
+  }
+
+  .section-label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--caramel);
+    margin-bottom: 12px;
+  }
+
+  .section-title {
+    font-family: var(--font-display);
+    font-size: clamp(36px, 5vw, 62px);
+    font-weight: 700;
+    line-height: 1.05;
+    color: var(--espresso);
+    margin-bottom: 24px;
+  }
+
+  .section-title em { font-style: italic; color: var(--caramel); }
+
+  .section-intro {
+    font-size: 16px;
+    color: rgba(26,15,0,0.65);
+    max-width: 600px;
+    margin-bottom: 60px;
+    line-height: 1.8;
+  }
+
+  /* ── CONCEPT SECTION ── */
+  .concept {
+    background: var(--warm-white);
+    border-top: 1px solid rgba(26,15,0,0.06);
+  }
+
+  .concept-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: start;
+    max-width: 1200px;
+  }
+
+  .concept-left {}
+
+  .concept-features {
+    display: flex; flex-direction: column; gap: 0;
+    margin-top: 40px;
+  }
+
+  .feature-item {
+    display: grid;
+    grid-template-columns: 40px 1fr;
+    gap: 20px;
+    padding: 24px 0;
+    border-bottom: 1px solid rgba(26,15,0,0.07);
+    cursor: default;
+    transition: background 0.2s;
+  }
+
+  .feature-item:first-child { border-top: 1px solid rgba(26,15,0,0.07); }
+
+  .feature-icon {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    background: rgba(200,136,58,0.1);
+    color: var(--caramel);
+    font-size: 16px;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .feature-name {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--caramel);
+    margin-bottom: 4px;
+  }
+
+  .feature-desc {
+    font-size: 14px;
+    color: rgba(26,15,0,0.7);
+    line-height: 1.65;
+  }
+
+  .concept-right {
+    position: sticky; top: 100px;
+  }
+
+  /* Container silhouette diagram */
+  .container-diagram {
+    background: var(--espresso);
+    border-radius: 6px;
+    overflow: hidden;
+    padding: 40px;
+    aspect-ratio: 4/3;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  /* ── FLOOR PLAN SECTION ── */
+  .floorplan {
+    background: var(--cream);
+  }
+
+  .plan-wrapper {
+    background: var(--warm-white);
+    border: 1px solid rgba(26,15,0,0.08);
+    border-radius: 8px;
+    padding: 48px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .plan-wrapper::before {
+    content: '';
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(26,15,0,0.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(26,15,0,0.025) 1px, transparent 1px);
+    background-size: 20px 20px;
+    pointer-events: none;
+  }
+
+  /* Interactive Floor Plan SVG */
+  .fp-svg { width: 100%; height: auto; display: block; position: relative; z-index: 1; }
+
+  .fp-zone {
+    cursor: pointer;
+    transition: opacity 0.2s;
+  }
+  .fp-zone:hover rect:first-child, .fp-zone.active rect:first-child {
+    filter: brightness(0.92);
+  }
+
+  /* Zone info panel */
+  .zone-panel {
+    margin-top: 32px;
+    padding: 28px 36px;
+    background: var(--espresso);
+    border-radius: 6px;
+    color: var(--warm-white);
+    min-height: 120px;
+    display: flex; align-items: center; gap: 32px;
+    transition: all 0.3s;
+  }
+
+  .zone-panel-icon {
+    font-size: 36px;
+    flex-shrink: 0;
+  }
+
+  .zone-panel-name {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--caramel);
+    margin-bottom: 6px;
+  }
+
+  .zone-panel-title {
+    font-family: var(--font-display);
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 6px;
+    color: var(--warm-white);
+  }
+
+  .zone-panel-desc {
+    font-size: 13px;
+    color: rgba(253,250,245,0.65);
+    line-height: 1.65;
+  }
+
+  .zone-panel-sqft {
+    margin-left: auto;
+    text-align: right;
+    flex-shrink: 0;
+  }
+
+  .sqft-num {
+    font-family: var(--font-display);
+    font-size: 40px;
+    font-weight: 700;
+    color: var(--caramel);
+    line-height: 1;
+  }
+
+  .sqft-label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgba(253,250,245,0.4);
+  }
+
+  /* ── MENU / PROGRAM SECTION ── */
+  .program {
+    background: var(--sage);
+    color: var(--warm-white);
+  }
+
+  .program .section-title { color: var(--warm-white); }
+  .program .section-intro { color: rgba(253,250,245,0.6); }
+
+  .menu-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2px;
+    background: rgba(253,250,245,0.06);
+    border: 1px solid rgba(253,250,245,0.08);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .menu-cat {
+    background: rgba(26,20,10,0.3);
+    padding: 36px 28px;
+    transition: background 0.2s;
+    cursor: default;
+  }
+
+  .menu-cat:hover { background: rgba(26,20,10,0.5); }
+
+  .menu-cat-icon {
+    font-size: 28px;
+    margin-bottom: 16px;
+    display: block;
+  }
+
+  .menu-cat-name {
+    font-family: var(--font-display);
+    font-size: 20px;
+    font-weight: 700;
+    font-style: italic;
+    margin-bottom: 12px;
+    color: var(--caramel);
+  }
+
+  .menu-items {
+    list-style: none;
+    display: flex; flex-direction: column; gap: 6px;
+  }
+
+  .menu-items li {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.05em;
+    color: rgba(253,250,245,0.65);
+    padding-left: 12px;
+    position: relative;
+  }
+
+  .menu-items li::before {
+    content: '—';
+    position: absolute; left: 0;
+    color: var(--caramel);
+    opacity: 0.5;
+  }
+
+  /* ── SPECS SECTION ── */
+  .specs {
+    background: var(--warm-white);
+  }
+
+  .specs-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    max-width: 1100px;
+  }
+
+  .spec-group { }
+
+  .spec-group-title {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--caramel);
+    padding-bottom: 16px;
+    border-bottom: 1px solid rgba(26,15,0,0.1);
+    margin-bottom: 20px;
+  }
+
+  .spec-row {
+    display: flex; justify-content: space-between; align-items: baseline;
+    padding: 12px 0;
+    border-bottom: 1px solid rgba(26,15,0,0.04);
+  }
+
+  .spec-key {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: rgba(26,15,0,0.45);
+    letter-spacing: 0.05em;
+  }
+
+  .spec-val {
+    font-family: var(--font-body);
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--espresso);
+    text-align: right;
+    max-width: 60%;
+  }
+
+  /* ── BIFOLD DETAIL ── */
+  .bifold {
+    background: var(--cream);
+    overflow: hidden;
+  }
+
+  .bifold-inner {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: center;
+  }
+
+  .bifold-diagram {
+    position: relative;
+    background: var(--espresso);
+    border-radius: 8px;
+    padding: 40px;
+    overflow: hidden;
+  }
+
+  .bifold-diagram::after {
+    content: 'POST-FREE SYSTEM';
+    position: absolute; bottom: 20px; right: 20px;
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: 0.15em;
+    color: rgba(253,250,245,0.25);
+  }
+
+  /* ── TIMELINE ── */
+  .timeline {
+    background: var(--espresso);
+  }
+
+  .timeline .section-title { color: var(--warm-white); }
+  .timeline .section-intro { color: rgba(253,250,245,0.55); }
+
+  .timeline-track {
+    position: relative;
+    padding-left: 40px;
+    display: flex; flex-direction: column; gap: 0;
+  }
+
+  .timeline-track::before {
+    content: '';
+    position: absolute;
+    left: 8px; top: 8px; bottom: 8px;
+    width: 1px;
+    background: linear-gradient(to bottom, var(--caramel), rgba(200,136,58,0.1));
+  }
+
+  .tl-item {
+    display: grid;
+    grid-template-columns: 120px 1fr;
+    gap: 32px;
+    padding: 28px 0;
+    border-bottom: 1px solid rgba(253,250,245,0.05);
+    position: relative;
+    cursor: default;
+    transition: background 0.2s;
+  }
+
+  .tl-item::before {
+    content: '';
+    position: absolute;
+    left: -36px; top: 36px;
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: var(--caramel);
+    border: 2px solid var(--espresso);
+    box-shadow: 0 0 0 3px rgba(200,136,58,0.2);
+  }
+
+  .tl-phase {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--caramel);
+    padding-top: 4px;
+  }
+
+  .tl-title {
+    font-family: var(--font-display);
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--warm-white);
+    margin-bottom: 6px;
+  }
+
+  .tl-desc {
+    font-size: 13px;
+    color: rgba(253,250,245,0.5);
+    line-height: 1.65;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    background: #0D0800;
+    padding: 60px;
+    display: flex; justify-content: space-between; align-items: flex-end;
+    gap: 40px;
+  }
+
+  .footer-left {}
+
+  .footer-project {
+    font-family: var(--font-display);
+    font-size: 28px;
+    font-weight: 700;
+    font-style: italic;
+    color: var(--caramel);
+    margin-bottom: 8px;
+  }
+
+  .footer-firm {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: rgba(253,250,245,0.3);
+  }
+
+  .footer-right {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    color: rgba(253,250,245,0.2);
+    text-align: right;
+  }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes scrollPulse {
+    0%,100% { opacity: 0.3; transform: scaleY(1); }
+    50%      { opacity: 1; transform: scaleY(1.2); }
+  }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Tab system */
+  .tabs { display: flex; gap: 2px; margin-bottom: 0; }
+  .tab-btn {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 10px 20px;
+    background: rgba(26,15,0,0.06);
+    border: none;
+    cursor: pointer;
+    color: rgba(26,15,0,0.45);
+    transition: all 0.2s;
+    border-radius: 4px 4px 0 0;
+  }
+  .tab-btn.active {
+    background: var(--warm-white);
+    color: var(--espresso);
+  }
+
+  @media (max-width: 900px) {
+    nav { padding: 16px 24px; }
+    .nav-links { display: none; }
+    section { padding: 70px 24px; }
+    .hero { padding: 0 24px 60px; }
+    .hero-stats { gap: 28px; flex-wrap: wrap; }
+    .concept-grid, .bifold-inner, .specs-grid { grid-template-columns: 1fr; gap: 40px; }
+    .menu-grid { grid-template-columns: 1fr 1fr; }
+    .concept-right { position: static; }
+    footer { flex-direction: column; padding: 40px 24px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">FOS 216 · Mall C Development</div>
+  <ul class="nav-links">
+    <li><a href="#concept">Concept</a></li>
+    <li><a href="#floorplan">Floor Plan</a></li>
+    <li><a href="#program">Menu</a></li>
+    <li><a href="#specs">Specifications</a></li>
+    <li><a href="#timeline">Phases</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero" style="padding-top:0;">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+
+  <!-- Container silhouette illustration -->
+  <div class="hero-containers">
+    <svg viewBox="0 0 1200 400" preserveAspectRatio="xMidYMax meet" xmlns="http://www.w3.org/2000/svg">
+      <!-- Ground -->
+      <rect x="0" y="340" width="1200" height="60" fill="rgba(0,0,0,0.4)"/>
+      <!-- 5 containers side by side -->
+      <g opacity="0.25">
+        <!-- Container 1 -->
+        <rect x="60" y="80" width="216" height="260" fill="none" stroke="rgba(200,136,58,0.6)" stroke-width="1.5"/>
+        <line x1="60" y1="80" x2="276" y2="80" stroke="rgba(200,136,58,0.4)" stroke-width="1"/>
+        <!-- corrugation lines -->
+        <line x1="90"  y1="80" x2="90"  y2="340" stroke="rgba(200,136,58,0.2)" stroke-width="0.5"/>
+        <line x1="120" y1="80" x2="120" y2="340" stroke="rgba(200,136,58,0.2)" stroke-width="0.5"/>
+        <line x1="150" y1="80" x2="150" y2="340" stroke="rgba(200,136,58,0.2)" stroke-width="0.5"/>
+        <line x1="180" y1="80" x2="180" y2="340" stroke="rgba(200,136,58,0.2)" stroke-width="0.5"/>
+        <line x1="210" y1="80" x2="210" y2="340" stroke="rgba(200,136,58,0.2)" stroke-width="0.5"/>
+        <line x1="246" y1="80" x2="246" y2="340" stroke="rgba(200,136,58,0.2)" stroke-width="0.5"/>
+        <!-- Container 2 -->
+        <rect x="276" y="80" width="216" height="260" fill="none" stroke="rgba(200,136,58,0.6)" stroke-width="1.5"/>
+        <line x1="306" y1="80" x2="306" y2="340" stroke="rgba(200,136,58,0.2)" stroke-width="0.5"/>
+        <line x1="336" y1="80" x2="336" y2="340" stroke="rgba(200,136,58,0.2)" stroke-width="0.5"/>
+        <line x1="366" y1="80" x2="366" y2="340" stroke="rgba(200,136,58,0.2)" stroke-width="0.5"/>
+        <line x1="396" y1="80" x2="396" y2="340" stroke="rgba(200,136,58,0.2)" stroke-width="0.5"/>
+        <line x1="426" y1="80" x2="426" y2="340" stroke="rgba(200,136,58,0.2)" stroke-width="0.5"/>
+        <line x1="462" y1="80" x2="462" y2="340" stroke="rgba(200,136,58,0.2)" stroke-width="0.5"/>
+        <!-- Container 3 -->
+        <rect x="492" y="80" width="216" height="260" fill="none" stroke="rgba(200,136,58,0.6)" stroke-width="1.5"/>
+        <line x1="522" y1="80" x2="522" y2="340" stroke="rgba(200,136,58,0.2)" stroke-width="0.5"/>
+        <line x1="552" y1="80" x2="552" y2="340" stroke="rgba(200,136,58,0.2)" stroke-width="0.5"/>
+        <line x1="582" y1="80" x2="582" y2="340" stroke="rgba(200,136,58,0.2)" stroke-width="0.5"/>
+        <line x1="612" y1="80" x2="612" y2="340" stroke="rgba(200,136,58,0.2)" stroke-width="0.5"/>
+        <line x1="642" y1="80" x2="642" y2="340" stroke="rgba(200,136,58,0.2)" stroke-width="0.5"/>
+        <line x1="678" y1="80" x2="678" y2="340" stroke="rgba(200,136,58,0.2)" stroke-width="0.5"/>
+        <!-- Container 4 -->
+        <rect x="708" y="80" width="216" height="260" fill="none" stroke="rgba(200,136,58,0.6)" stroke-width="1.5"/>
+        <line x1="738" y1="80" x2="738" y2="340" stroke="rgba(200,136,58,0.2)" stroke-width="0.5"/>
+        <line x1="768" y1="80" x2="768" y2="340" stroke="rgba(200,136,58,0.2)" stroke-width="0.5"/>
+        <line x1="798" y1="80" x2="798" y2="340" stroke="rgba(200,136,58,0.2)" stroke-width="0.5"/>
+        <line x1="828" y1="80" x2="828" y2="340" stroke="rgba(200,136,58,0.2)" stroke-width="0.5"/>
+        <line x1="858" y1="80" x2="858" y2="340" stroke="rgba(200,136,58,0.2)" stroke-width="0.5"/>
+        <line x1="894" y1="80" x2="894" y2="340" stroke="rgba(200,136,58,0.2)" stroke-width="0.5"/>
+        <!-- Container 5 -->
+        <rect x="924" y="80" width="216" height="260" fill="none" stroke="rgba(200,136,58,0.6)" stroke-width="1.5"/>
+        <line x1="954" y1="80" x2="954" y2="340" stroke="rgba(200,136,58,0.2)" stroke-width="0.5"/>
+        <line x1="984" y1="80" x2="984" y2="340" stroke="rgba(200,136,58,0.2)" stroke-width="0.5"/>
+        <line x1="1014" y1="80" x2="1014" y2="340" stroke="rgba(200,136,58,0.2)" stroke-width="0.5"/>
+        <line x1="1044" y1="80" x2="1044" y2="340" stroke="rgba(200,136,58,0.2)" stroke-width="0.5"/>
+        <line x1="1074" y1="80" x2="1074" y2="340" stroke="rgba(200,136,58,0.2)" stroke-width="0.5"/>
+        <line x1="1110" y1="80" x2="1110" y2="340" stroke="rgba(200,136,58,0.2)" stroke-width="0.5"/>
+      </g>
+      <!-- Peaked roof -->
+      <polyline points="40,80 600,20 1160,80" fill="none" stroke="rgba(200,136,58,0.5)" stroke-width="2"/>
+      <line x1="40" y1="80" x2="1160" y2="80" stroke="rgba(200,136,58,0.3)" stroke-width="1"/>
+      <!-- West bifold wall — glass glow -->
+      <rect x="40" y="80" width="8" height="260" fill="rgba(55,138,221,0.5)"/>
+      <rect x="40" y="80" width="8" height="260" fill="url(#glassGlow)"/>
+      <!-- East to-go windows (centered) -->
+      <rect x="1152" y="160" width="8" height="100" fill="rgba(83,74,183,0.6)"/>
+      <defs>
+        <linearGradient id="glassGlow" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%" stop-color="rgba(55,138,221,0.8)"/>
+          <stop offset="100%" stop-color="rgba(55,138,221,0)"/>
+        </linearGradient>
+      </defs>
+    </svg>
+  </div>
+
+  <div class="hero-content">
+    <p class="hero-eyebrow">FOS 216 · Cleveland, Ohio · Mall C Development</p>
+    <h1 class="hero-title">Mall C<br/><em>Coffee House</em></h1>
+    <p class="hero-sub">Sea container adaptive reuse · Park-facing bifold glass · 75 ft open frontage</p>
+    <div class="hero-stats">
+      <div class="stat">
+        <span class="stat-num">4,500</span>
+        <span class="stat-label">square feet</span>
+      </div>
+      <div class="stat">
+        <span class="stat-num">72</span>
+        <span class="stat-label">seats</span>
+      </div>
+      <div class="stat">
+        <span class="stat-num">5</span>
+        <span class="stat-label">containers</span>
+      </div>
+      <div class="stat">
+        <span class="stat-num">75 ft</span>
+        <span class="stat-label">glass frontage</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero-scroll">
+    <div class="scroll-line"></div>
+    scroll
+  </div>
+</section>
+
+<!-- CONCEPT -->
+<section class="concept" id="concept">
+  <div class="concept-grid reveal">
+    <div class="concept-left">
+      <p class="section-label">Design concept</p>
+      <h2 class="section-title">Industry meets <em>nature</em></h2>
+      <p class="section-intro">Five 40-foot high-cube sea containers arranged side by side create a raw, industrial shell — then dissolved on the west face by a post-free bifold glass wall that makes the park the room.</p>
+
+      <div class="concept-features">
+        <div class="feature-item">
+          <div class="feature-icon">🏗️</div>
+          <div>
+            <div class="feature-name">Sea container structure</div>
+            <div class="feature-desc">Five 40 ft × 8 ft high-cube containers placed side by side on a concrete slab. The container corner castings carry a steel ridge frame spanning 75 ft for the peaked roof. No additional structural columns required inside.</div>
+          </div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon">🔲</div>
+          <div>
+            <div class="feature-name">Post-free bifold glass — west</div>
+            <div class="feature-desc">Full 75 ft × 18 ft bifold glass wall facing the park. NanaWall SL73-type system — no corner posts, no structural columns in the opening. Eight leaves fold to side pockets; the entire front of the coffee house becomes open air in warm months.</div>
+          </div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon">❄️</div>
+          <div>
+            <div class="feature-name">Peaked standing-seam roof</div>
+            <div class="feature-desc">4:12 pitch steel ridge frame on container corner castings. Standing-seam metal roofing sheds Cleveland snow loads. 3 ft overhangs front and rear. Clerestory glazing at ridge brings natural light deep into the dining floor.</div>
+          </div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon">☕</div>
+          <div>
+            <div class="feature-name">To-go bifold counter windows — east</div>
+            <div class="feature-desc">Centered on the east wall, a compact to-go counter with bifold pass-through windows serves walk-up and street traffic. Solid container wall flanks the opening on both sides — a deliberate window-booth aesthetic.</div>
+          </div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon">🍳</div>
+          <div>
+            <div class="feature-name">Hood-equipped hot line</div>
+            <div class="feature-desc">Full Type I commercial hood over 6-burner range, convection oven, and fryer. Upblast exhaust stack penetrates between containers 4 and 5 at the ridge valley. Makeup air unit in the ceiling plenum above the kitchen.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="concept-right">
+      <div class="container-diagram">
+        <svg viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;">
+          <!-- Grid -->
+          <defs>
+            <pattern id="cgrid" width="20" height="20" patternUnits="userSpaceOnUse">
+              <path d="M 20 0 L 0 0 0 20" fill="none" stroke="rgba(200,136,58,0.08)" stroke-width="0.5"/>
+            </pattern>
+          </defs>
+          <rect width="400" height="300" fill="url(#cgrid)"/>
+          <!-- 5 container cross-sections -->
+          <g>
+            <rect x="20" y="80" width="68" height="180" rx="2" fill="rgba(200,136,58,0.06)" stroke="rgba(200,136,58,0.4)" stroke-width="1"/>
+            <rect x="90" y="80" width="68" height="180" rx="2" fill="rgba(200,136,58,0.06)" stroke="rgba(200,136,58,0.4)" stroke-width="1"/>
+            <rect x="160" y="80" width="68" height="180" rx="2" fill="rgba(200,136,58,0.08)" stroke="rgba(200,136,58,0.4)" stroke-width="1"/>
+            <rect x="230" y="80" width="68" height="180" rx="2" fill="rgba(200,136,58,0.06)" stroke="rgba(200,136,58,0.4)" stroke-width="1"/>
+            <rect x="300" y="80" width="68" height="180" rx="2" fill="rgba(200,136,58,0.06)" stroke="rgba(200,136,58,0.4)" stroke-width="1"/>
+          </g>
+          <!-- Peaked roof -->
+          <polyline points="10,80 194,30 378,80" fill="none" stroke="rgba(200,136,58,0.7)" stroke-width="1.5"/>
+          <!-- Ridge -->
+          <line x1="10" y1="80" x2="378" y2="80" stroke="rgba(200,136,58,0.2)" stroke-width="0.5" stroke-dasharray="6 3"/>
+          <!-- West bifold wall -->
+          <rect x="10" y="80" width="5" height="180" fill="rgba(55,138,221,0.7)"/>
+          <text x="2" y="78" font-family="'DM Mono',monospace" font-size="6" fill="rgba(55,138,221,0.8)" letter-spacing="1">W</text>
+          <!-- East to-go windows -->
+          <rect x="373" y="128" width="5" height="80" fill="rgba(83,74,183,0.7)"/>
+          <text x="365" y="78" font-family="'DM Mono',monospace" font-size="6" fill="rgba(83,74,183,0.8)" letter-spacing="1">E</text>
+          <!-- Labels -->
+          <text x="194" y="22" font-family="'DM Mono',monospace" font-size="7" fill="rgba(200,136,58,0.6)" text-anchor="middle" letter-spacing="1">RIDGE PEAK</text>
+          <text x="13" y="272" font-family="'DM Mono',monospace" font-size="7" fill="rgba(200,136,58,0.5)" letter-spacing="1">PARK</text>
+          <text x="310" y="272" font-family="'DM Mono',monospace" font-size="7" fill="rgba(200,136,58,0.5)" letter-spacing="1">TO-GO</text>
+          <!-- Container labels -->
+          <text x="54"  y="174" font-family="'DM Mono',monospace" font-size="8" fill="rgba(200,136,58,0.35)" text-anchor="middle">C-1</text>
+          <text x="124" y="174" font-family="'DM Mono',monospace" font-size="8" fill="rgba(200,136,58,0.35)" text-anchor="middle">C-2</text>
+          <text x="194" y="174" font-family="'DM Mono',monospace" font-size="8" fill="rgba(200,136,58,0.35)" text-anchor="middle">C-3</text>
+          <text x="264" y="174" font-family="'DM Mono',monospace" font-size="8" fill="rgba(200,136,58,0.35)" text-anchor="middle">C-4</text>
+          <text x="334" y="174" font-family="'DM Mono',monospace" font-size="8" fill="rgba(200,136,58,0.35)" text-anchor="middle">C-5</text>
+          <!-- Snow load arrows -->
+          <line x1="100" y1="14" x2="80" y2="42" stroke="rgba(200,136,58,0.3)" stroke-width="0.75" marker-end="url(#da)"/>
+          <line x1="194" y1="10" x2="194" y2="30" stroke="rgba(200,136,58,0.3)" stroke-width="0.75"/>
+          <line x1="290" y1="14" x2="310" y2="42" stroke="rgba(200,136,58,0.3)" stroke-width="0.75"/>
+          <defs>
+            <marker id="da" viewBox="0 0 6 6" refX="3" refY="3" markerWidth="4" markerHeight="4" orient="auto">
+              <path d="M0 0L6 3L0 6" fill="none" stroke="rgba(200,136,58,0.4)" stroke-width="1"/>
+            </marker>
+          </defs>
+          <text x="76" y="11" font-family="'DM Mono',monospace" font-size="6" fill="rgba(200,136,58,0.4)" text-anchor="middle">snow shed</text>
+        </svg>
+      </div>
+      <p style="font-family:var(--font-mono);font-size:10px;letter-spacing:0.1em;color:rgba(26,15,0,0.35);margin-top:12px;text-align:center;text-transform:uppercase;">West elevation schematic · 4:12 pitch peaked roof</p>
+
+      <!-- Quick stats -->
+      <div style="margin-top:32px;display:grid;grid-template-columns:1fr 1fr;gap:2px;">
+        <div style="background:var(--espresso);padding:20px;border-radius:4px 0 0 0;">
+          <div style="font-family:var(--font-display);font-size:28px;font-weight:700;color:var(--caramel);">75 ft</div>
+          <div style="font-family:var(--font-mono);font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(253,250,245,0.35);margin-top:4px;">E–W span</div>
+        </div>
+        <div style="background:var(--espresso);padding:20px;border-radius:0 4px 0 0;">
+          <div style="font-family:var(--font-display);font-size:28px;font-weight:700;color:var(--caramel);">60 ft</div>
+          <div style="font-family:var(--font-mono);font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(253,250,245,0.35);margin-top:4px;">N–S depth</div>
+        </div>
+        <div style="background:var(--sage);padding:20px;border-radius:0 0 0 4px;">
+          <div style="font-family:var(--font-display);font-size:28px;font-weight:700;color:var(--warm-white);">4:12</div>
+          <div style="font-family:var(--font-mono);font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(253,250,245,0.35);margin-top:4px;">roof pitch</div>
+        </div>
+        <div style="background:var(--sage);padding:20px;border-radius:0 0 4px 0;">
+          <div style="font-family:var(--font-display);font-size:28px;font-weight:700;color:var(--warm-white);">~18 ft</div>
+          <div style="font-family:var(--font-mono);font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(253,250,245,0.35);margin-top:4px;">wall height</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FLOOR PLAN -->
+<section class="floorplan" id="floorplan">
+  <p class="section-label reveal">Interactive floor plan</p>
+  <h2 class="section-title reveal">Click a zone to <em>explore</em></h2>
+  <p class="section-intro reveal">75 ft (E–W) × 60 ft (N–S) · 5 containers · Click any zone for details</p>
+
+  <div class="plan-wrapper reveal">
+    <svg class="fp-svg" viewBox="0 0 680 560" xmlns="http://www.w3.org/2000/svg" id="floorplanSVG">
+      <defs>
+        <pattern id="fpgrid" width="10" height="10" patternUnits="userSpaceOnUse">
+          <path d="M10 0L0 0 0 10" fill="none" stroke="rgba(26,15,0,0.04)" stroke-width="0.5"/>
+        </pattern>
+      </defs>
+      <rect width="680" height="560" fill="url(#fpgrid)"/>
+
+      <!-- Cardinal labels -->
+      <text x="320" y="14" text-anchor="middle" font-family="'DM Mono',monospace" font-size="9" fill="rgba(26,15,0,0.35)" letter-spacing="2">NORTH — walk-up sidewalk</text>
+      <text x="320" y="548" text-anchor="middle" font-family="'DM Mono',monospace" font-size="9" fill="rgba(26,15,0,0.35)" letter-spacing="2">SOUTH — employee / service entry</text>
+      <text x="10" y="295" text-anchor="middle" font-family="'DM Mono',monospace" font-size="9" fill="#378ADD" letter-spacing="1.5" transform="rotate(-90,10,295)">WEST — PARK · BIFOLD GLASS</text>
+      <text x="670" y="295" text-anchor="middle" font-family="'DM Mono',monospace" font-size="9" fill="rgba(83,74,183,0.8)" letter-spacing="1.5" transform="rotate(90,670,295)">EAST — TO-GO WINDOWS</text>
+
+      <!-- Park terrace -->
+      <g class="fp-zone" id="zone-terrace" onclick="showZone('terrace')">
+        <rect x="20" y="22" width="28" height="508" rx="2" fill="rgba(55,138,221,0.12)" stroke="#378ADD" stroke-width="0.75" stroke-dasharray="4 2"/>
+        <text x="34" y="278" text-anchor="middle" font-family="'DM Mono',monospace" font-size="8" fill="#378ADD" letter-spacing="1" transform="rotate(-90,34,278)">PARK TERRACE</text>
+      </g>
+
+      <!-- Bifold west wall -->
+      <rect x="48" y="22" width="5" height="508" fill="#378ADD" opacity="0.7"/>
+      <line x1="43" y1="106" x2="59" y2="106" stroke="#185FA5" stroke-width="0.5" stroke-dasharray="2 1"/>
+      <line x1="43" y1="190" x2="59" y2="190" stroke="#185FA5" stroke-width="0.5" stroke-dasharray="2 1"/>
+      <line x1="43" y1="274" x2="59" y2="274" stroke="#185FA5" stroke-width="0.5" stroke-dasharray="2 1"/>
+      <line x1="43" y1="358" x2="59" y2="358" stroke="#185FA5" stroke-width="0.5" stroke-dasharray="2 1"/>
+      <line x1="43" y1="442" x2="59" y2="442" stroke="#185FA5" stroke-width="0.5" stroke-dasharray="2 1"/>
+
+      <!-- Building outline -->
+      <rect x="48" y="22" width="600" height="508" rx="3" fill="none" stroke="#1A0F00" stroke-width="2"/>
+
+      <!-- Container joints -->
+      <line x1="168" y1="22" x2="168" y2="530" stroke="rgba(26,15,0,0.12)" stroke-width="1" stroke-dasharray="5 4"/>
+      <line x1="288" y1="22" x2="288" y2="530" stroke="rgba(26,15,0,0.12)" stroke-width="1" stroke-dasharray="5 4"/>
+      <line x1="408" y1="22" x2="408" y2="530" stroke="rgba(26,15,0,0.12)" stroke-width="1" stroke-dasharray="5 4"/>
+      <line x1="528" y1="22" x2="528" y2="530" stroke="rgba(26,15,0,0.12)" stroke-width="1" stroke-dasharray="5 4"/>
+
+      <!-- Container labels -->
+      <text x="108" y="35" text-anchor="middle" font-family="'DM Mono',monospace" font-size="8" fill="rgba(26,15,0,0.2)">C-1</text>
+      <text x="228" y="35" text-anchor="middle" font-family="'DM Mono',monospace" font-size="8" fill="rgba(26,15,0,0.2)">C-2</text>
+      <text x="348" y="35" text-anchor="middle" font-family="'DM Mono',monospace" font-size="8" fill="rgba(26,15,0,0.2)">C-3</text>
+      <text x="468" y="35" text-anchor="middle" font-family="'DM Mono',monospace" font-size="8" fill="rgba(26,15,0,0.2)">C-4</text>
+      <text x="584" y="35" text-anchor="middle" font-family="'DM Mono',monospace" font-size="8" fill="rgba(26,15,0,0.2)">C-5</text>
+
+      <!-- ZONE A: Main dining -->
+      <g class="fp-zone" id="zone-dining" onclick="showZone('dining')">
+        <rect x="53" y="28" width="348" height="494" rx="2" fill="rgba(74,92,58,0.12)" stroke="#4A5C3A" stroke-width="1"/>
+        <text x="227" y="56" text-anchor="middle" font-family="'Playfair Display',serif" font-size="15" font-weight="700" fill="#27500A">Main dining</text>
+        <text x="227" y="72" text-anchor="middle" font-family="'DM Mono',monospace" font-size="9" fill="rgba(74,92,58,0.7)" letter-spacing="1">72 SEATS · WEST PARK VIEW</text>
+        <!-- Window bar strip -->
+        <rect x="55" y="90" width="18" height="420" rx="1" fill="rgba(74,92,58,0.2)" stroke="#4A5C3A" stroke-width="0.5"/>
+        <text x="64" y="302" text-anchor="middle" font-family="'DM Mono',monospace" font-size="7" fill="#3B6D11" transform="rotate(-90,64,302)">WINDOW BAR — 12 STOOLS</text>
+        <!-- Tables row 1 -->
+        <rect x="88" y="92" width="70" height="46" rx="2" fill="rgba(255,255,255,0.7)" stroke="#3B6D11" stroke-width="0.5"/>
+        <text x="123" y="118" text-anchor="middle" font-family="'DM Mono',monospace" font-size="8" fill="rgba(26,15,0,0.5)">4-top</text>
+        <rect x="170" y="92" width="70" height="46" rx="2" fill="rgba(255,255,255,0.7)" stroke="#3B6D11" stroke-width="0.5"/>
+        <text x="205" y="118" text-anchor="middle" font-family="'DM Mono',monospace" font-size="8" fill="rgba(26,15,0,0.5)">4-top</text>
+        <rect x="252" y="92" width="70" height="46" rx="2" fill="rgba(255,255,255,0.7)" stroke="#3B6D11" stroke-width="0.5"/>
+        <text x="287" y="118" text-anchor="middle" font-family="'DM Mono',monospace" font-size="8" fill="rgba(26,15,0,0.5)">4-top</text>
+        <!-- Tables row 2 -->
+        <rect x="88" y="152" width="70" height="46" rx="2" fill="rgba(255,255,255,0.7)" stroke="#3B6D11" stroke-width="0.5"/>
+        <text x="123" y="178" text-anchor="middle" font-family="'DM Mono',monospace" font-size="8" fill="rgba(26,15,0,0.5)">4-top</text>
+        <rect x="170" y="152" width="70" height="46" rx="2" fill="rgba(255,255,255,0.7)" stroke="#3B6D11" stroke-width="0.5"/>
+        <text x="205" y="178" text-anchor="middle" font-family="'DM Mono',monospace" font-size="8" fill="rgba(26,15,0,0.5)">4-top</text>
+        <rect x="252" y="152" width="70" height="46" rx="2" fill="rgba(255,255,255,0.7)" stroke="#3B6D11" stroke-width="0.5"/>
+        <text x="287" y="178" text-anchor="middle" font-family="'DM Mono',monospace" font-size="8" fill="rgba(26,15,0,0.5)">4-top</text>
+        <!-- Communal table -->
+        <rect x="88" y="212" width="234" height="48" rx="2" fill="rgba(255,255,255,0.7)" stroke="#3B6D11" stroke-width="0.5"/>
+        <text x="205" y="232" text-anchor="middle" font-family="'Playfair Display',serif" font-size="11" font-weight="700" fill="#3B6D11">Communal table</text>
+        <text x="205" y="248" text-anchor="middle" font-family="'DM Mono',monospace" font-size="8" fill="rgba(26,15,0,0.4)">12 seats</text>
+        <!-- Tables row 3 -->
+        <rect x="88" y="274" width="70" height="46" rx="2" fill="rgba(255,255,255,0.7)" stroke="#3B6D11" stroke-width="0.5"/>
+        <text x="123" y="300" text-anchor="middle" font-family="'DM Mono',monospace" font-size="8" fill="rgba(26,15,0,0.5)">4-top</text>
+        <rect x="170" y="274" width="70" height="46" rx="2" fill="rgba(255,255,255,0.7)" stroke="#3B6D11" stroke-width="0.5"/>
+        <text x="205" y="300" text-anchor="middle" font-family="'DM Mono',monospace" font-size="8" fill="rgba(26,15,0,0.5)">4-top</text>
+        <rect x="252" y="274" width="70" height="46" rx="2" fill="rgba(255,255,255,0.7)" stroke="#3B6D11" stroke-width="0.5"/>
+        <text x="287" y="300" text-anchor="middle" font-family="'DM Mono',monospace" font-size="8" fill="rgba(26,15,0,0.5)">4-top</text>
+        <!-- Tables row 4 -->
+        <rect x="88" y="334" width="70" height="46" rx="2" fill="rgba(255,255,255,0.7)" stroke="#3B6D11" stroke-width="0.5"/>
+        <text x="123" y="360" text-anchor="middle" font-family="'DM Mono',monospace" font-size="8" fill="rgba(26,15,0,0.5)">4-top</text>
+        <rect x="170" y="334" width="70" height="46" rx="2" fill="rgba(255,255,255,0.7)" stroke="#3B6D11" stroke-width="0.5"/>
+        <text x="205" y="360" text-anchor="middle" font-family="'DM Mono',monospace" font-size="8" fill="rgba(26,15,0,0.5)">4-top</text>
+        <rect x="252" y="334" width="70" height="46" rx="2" fill="rgba(255,255,255,0.7)" stroke="#3B6D11" stroke-width="0.5"/>
+        <text x="287" y="360" text-anchor="middle" font-family="'DM Mono',monospace" font-size="8" fill="rgba(26,15,0,0.5)">4-top</text>
+        <!-- Tables row 5 -->
+        <rect x="88" y="394" width="70" height="46" rx="2" fill="rgba(255,255,255,0.7)" stroke="#3B6D11" stroke-width="0.5"/>
+        <text x="123" y="420" text-anchor="middle" font-family="'DM Mono',monospace" font-size="8" fill="rgba(26,15,0,0.5)">4-top</text>
+        <rect x="170" y="394" width="70" height="46" rx="2" fill="rgba(255,255,255,0.7)" stroke="#3B6D11" stroke-width="0.5"/>
+        <text x="205" y="420" text-anchor="middle" font-family="'DM Mono',monospace" font-size="8" fill="rgba(26,15,0,0.5)">4-top</text>
+        <rect x="252" y="394" width="70" height="46" rx="2" fill="rgba(255,255,255,0.7)" stroke="#3B6D11" stroke-width="0.5"/>
+        <text x="287" y="420" text-anchor="middle" font-family="'DM Mono',monospace" font-size="8" fill="rgba(26,15,0,0.5)">4-top</text>
+        <!-- Tables row 6 -->
+        <rect x="88" y="454" width="70" height="46" rx="2" fill="rgba(255,255,255,0.7)" stroke="#3B6D11" stroke-width="0.5"/>
+        <text x="123" y="480" text-anchor="middle" font-family="'DM Mono',monospace" font-size="8" fill="rgba(26,15,0,0.5)">4-top</text>
+        <rect x="170" y="454" width="70" height="46" rx="2" fill="rgba(255,255,255,0.7)" stroke="#3B6D11" stroke-width="0.5"/>
+        <text x="205" y="480" text-anchor="middle" font-family="'DM Mono',monospace" font-size="8" fill="rgba(26,15,0,0.5)">4-top</text>
+        <rect x="252" y="454" width="70" height="46" rx="2" fill="rgba(255,255,255,0.7)" stroke="#3B6D11" stroke-width="0.5"/>
+        <text x="287" y="480" text-anchor="middle" font-family="'DM Mono',monospace" font-size="8" fill="rgba(26,15,0,0.5)">4-top</text>
+      </g>
+
+      <!-- Spine wall -->
+      <rect x="400" y="22" width="5" height="508" fill="rgba(26,15,0,0.18)"/>
+
+      <!-- ZONE B: Service bar -->
+      <g class="fp-zone" id="zone-bar" onclick="showZone('bar')">
+        <rect x="405" y="28" width="118" height="140" rx="2" fill="rgba(200,136,58,0.14)" stroke="#854F0B" stroke-width="1"/>
+        <text x="464" y="72" text-anchor="middle" font-family="'Playfair Display',serif" font-size="13" font-weight="700" fill="#633806">Service bar</text>
+        <text x="464" y="88" text-anchor="middle" font-family="'DM Mono',monospace" font-size="8" fill="rgba(133,79,11,0.7)" letter-spacing="0.5">Espresso · pastry</text>
+        <rect x="413" y="100" width="102" height="18" rx="1" fill="rgba(255,255,255,0.6)" stroke="#854F0B" stroke-width="0.5"/>
+        <text x="464" y="112" text-anchor="middle" font-family="'DM Mono',monospace" font-size="8" fill="#633806">Customer counter</text>
+        <rect x="413" y="124" width="102" height="18" rx="1" fill="rgba(255,255,255,0.6)" stroke="#854F0B" stroke-width="0.5"/>
+        <text x="464" y="136" text-anchor="middle" font-family="'DM Mono',monospace" font-size="8" fill="#633806">Back bar · POS</text>
+      </g>
+
+      <!-- ZONE C: Kitchen -->
+      <g class="fp-zone" id="zone-kitchen" onclick="showZone('kitchen')">
+        <rect x="405" y="168" width="118" height="240" rx="2" fill="rgba(139,58,26,0.1)" stroke="#993C1D" stroke-width="1"/>
+        <text x="464" y="192" text-anchor="middle" font-family="'Playfair Display',serif" font-size="13" font-weight="700" fill="#712B13">Kitchen</text>
+        <text x="464" y="208" text-anchor="middle" font-family="'DM Mono',monospace" font-size="8" fill="rgba(153,60,29,0.7)" letter-spacing="0.5">Hood-equipped hot line</text>
+        <rect x="411" y="216" width="106" height="9" rx="1" fill="rgba(216,90,48,0.3)"/>
+        <text x="464" y="223" text-anchor="middle" font-family="'DM Mono',monospace" font-size="7" fill="#712B13">TYPE I HOOD</text>
+        <rect x="411" y="230" width="106" height="18" rx="1" fill="rgba(255,255,255,0.6)" stroke="#993C1D" stroke-width="0.5"/>
+        <text x="464" y="242" text-anchor="middle" font-family="'DM Mono',monospace" font-size="8" fill="#712B13">6-burner range</text>
+        <rect x="411" y="252" width="50" height="18" rx="1" fill="rgba(255,255,255,0.6)" stroke="rgba(26,15,0,0.1)" stroke-width="0.5"/>
+        <text x="436" y="264" text-anchor="middle" font-family="'DM Mono',monospace" font-size="8" fill="rgba(26,15,0,0.5)">Oven</text>
+        <rect x="465" y="252" width="50" height="18" rx="1" fill="rgba(255,255,255,0.6)" stroke="rgba(26,15,0,0.1)" stroke-width="0.5"/>
+        <text x="490" y="264" text-anchor="middle" font-family="'DM Mono',monospace" font-size="8" fill="rgba(26,15,0,0.5)">Fryer</text>
+        <rect x="411" y="274" width="106" height="18" rx="1" fill="rgba(255,255,255,0.6)" stroke="rgba(26,15,0,0.1)" stroke-width="0.5"/>
+        <text x="464" y="286" text-anchor="middle" font-family="'DM Mono',monospace" font-size="8" fill="rgba(26,15,0,0.5)">Sandwich station</text>
+        <rect x="411" y="296" width="106" height="18" rx="1" fill="rgba(255,255,255,0.6)" stroke="rgba(26,15,0,0.1)" stroke-width="0.5"/>
+        <text x="464" y="308" text-anchor="middle" font-family="'DM Mono',monospace" font-size="8" fill="rgba(26,15,0,0.5)">Pastry oven</text>
+        <rect x="411" y="318" width="106" height="18" rx="1" fill="rgba(255,255,255,0.6)" stroke="rgba(26,15,0,0.1)" stroke-width="0.5"/>
+        <text x="464" y="330" text-anchor="middle" font-family="'DM Mono',monospace" font-size="8" fill="rgba(26,15,0,0.5)">Prep counter</text>
+        <rect x="411" y="340" width="106" height="18" rx="1" fill="rgba(255,255,255,0.6)" stroke="rgba(26,15,0,0.1)" stroke-width="0.5"/>
+        <text x="464" y="352" text-anchor="middle" font-family="'DM Mono',monospace" font-size="8" fill="rgba(26,15,0,0.5)">3-bay dish sink</text>
+        <text x="464" y="384" text-anchor="middle" font-family="'DM Mono',monospace" font-size="8" fill="rgba(153,60,29,0.6)">↑ Stack → C-4/C-5 ridge</text>
+      </g>
+
+      <!-- ZONE D: Storage NE corner -->
+      <g class="fp-zone" id="zone-storage" onclick="showZone('storage')">
+        <rect x="528" y="28" width="114" height="170" rx="2" fill="rgba(241,239,232,0.8)" stroke="#5F5E5A" stroke-width="1"/>
+        <text x="585" y="60" text-anchor="middle" font-family="'Playfair Display',serif" font-size="12" font-weight="700" fill="#444441">Storage + mech</text>
+        <text x="585" y="75" text-anchor="middle" font-family="'DM Mono',monospace" font-size="8" fill="rgba(95,94,90,0.6)" letter-spacing="0.5">NE CORNER</text>
+        <rect x="536" y="86" width="46" height="48" rx="1" fill="rgba(255,255,255,0.8)" stroke="rgba(26,15,0,0.1)" stroke-width="0.5"/>
+        <text x="559" y="108" text-anchor="middle" font-family="'DM Mono',monospace" font-size="8" fill="rgba(26,15,0,0.4)">Walk-in</text>
+        <text x="559" y="120" text-anchor="middle" font-family="'DM Mono',monospace" font-size="8" fill="rgba(26,15,0,0.4)">cooler</text>
+        <rect x="586" y="86" width="48" height="48" rx="1" fill="rgba(255,255,255,0.8)" stroke="rgba(26,15,0,0.1)" stroke-width="0.5"/>
+        <text x="610" y="108" text-anchor="middle" font-family="'DM Mono',monospace" font-size="8" fill="rgba(26,15,0,0.4)">Dry</text>
+        <text x="610" y="120" text-anchor="middle" font-family="'DM Mono',monospace" font-size="8" fill="rgba(26,15,0,0.4)">goods</text>
+        <text x="585" y="156" text-anchor="middle" font-family="'DM Mono',monospace" font-size="8" fill="rgba(95,94,90,0.6)">HVAC + makeup air</text>
+        <text x="585" y="170" text-anchor="middle" font-family="'DM Mono',monospace" font-size="8" fill="rgba(95,94,90,0.6)">ceiling plenum</text>
+      </g>
+
+      <!-- ZONE E: To-go counter -->
+      <g class="fp-zone" id="zone-togo" onclick="showZone('togo')">
+        <rect x="528" y="218" width="114" height="174" rx="2" fill="rgba(83,74,183,0.1)" stroke="#534AB7" stroke-width="1"/>
+        <text x="585" y="246" text-anchor="middle" font-family="'Playfair Display',serif" font-size="12" font-weight="700" fill="#3C3489">To-go counter</text>
+        <text x="585" y="262" text-anchor="middle" font-family="'DM Mono',monospace" font-size="8" fill="rgba(83,74,183,0.7)" letter-spacing="0.5">CENTERED · EAST WALL</text>
+        <rect x="536" y="274" width="98" height="98" rx="1" fill="rgba(255,255,255,0.7)" stroke="#534AB7" stroke-width="0.5"/>
+        <text x="585" y="316" text-anchor="middle" font-family="'DM Mono',monospace" font-size="8" fill="#3C3489" transform="rotate(-90,585,316)">Order + pickup · POS</text>
+        <text x="585" y="378" text-anchor="middle" font-family="'DM Mono',monospace" font-size="8" fill="rgba(83,74,183,0.6)">Bifold windows →</text>
+      </g>
+      <!-- Bifold east wall (to-go zone only) -->
+      <rect x="636" y="218" width="5" height="174" fill="#534AB7" opacity="0.6"/>
+      <line x1="630" y1="286" x2="647" y2="286" stroke="#534AB7" stroke-width="0.5" stroke-dasharray="2 1"/>
+      <line x1="630" y1="354" x2="647" y2="354" stroke="#534AB7" stroke-width="0.5" stroke-dasharray="2 1"/>
+
+      <!-- ZONE F: Restrooms -->
+      <g class="fp-zone" id="zone-restrooms" onclick="showZone('restrooms')">
+        <rect x="405" y="408" width="118" height="114" rx="2" fill="rgba(241,239,232,0.8)" stroke="#5F5E5A" stroke-width="1"/>
+        <text x="464" y="432" text-anchor="middle" font-family="'Playfair Display',serif" font-size="12" font-weight="700" fill="#444441">Restrooms</text>
+        <rect x="413" y="442" width="46" height="44" rx="1" fill="rgba(255,255,255,0.8)" stroke="rgba(26,15,0,0.1)" stroke-width="0.5"/>
+        <text x="436" y="462" text-anchor="middle" font-family="'DM Mono',monospace" font-size="8" fill="rgba(26,15,0,0.4)">ADA</text>
+        <text x="436" y="475" text-anchor="middle" font-family="'DM Mono',monospace" font-size="8" fill="rgba(26,15,0,0.4)">60"×60"</text>
+        <rect x="463" y="442" width="52" height="44" rx="1" fill="rgba(255,255,255,0.8)" stroke="rgba(26,15,0,0.1)" stroke-width="0.5"/>
+        <text x="489" y="462" text-anchor="middle" font-family="'DM Mono',monospace" font-size="8" fill="rgba(26,15,0,0.4)">M / F</text>
+        <text x="489" y="475" text-anchor="middle" font-family="'DM Mono',monospace" font-size="8" fill="rgba(26,15,0,0.4)">2 stalls</text>
+        <text x="464" y="512" text-anchor="middle" font-family="'DM Mono',monospace" font-size="8" fill="rgba(95,94,90,0.6)">← hallway access</text>
+      </g>
+
+      <!-- ZONE G: Staff WC/Mop -->
+      <g class="fp-zone" id="zone-staff" onclick="showZone('staff')">
+        <rect x="528" y="408" width="114" height="114" rx="2" fill="rgba(241,239,232,0.6)" stroke="#5F5E5A" stroke-width="1"/>
+        <text x="585" y="440" text-anchor="middle" font-family="'Playfair Display',serif" font-size="11" font-weight="700" fill="#444441">Staff WC</text>
+        <text x="585" y="456" text-anchor="middle" font-family="'DM Mono',monospace" font-size="8" fill="rgba(95,94,90,0.6)">Mop sink</text>
+        <text x="585" y="488" text-anchor="middle" font-family="'DM Mono',monospace" font-size="8" fill="rgba(95,94,90,0.6)">Near service entry</text>
+        <text x="585" y="504" text-anchor="middle" font-family="'DM Mono',monospace" font-size="8" fill="rgba(95,94,90,0.6)">↓ south wall</text>
+      </g>
+
+      <!-- South hallway -->
+      <rect x="400" y="486" width="128" height="42" rx="1" fill="rgba(200,200,195,0.25)" stroke="rgba(26,15,0,0.15)" stroke-width="0.75" stroke-dasharray="4 2"/>
+      <text x="464" y="501" text-anchor="middle" font-family="'DM Mono',monospace" font-size="8" fill="rgba(26,15,0,0.35)">South hallway</text>
+      <text x="464" y="514" text-anchor="middle" font-family="'DM Mono',monospace" font-size="8" fill="rgba(26,15,0,0.35)">Dining → Restrooms</text>
+
+      <!-- Employee entry (south wall) -->
+      <rect x="548" y="523" width="74" height="6" fill="#FDFAF5"/>
+      <line x1="548" y1="523" x2="548" y2="536" stroke="#1A0F00" stroke-width="1.5"/>
+      <line x1="622" y1="523" x2="622" y2="536" stroke="#1A0F00" stroke-width="1.5"/>
+      <path d="M 548 523 Q 585 506 622 523" fill="none" stroke="rgba(26,15,0,0.3)" stroke-width="0.75" stroke-dasharray="3 2"/>
+      <text x="585" y="545" text-anchor="middle" font-family="'DM Mono',monospace" font-size="8" fill="rgba(26,15,0,0.4)">EMPLOYEE ENTRY</text>
+
+      <!-- Ridge line -->
+      <line x1="48" y1="276" x2="641" y2="276" stroke="rgba(26,15,0,0.1)" stroke-width="1" stroke-dasharray="10 5"/>
+      <text x="648" y="279" font-family="'DM Mono',monospace" font-size="7" fill="rgba(26,15,0,0.25)">ridge</text>
+
+      <!-- Dimension ticks -->
+      <line x1="48" y1="536" x2="641" y2="536" stroke="rgba(26,15,0,0.2)" stroke-width="0.5" marker-start="url(#dt)" marker-end="url(#dt)"/>
+      <text x="344" y="550" text-anchor="middle" font-family="'DM Mono',monospace" font-size="8" fill="rgba(26,15,0,0.35)">75 ft · 22.9 m</text>
+      <defs>
+        <marker id="dt" viewBox="0 0 6 6" refX="3" refY="3" markerWidth="4" markerHeight="4" orient="auto-start-reverse">
+          <path d="M1 1L5 3L1 5" fill="none" stroke="rgba(26,15,0,0.3)" stroke-width="1"/>
+        </marker>
+      </defs>
+    </svg>
+
+    <!-- Zone info panel -->
+    <div class="zone-panel" id="zonePanel">
+      <div class="zone-panel-icon" id="zonePanelIcon">👆</div>
+      <div>
+        <div class="zone-panel-name" id="zonePanelLabel">Interactive floor plan</div>
+        <div class="zone-panel-title" id="zonePanelTitle">Click any zone to explore</div>
+        <div class="zone-panel-desc" id="zonePanelDesc">Each zone of the Coffee House is clickable — tap a room or area on the plan above to see detailed specifications, dimensions, and design notes.</div>
+      </div>
+      <div class="zone-panel-sqft" id="zonePanelSqft">
+        <div class="sqft-num">—</div>
+        <div class="sqft-label">sq ft</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MENU / PROGRAM -->
+<section class="program" id="program">
+  <p class="section-label reveal">Food + beverage program</p>
+  <h2 class="section-title reveal">What the kitchen <em>produces</em></h2>
+  <p class="section-intro reveal">A full coffee program anchored by a hood-equipped hot line — designed to handle morning rush, lunch service, and afternoon pastry without operational conflict.</p>
+
+  <div class="menu-grid reveal">
+    <div class="menu-cat">
+      <span class="menu-cat-icon">☕</span>
+      <div class="menu-cat-name">Coffee program</div>
+      <ul class="menu-items">
+        <li>Espresso + milk drinks</li>
+        <li>Pour-over single origin</li>
+        <li>Cold brew on tap</li>
+        <li>Nitro cold brew</li>
+        <li>Seasonal specials</li>
+        <li>Tea + matcha</li>
+      </ul>
+    </div>
+    <div class="menu-cat">
+      <span class="menu-cat-icon">🥐</span>
+      <div class="menu-cat-name">Pastries + bakery</div>
+      <ul class="menu-items">
+        <li>Croissants + viennoiserie</li>
+        <li>Muffins + scones</li>
+        <li>Seasonal tarts</li>
+        <li>Cookies + bars</li>
+        <li>House-made granola</li>
+        <li>Gluten-free options</li>
+      </ul>
+    </div>
+    <div class="menu-cat">
+      <span class="menu-cat-icon">🥪</span>
+      <div class="menu-cat-name">Sandwiches</div>
+      <ul class="menu-items">
+        <li>Pressed hot sandwiches</li>
+        <li>Cold deli builds</li>
+        <li>Breakfast sandwich</li>
+        <li>Banh mi style</li>
+        <li>Grain bowls</li>
+        <li>Seasonal salads</li>
+      </ul>
+    </div>
+    <div class="menu-cat">
+      <span class="menu-cat-icon">🍲</span>
+      <div class="menu-cat-name">Small hot meals</div>
+      <ul class="menu-items">
+        <li>Soups (rotating)</li>
+        <li>Shakshuka</li>
+        <li>Mac + cheese</li>
+        <li>Ramen bowls</li>
+        <li>Chili + cornbread</li>
+        <li>Daily specials</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- SPECS -->
+<section class="specs" id="specs">
+  <p class="section-label reveal">Technical specifications</p>
+  <h2 class="section-title reveal">By the <em>numbers</em></h2>
+
+  <div class="specs-grid reveal">
+    <div>
+      <div class="spec-group">
+        <div class="spec-group-title">Structure</div>
+        <div class="spec-row"><span class="spec-key">Building type</span><span class="spec-val">Sea container adaptive reuse</span></div>
+        <div class="spec-row"><span class="spec-key">Containers</span><span class="spec-val">5 × 40 ft high-cube (9'6" tall)</span></div>
+        <div class="spec-row"><span class="spec-key">Orientation</span><span class="spec-val">Side by side, E–W</span></div>
+        <div class="spec-row"><span class="spec-key">Footprint</span><span class="spec-val">75 ft × 60 ft</span></div>
+        <div class="spec-row"><span class="spec-key">Total interior</span><span class="spec-val">4,500 sq ft</span></div>
+        <div class="spec-row"><span class="spec-key">Foundation</span><span class="spec-val">Concrete slab on grade</span></div>
+      </div>
+      <div class="spec-group" style="margin-top:40px;">
+        <div class="spec-group-title">Roof</div>
+        <div class="spec-row"><span class="spec-key">Type</span><span class="spec-val">Peaked steel ridge frame</span></div>
+        <div class="spec-row"><span class="spec-key">Pitch</span><span class="spec-val">4:12 minimum (snow-shed)</span></div>
+        <div class="spec-row"><span class="spec-key">Cladding</span><span class="spec-val">Standing-seam metal</span></div>
+        <div class="spec-row"><span class="spec-key">Overhang</span><span class="spec-val">3 ft front + rear</span></div>
+        <div class="spec-row"><span class="spec-key">Clerestory</span><span class="spec-val">Ridge glazing, natural light</span></div>
+        <div class="spec-row"><span class="spec-key">Snow load</span><span class="spec-val">Ohio code compliant</span></div>
+      </div>
+    </div>
+    <div>
+      <div class="spec-group">
+        <div class="spec-group-title">West bifold glass wall (park)</div>
+        <div class="spec-row"><span class="spec-key">System</span><span class="spec-val">NanaWall SL73 or equal</span></div>
+        <div class="spec-row"><span class="spec-key">Configuration</span><span class="spec-val">Post-free, no corner posts</span></div>
+        <div class="spec-row"><span class="spec-key">Opening span</span><span class="spec-val">75 ft × full height</span></div>
+        <div class="spec-row"><span class="spec-key">Panels</span><span class="spec-val">8 leaves, fold to side pockets</span></div>
+        <div class="spec-row"><span class="spec-key">Glazing</span><span class="spec-val">12mm DGU, solar control</span></div>
+        <div class="spec-row"><span class="spec-key">Track</span><span class="spec-val">Top-hung, flush floor — no step</span></div>
+      </div>
+      <div class="spec-group" style="margin-top:40px;">
+        <div class="spec-group-title">Kitchen + ventilation</div>
+        <div class="spec-row"><span class="spec-key">Hood type</span><span class="spec-val">Type I commercial, UL 710</span></div>
+        <div class="spec-row"><span class="spec-key">Hot line</span><span class="spec-val">6-burner, oven, fryer</span></div>
+        <div class="spec-row"><span class="spec-key">Exhaust fan</span><span class="spec-val">Upblast, roof-mounted</span></div>
+        <div class="spec-row"><span class="spec-key">Stack location</span><span class="spec-val">C-4 / C-5 ridge valley</span></div>
+        <div class="spec-row"><span class="spec-key">Makeup air</span><span class="spec-val">Above-ceiling plenum unit</span></div>
+        <div class="spec-row"><span class="spec-key">Grease duct</span><span class="spec-val">Fully welded, per NFPA 96</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BIFOLD DETAIL -->
+<section class="bifold" id="bifold">
+  <div class="bifold-inner reveal">
+    <div>
+      <p class="section-label">Bifold system detail</p>
+      <h2 class="section-title">The wall <em>disappears</em></h2>
+      <p class="section-intro" style="margin-bottom:32px;">When the panels fold, there is no threshold, no post, no column. The park becomes the dining room. Cleveland summer mornings, the coffee house is open air from door to door — 75 feet of nothing between you and the lawn.</p>
+
+      <div style="display:flex;flex-direction:column;gap:16px;">
+        <div style="display:flex;gap:16px;align-items:flex-start;">
+          <div style="width:32px;height:32px;border-radius:50%;background:rgba(55,138,221,0.15);display:flex;align-items:center;justify-content:center;color:#378ADD;font-size:14px;flex-shrink:0;">①</div>
+          <div>
+            <div style="font-family:var(--font-mono);font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--caramel);margin-bottom:3px;">Top track only</div>
+            <div style="font-size:13px;color:rgba(26,15,0,0.65);">All structural load transfers to the container header beam — no posts in the opening. The bottom track is flush with the slab surface.</div>
+          </div>
+        </div>
+        <div style="display:flex;gap:16px;align-items:flex-start;">
+          <div style="width:32px;height:32px;border-radius:50%;background:rgba(55,138,221,0.15);display:flex;align-items:center;justify-content:center;color:#378ADD;font-size:14px;flex-shrink:0;">②</div>
+          <div>
+            <div style="font-family:var(--font-mono);font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--caramel);margin-bottom:3px;">Panels fold to side pockets</div>
+            <div style="font-size:13px;color:rgba(26,15,0,0.65);">Eight leaves stack into container-framed side pockets at each end. Fully recessed — panels are invisible when open.</div>
+          </div>
+        </div>
+        <div style="display:flex;gap:16px;align-items:flex-start;">
+          <div style="width:32px;height:32px;border-radius:50%;background:rgba(55,138,221,0.15);display:flex;align-items:center;justify-content:center;color:#378ADD;font-size:14px;flex-shrink:0;">③</div>
+          <div>
+            <div style="font-family:var(--font-mono);font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--caramel);margin-bottom:3px;">12mm DGU solar control glazing</div>
+            <div style="font-size:13px;color:rgba(26,15,0,0.65);">Double-glazed units with low-E coating. West exposure means afternoon sun in winter — critical to manage heat gain in summer when panels are closed.</div>
+          </div>
+        </div>
+        <div style="display:flex;gap:16px;align-items:flex-start;">
+          <div style="width:32px;height:32px;border-radius:50%;background:rgba(55,138,221,0.15);display:flex;align-items:center;justify-content:center;color:#378ADD;font-size:14px;flex-shrink:0;">④</div>
+          <div>
+            <div style="font-family:var(--font-mono);font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--caramel);margin-bottom:3px;">East counter bifold — same system</div>
+            <div style="font-size:13px;color:rgba(26,15,0,0.65);">The to-go counter on the east wall uses horizontal bifold counter windows on the same post-free principle — opens completely for warm weather, closes in winter while still serving through a smaller pass.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="bifold-diagram">
+      <svg viewBox="0 0 320 240" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;">
+        <defs>
+          <pattern id="bdgrid" width="16" height="16" patternUnits="userSpaceOnUse">
+            <path d="M16 0L0 0 0 16" fill="none" stroke="rgba(200,136,58,0.07)" stroke-width="0.5"/>
+          </pattern>
+        </defs>
+        <rect width="320" height="240" fill="url(#bdgrid)"/>
+        <!-- Top track -->
+        <rect x="20" y="40" width="280" height="8" rx="1" fill="rgba(200,136,58,0.5)"/>
+        <text x="160" y="35" text-anchor="middle" font-family="'DM Mono',monospace" font-size="7" fill="rgba(200,136,58,0.6)" letter-spacing="1">TOP TRACK — STRUCTURAL LOAD</text>
+        <!-- Panels folded LEFT -->
+        <rect x="20" y="48" width="20" height="160" rx="1" fill="rgba(55,138,221,0.5)" stroke="rgba(55,138,221,0.8)" stroke-width="0.5"/>
+        <rect x="40" y="48" width="20" height="160" rx="1" fill="rgba(55,138,221,0.38)" stroke="rgba(55,138,221,0.6)" stroke-width="0.5"/>
+        <rect x="60" y="48" width="20" height="160" rx="1" fill="rgba(55,138,221,0.28)" stroke="rgba(55,138,221,0.5)" stroke-width="0.5"/>
+        <rect x="80" y="48" width="20" height="160" rx="1" fill="rgba(55,138,221,0.18)" stroke="rgba(55,138,221,0.4)" stroke-width="0.5"/>
+        <!-- Open span -->
+        <text x="192" y="130" text-anchor="middle" font-family="'DM Mono',monospace" font-size="9" fill="rgba(55,138,221,0.5)" letter-spacing="1">← OPEN SPAN →</text>
+        <text x="192" y="148" text-anchor="middle" font-family="'DM Mono',monospace" font-size="8" fill="rgba(55,138,221,0.35)">NO POSTS · NO COLUMNS</text>
+        <!-- Panels folded RIGHT -->
+        <rect x="240" y="48" width="20" height="160" rx="1" fill="rgba(55,138,221,0.18)" stroke="rgba(55,138,221,0.4)" stroke-width="0.5"/>
+        <rect x="260" y="48" width="20" height="160" rx="1" fill="rgba(55,138,221,0.28)" stroke="rgba(55,138,221,0.5)" stroke-width="0.5"/>
+        <rect x="280" y="48" width="20" height="160" rx="1" fill="rgba(55,138,221,0.38)" stroke="rgba(55,138,221,0.6)" stroke-width="0.5"/>
+        <!-- Floor track flush -->
+        <rect x="20" y="208" width="280" height="4" rx="1" fill="rgba(200,136,58,0.3)"/>
+        <text x="160" y="222" text-anchor="middle" font-family="'DM Mono',monospace" font-size="7" fill="rgba(200,136,58,0.4)" letter-spacing="1">FLUSH FLOOR TRACK — NO STEP</text>
+        <!-- Container side walls -->
+        <rect x="6" y="40" width="14" height="176" rx="1" fill="rgba(200,136,58,0.12)" stroke="rgba(200,136,58,0.3)" stroke-width="0.75"/>
+        <text x="13" y="100" text-anchor="middle" font-family="'DM Mono',monospace" font-size="6" fill="rgba(200,136,58,0.35)" transform="rotate(-90,13,100)">POCKET</text>
+        <rect x="300" y="40" width="14" height="176" rx="1" fill="rgba(200,136,58,0.12)" stroke="rgba(200,136,58,0.3)" stroke-width="0.75"/>
+        <text x="307" y="100" text-anchor="middle" font-family="'DM Mono',monospace" font-size="6" fill="rgba(200,136,58,0.35)" transform="rotate(-90,307,100)">POCKET</text>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<!-- TIMELINE -->
+<section class="timeline" id="timeline">
+  <p class="section-label reveal" style="color:rgba(200,136,58,0.7);">Project phases</p>
+  <h2 class="section-title reveal" style="color:var(--warm-white);">Path to <em>opening</em></h2>
+  <p class="section-intro reveal">From concept approval through certificate of occupancy — the phased delivery sequence for Mall C Coffee House.</p>
+
+  <div class="timeline-track reveal">
+    <div class="tl-item">
+      <div class="tl-phase">Phase 01</div>
+      <div>
+        <div class="tl-title">Concept approval + permitting</div>
+        <div class="tl-desc">FOS 216 finalizes floor plan, elevations, and specifications. Structural engineer stamps container and roof frame drawings. Building permit submission to Cleveland Division of Building & Housing. Health Department pre-application meeting.</div>
+      </div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-phase">Phase 02</div>
+      <div>
+        <div class="tl-title">Site prep + container procurement</div>
+        <div class="tl-desc">Concrete slab poured with embedded anchors at container corner casting locations. Five 40 ft high-cube containers sourced, inspected, and delivered. Openings cut for bifold wall, to-go windows, service entry, and hallway on-site or at fab yard.</div>
+      </div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-phase">Phase 03</div>
+      <div>
+        <div class="tl-title">Steel + roof frame</div>
+        <div class="tl-desc">Containers set and welded to anchor bolts. Steel ridge frame fabricated and erected. 4:12 standing-seam metal roof installed including ridge cap, gutters, and downspouts. Exhaust stack penetration for hood system roughed in.</div>
+      </div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-phase">Phase 04</div>
+      <div>
+        <div class="tl-title">MEP + bifold installation</div>
+        <div class="tl-desc">Rough-in of electrical, plumbing, HVAC, and gas. Type I hood and upblast fan installed. NanaWall post-free bifold system installed west wall and east to-go counter. Walk-in cooler box set. Insulation and interior sheathing.</div>
+      </div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-phase">Phase 05</div>
+      <div>
+        <div class="tl-title">Interior finish + equipment</div>
+        <div class="tl-desc">Flooring, interior cladding, lighting. Espresso equipment, commercial kitchen equipment, and service bar millwork installed. Restrooms finished and ADA clearances confirmed. Signage and exterior finish.</div>
+      </div>
+    </div>
+    <div class="tl-item" style="border-bottom:none;">
+      <div class="tl-phase">Phase 06</div>
+      <div>
+        <div class="tl-title">Inspections + certificate of occupancy</div>
+        <div class="tl-desc">Final inspections: building, fire, health, electrical. Cleveland Health Department food service license issued. Staff training, soft open, and grand opening. Mall C Coffee House opens to the park.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-left">
+    <div class="footer-project">Mall C Coffee House</div>
+    <div class="footer-firm">Fix Our Streets 216 · Cleveland, Ohio</div>
+    <div class="footer-firm" style="margin-top:6px;">Operating Manager: Terry McNeil</div>
+  </div>
+  <div class="footer-right">
+    <div>FOS 216 Internal Project Brief</div>
+    <div style="margin-top:4px;">4,500 sq ft · 72 seats · 5 containers</div>
+    <div style="margin-top:4px;">Cleveland, Ohio · Mall C Development</div>
+  </div>
+</footer>
+
+<script>
+  // Zone data
+  const zones = {
+    dining: {
+      icon: '🌿',
+      label: 'Zone A — main dining',
+      title: 'Main dining room',
+      desc: 'West-facing, park-view dining. 56 interior seats: six 4-tops, one 12-seat communal table, and a 12-stool window ledge bar along the bifold glass wall. When panels open, 16 additional terrace seats activate for a total of 72. Natural light from both the west glass wall and the ridge clerestory.',
+      sqft: '1,880'
+    },
+    terrace: {
+      icon: '🌳',
+      label: 'Park terrace',
+      title: 'Outdoor overflow seating',
+      desc: 'When the west bifold glass wall is open, the park becomes the dining room. No threshold, no step — the slab continues flush to the park surface. 16 terrace seats activate in warm months. The 3 ft roof overhang shades the immediate terrace area.',
+      sqft: '~480'
+    },
+    bar: {
+      icon: '☕',
+      label: 'Zone B — service bar',
+      title: 'Espresso + service bar',
+      desc: 'Full espresso program: commercial espresso machine, pour-over station, milk bar, and pastry display case. POS terminals at each end serve both the dining floor and to-go counter simultaneously. Back bar houses cold well for milk, syrups, and cold brew kegs.',
+      sqft: '340'
+    },
+    kitchen: {
+      icon: '🍳',
+      label: 'Zone C — kitchen',
+      title: 'Hood-equipped hot line',
+      desc: 'Type I commercial hood (UL 710 listed) over a 6-burner range, convection oven, and fryer. Sandwich station, pastry oven, and prep counter complete the line. 3-bay dish sink and undercounter cold storage. Upblast exhaust fan mounted on the roof at the C-4/C-5 ridge valley, with NFPA 96 compliant fully-welded grease duct.',
+      sqft: '520'
+    },
+    storage: {
+      icon: '📦',
+      label: 'Zone D — storage + mech',
+      title: 'Storage + mechanical (NE corner)',
+      desc: 'Positioned in the NE corner for direct delivery access from the north walk-up side without crossing the kitchen hot line or dining floor. Walk-in cooler, dry goods storage, and HVAC/makeup air unit in the ceiling plenum above. Delivery path: north entry → NE storage → kitchen.',
+      sqft: '400'
+    },
+    togo: {
+      icon: '🪟',
+      label: 'Zone E — to-go counter',
+      title: 'To-go counter',
+      desc: 'Centered on the east wall — a deliberate window-booth aesthetic with solid container wall flanking both sides. Bifold pass-through counter windows use the same post-free system as the west wall, in horizontal counter configuration. Order counter, pickup shelf, POS terminal, and mobile order display. Serves walk-up traffic from the east sidewalk.',
+      sqft: '240'
+    },
+    restrooms: {
+      icon: '🚻',
+      label: 'Zone F — restrooms',
+      title: 'Public restrooms',
+      desc: 'Wider than standard — ADA-compliant single-occupancy at 60"×60" clear floor space, plus a multi-user room with 2 stalls. Accessed via the south hallway from both the dining floor and the to-go area. Code-compliant fixture counts for 72-seat food service operation. Hallway door separates restrooms from the dining experience.',
+      sqft: '280'
+    },
+    staff: {
+      icon: '🔑',
+      label: 'Zone G — staff WC',
+      title: 'Staff WC + mop sink',
+      desc: 'Directly adjacent to the employee/service entry on the south wall. Staff WC, mop sink, and janitor storage. Positioned so staff can enter from the south, stow gear, and access the kitchen without crossing the dining floor or the public restrooms.',
+      sqft: '100'
+    }
+  };
+
+  function showZone(id) {
+    const z = zones[id];
+    if (!z) return;
+    document.getElementById('zonePanelIcon').textContent = z.icon;
+    document.getElementById('zonePanelLabel').textContent = z.label;
+    document.getElementById('zonePanelTitle').textContent = z.title;
+    document.getElementById('zonePanelDesc').textContent = z.desc;
+    document.getElementById('zonePanelSqft').innerHTML =
+      `<div class="sqft-num">${z.sqft}</div><div class="sqft-label">sq ft</div>`;
+
+    // Highlight active zone
+    document.querySelectorAll('.fp-zone').forEach(el => el.classList.remove('active'));
+    const el = document.getElementById('zone-' + id);
+    if (el) el.classList.add('active');
+  }
+
+  // Scroll reveal
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => {
+          entry.target.classList.add('visible');
+        }, 100);
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
