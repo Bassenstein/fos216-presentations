@@ -1,0 +1,1728 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>STDS — Street Takeover Detection System</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;600;700&display=swap');
+
+  :root {
+    --bg: #050a0e;
+    --panel: #0a1520;
+    --panel2: #0d1c2e;
+    --border: #1a3a5c;
+    --accent: #00d4ff;
+    --accent2: #ff4400;
+    --accent3: #ffaa00;
+    --green: #00ff88;
+    --red: #ff2244;
+    --yellow: #ffcc00;
+    --text: #c8dce8;
+    --dim: #4a6a80;
+    --glow: 0 0 20px rgba(0,212,255,0.4);
+    --glow-red: 0 0 20px rgba(255,34,68,0.6);
+    --glow-green: 0 0 20px rgba(0,255,136,0.4);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Rajdhani', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+    background-image:
+      radial-gradient(ellipse at 20% 50%, rgba(0,60,120,0.12) 0%, transparent 60%),
+      radial-gradient(ellipse at 80% 20%, rgba(0,180,255,0.06) 0%, transparent 50%);
+  }
+
+  /* SCANLINE OVERLAY */
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0,0,0,0.08) 2px,
+      rgba(0,0,0,0.08) 4px
+    );
+    pointer-events: none;
+    z-index: 1000;
+  }
+
+  /* HEADER */
+  header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 28px;
+    border-bottom: 1px solid var(--border);
+    background: linear-gradient(90deg, rgba(0,212,255,0.05) 0%, transparent 100%);
+    position: relative;
+  }
+
+  header::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, var(--accent), transparent);
+  }
+
+  .logo-block {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .logo-icon {
+    width: 44px; height: 44px;
+    background: linear-gradient(135deg, var(--accent), #006688);
+    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+    box-shadow: var(--glow);
+    animation: pulse-logo 3s ease-in-out infinite;
+  }
+
+  @keyframes pulse-logo {
+    0%, 100% { box-shadow: 0 0 15px rgba(0,212,255,0.4); }
+    50% { box-shadow: 0 0 30px rgba(0,212,255,0.8); }
+  }
+
+  .logo-text h1 {
+    font-family: 'Orbitron', monospace;
+    font-size: 15px;
+    font-weight: 900;
+    color: var(--accent);
+    letter-spacing: 4px;
+    line-height: 1;
+  }
+
+  .logo-text p {
+    font-size: 11px;
+    color: var(--dim);
+    letter-spacing: 2px;
+    font-family: 'Share Tech Mono', monospace;
+  }
+
+  .header-status {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+  }
+
+  .status-pill {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 14px;
+    border: 1px solid;
+    border-radius: 2px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 1px;
+    transition: all 0.3s;
+  }
+
+  .status-pill.online {
+    border-color: var(--green);
+    color: var(--green);
+    background: rgba(0,255,136,0.06);
+  }
+
+  .status-pill.offline {
+    border-color: var(--dim);
+    color: var(--dim);
+    background: transparent;
+  }
+
+  .status-dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    animation: blink 1.2s step-end infinite;
+  }
+
+  .status-dot.green { background: var(--green); box-shadow: 0 0 8px var(--green); }
+  .status-dot.gray { background: var(--dim); animation: none; }
+  .status-dot.red { background: var(--red); box-shadow: 0 0 8px var(--red); }
+
+  @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.2; } }
+
+  .clock {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 13px;
+    color: var(--dim);
+    letter-spacing: 1px;
+  }
+
+  /* MAIN LAYOUT */
+  .main {
+    display: grid;
+    grid-template-columns: 320px 1fr 300px;
+    grid-template-rows: auto 1fr auto;
+    gap: 0;
+    height: calc(100vh - 77px);
+    min-height: 600px;
+  }
+
+  /* PANELS */
+  .panel {
+    border: 1px solid var(--border);
+    background: var(--panel);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .panel-header {
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: rgba(0,212,255,0.03);
+  }
+
+  .panel-title {
+    font-family: 'Orbitron', monospace;
+    font-size: 10px;
+    letter-spacing: 3px;
+    color: var(--accent);
+    font-weight: 700;
+  }
+
+  .panel-badge {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    color: var(--dim);
+    letter-spacing: 1px;
+  }
+
+  /* LEFT PANEL - SENSOR ARRAY */
+  .left-panel {
+    grid-row: 1 / 4;
+    display: flex;
+    flex-direction: column;
+    border-right: none;
+  }
+
+  /* CENTER PANELS */
+  .center-top {
+    border-bottom: none;
+    border-left: none;
+    border-right: none;
+  }
+
+  .center-main {
+    border-left: none;
+    border-right: none;
+    border-bottom: none;
+    border-top: none;
+  }
+
+  .center-bottom {
+    border-left: none;
+    border-right: none;
+    border-top: none;
+  }
+
+  /* RIGHT PANEL */
+  .right-panel {
+    grid-row: 1 / 4;
+    border-left: none;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* RPM GAUGE */
+  .rpm-section {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    flex: 0 0 auto;
+  }
+
+  .gauge-container {
+    position: relative;
+    width: 220px;
+    height: 130px;
+  }
+
+  canvas.gauge-canvas {
+    width: 220px;
+    height: 130px;
+  }
+
+  .rpm-readout {
+    position: absolute;
+    bottom: 5px;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+  }
+
+  .rpm-number {
+    font-family: 'Orbitron', monospace;
+    font-size: 28px;
+    font-weight: 900;
+    color: var(--accent);
+    line-height: 1;
+    text-shadow: var(--glow);
+    transition: color 0.3s, text-shadow 0.3s;
+  }
+
+  .rpm-number.danger {
+    color: var(--red);
+    text-shadow: var(--glow-red);
+  }
+
+  .rpm-number.warning {
+    color: var(--yellow);
+    text-shadow: 0 0 20px rgba(255,204,0,0.6);
+  }
+
+  .rpm-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    color: var(--dim);
+    letter-spacing: 2px;
+  }
+
+  /* THRESHOLD BARS */
+  .threshold-display {
+    width: 100%;
+    padding: 0 16px 16px;
+  }
+
+  .threshold-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+
+  .threshold-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    color: var(--dim);
+    width: 70px;
+    flex-shrink: 0;
+  }
+
+  .threshold-bar-wrap {
+    flex: 1;
+    height: 6px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+
+  .threshold-bar-fill {
+    height: 100%;
+    border-radius: 3px;
+    transition: width 0.1s linear;
+  }
+
+  .threshold-value {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    width: 36px;
+    text-align: right;
+    flex-shrink: 0;
+  }
+
+  /* FREQUENCY BANDS */
+  .freq-section {
+    flex: 1;
+    padding: 0 16px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    overflow-y: auto;
+  }
+
+  .freq-band {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 10px;
+    border: 1px solid rgba(26,58,92,0.5);
+    border-radius: 2px;
+    background: rgba(0,0,0,0.2);
+    transition: all 0.3s;
+    cursor: pointer;
+  }
+
+  .freq-band.active {
+    border-color: var(--accent);
+    background: rgba(0,212,255,0.06);
+    box-shadow: 0 0 10px rgba(0,212,255,0.15);
+  }
+
+  .freq-band.alert {
+    border-color: var(--red);
+    background: rgba(255,34,68,0.08);
+    box-shadow: 0 0 10px rgba(255,34,68,0.2);
+  }
+
+  .freq-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--dim);
+    flex-shrink: 0;
+    transition: all 0.3s;
+  }
+
+  .freq-band.active .freq-dot { background: var(--accent); box-shadow: 0 0 8px var(--accent); }
+  .freq-band.alert .freq-dot { background: var(--red); box-shadow: 0 0 8px var(--red); animation: blink 0.6s step-end infinite; }
+
+  .freq-info { flex: 1; }
+
+  .freq-name {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text);
+    line-height: 1.2;
+  }
+
+  .freq-range {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    color: var(--dim);
+  }
+
+  .freq-level {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    color: var(--dim);
+    min-width: 30px;
+    text-align: right;
+  }
+
+  .freq-band.active .freq-level { color: var(--accent); }
+  .freq-band.alert .freq-level { color: var(--red); }
+
+  /* WAVEFORM / SPECTROGRAM - CENTER TOP */
+  .spectrogram-wrap {
+    padding: 12px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .spec-label-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .spec-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    color: var(--dim);
+    letter-spacing: 1px;
+  }
+
+  canvas.spectrogram-canvas {
+    width: 100%;
+    height: 120px;
+    display: block;
+    border: 1px solid var(--border);
+    border-radius: 2px;
+  }
+
+  /* RPM TIMELINE - CENTER MAIN */
+  .timeline-section {
+    padding: 12px 16px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  canvas.timeline-canvas {
+    width: 100%;
+    flex: 1;
+    display: block;
+    min-height: 100px;
+  }
+
+  /* ALERT LOG */
+  .alert-section {
+    flex: 1;
+    overflow-y: auto;
+    padding: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .alert-item {
+    padding: 8px 12px;
+    border-left: 3px solid;
+    background: rgba(0,0,0,0.3);
+    animation: slide-in 0.3s ease;
+  }
+
+  @keyframes slide-in {
+    from { opacity: 0; transform: translateX(-10px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+
+  .alert-item.critical { border-color: var(--red); background: rgba(255,34,68,0.06); }
+  .alert-item.warning { border-color: var(--yellow); background: rgba(255,204,0,0.06); }
+  .alert-item.info { border-color: var(--accent); background: rgba(0,212,255,0.04); }
+
+  .alert-time {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    color: var(--dim);
+    margin-bottom: 3px;
+  }
+
+  .alert-msg {
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1.3;
+  }
+
+  .alert-item.critical .alert-msg { color: var(--red); }
+  .alert-item.warning .alert-msg { color: var(--yellow); }
+  .alert-item.info .alert-msg { color: var(--accent); }
+
+  .alert-detail {
+    font-size: 11px;
+    color: var(--dim);
+    margin-top: 2px;
+  }
+
+  /* INCIDENT COUNTER - RIGHT */
+  .stat-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    background: var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .stat-cell {
+    background: var(--panel2);
+    padding: 14px;
+    text-align: center;
+  }
+
+  .stat-number {
+    font-family: 'Orbitron', monospace;
+    font-size: 22px;
+    font-weight: 900;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .stat-cell:nth-child(1) .stat-number { color: var(--red); }
+  .stat-cell:nth-child(2) .stat-number { color: var(--yellow); }
+  .stat-cell:nth-child(3) .stat-number { color: var(--accent); }
+  .stat-cell:nth-child(4) .stat-number { color: var(--green); }
+
+  .stat-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 9px;
+    color: var(--dim);
+    letter-spacing: 1px;
+  }
+
+  /* SENSOR NODE MAP */
+  .sensor-map {
+    flex: 1;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .sensor-node {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    background: rgba(0,0,0,0.2);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .sensor-node:hover { border-color: var(--accent); background: rgba(0,212,255,0.04); }
+
+  .sensor-node.triggered {
+    border-color: var(--red);
+    background: rgba(255,34,68,0.08);
+    animation: node-flash 0.5s ease-in-out infinite alternate;
+  }
+
+  @keyframes node-flash {
+    from { background: rgba(255,34,68,0.04); }
+    to { background: rgba(255,34,68,0.14); }
+  }
+
+  .node-icon {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    border: 2px solid;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px;
+    flex-shrink: 0;
+  }
+
+  .sensor-node.triggered .node-icon { border-color: var(--red); color: var(--red); }
+  .sensor-node:not(.triggered) .node-icon { border-color: var(--dim); color: var(--dim); }
+
+  .node-info { flex: 1; }
+
+  .node-name {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: var(--text);
+  }
+
+  .node-addr {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    color: var(--dim);
+    margin-top: 1px;
+  }
+
+  .node-db {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    text-align: right;
+  }
+
+  .sensor-node.triggered .node-db { color: var(--red); }
+  .sensor-node:not(.triggered) .node-db { color: var(--dim); }
+
+  /* CONTROL BUTTONS */
+  .controls {
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    border-top: 1px solid var(--border);
+  }
+
+  .btn {
+    padding: 10px 16px;
+    border: 1px solid;
+    background: transparent;
+    font-family: 'Orbitron', monospace;
+    font-size: 10px;
+    letter-spacing: 2px;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: all 0.2s;
+    width: 100%;
+    font-weight: 700;
+  }
+
+  .btn-primary {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .btn-primary:hover, .btn-primary.active {
+    background: var(--accent);
+    color: var(--bg);
+    box-shadow: var(--glow);
+  }
+
+  .btn-danger {
+    border-color: var(--red);
+    color: var(--red);
+  }
+
+  .btn-danger:hover {
+    background: var(--red);
+    color: white;
+    box-shadow: var(--glow-red);
+  }
+
+  .btn-secondary {
+    border-color: var(--dim);
+    color: var(--dim);
+  }
+
+  .btn-secondary:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  /* ALERT BANNER */
+  .alert-banner {
+    position: fixed;
+    top: 77px; left: 0; right: 0;
+    padding: 14px 28px;
+    display: none;
+    align-items: center;
+    gap: 16px;
+    z-index: 500;
+    background: rgba(255,34,68,0.15);
+    border-bottom: 2px solid var(--red);
+    animation: banner-pulse 0.5s ease-in-out infinite alternate;
+  }
+
+  .alert-banner.show { display: flex; }
+
+  @keyframes banner-pulse {
+    from { background: rgba(255,34,68,0.1); }
+    to { background: rgba(255,34,68,0.25); }
+  }
+
+  .banner-icon {
+    font-size: 24px;
+    animation: banner-spin 1s linear infinite;
+  }
+
+  @keyframes banner-spin {
+    from { transform: rotate(-5deg); }
+    to { transform: rotate(5deg); }
+  }
+
+  .banner-text {
+    flex: 1;
+  }
+
+  .banner-title {
+    font-family: 'Orbitron', monospace;
+    font-size: 14px;
+    font-weight: 900;
+    color: var(--red);
+    letter-spacing: 3px;
+  }
+
+  .banner-sub {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    color: rgba(255,100,100,0.8);
+    margin-top: 2px;
+  }
+
+  .banner-close {
+    background: transparent;
+    border: 1px solid var(--red);
+    color: var(--red);
+    padding: 6px 14px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    cursor: pointer;
+    border-radius: 2px;
+  }
+
+  /* THRESHOLD INDICATOR LINE ON TIMELINE */
+  .zone-legend {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    color: var(--dim);
+  }
+
+  .legend-dot {
+    width: 10px; height: 3px;
+    border-radius: 2px;
+  }
+
+  /* CONFIDENCE METER */
+  .confidence-section {
+    padding: 12px 16px;
+    border-top: 1px solid var(--border);
+  }
+
+  .conf-label {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 6px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+  }
+
+  .conf-bar-wrap {
+    height: 8px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  .conf-bar-fill {
+    height: 100%;
+    border-radius: 4px;
+    transition: width 0.5s ease, background 0.5s ease;
+  }
+
+  /* GRID SEPARATOR LINES */
+  .sep {
+    width: 100%;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* SCROLLBAR */
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--dim); }
+
+  /* DEMO MODE BADGE */
+  .demo-badge {
+    position: fixed;
+    bottom: 12px;
+    right: 12px;
+    padding: 4px 10px;
+    border: 1px solid var(--accent3);
+    color: var(--accent3);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 1px;
+    background: rgba(255,170,0,0.06);
+    border-radius: 2px;
+    z-index: 999;
+    opacity: 0.7;
+  }
+
+  .grid-3 { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; padding: 0 16px 12px; }
+  .mini-stat { text-align: center; }
+  .mini-val { font-family: 'Orbitron', monospace; font-size: 14px; font-weight: 700; color: var(--accent); }
+  .mini-lbl { font-family: 'Share Tech Mono', monospace; font-size: 9px; color: var(--dim); letter-spacing: 1px; }
+
+  /* CENTER PANELS stacking */
+  .center-col {
+    display: flex;
+    flex-direction: column;
+    grid-row: 1 / 4;
+    min-height: 0;
+  }
+
+  .center-col .panel {
+    border-left: 1px solid var(--border);
+    border-right: 1px solid var(--border);
+  }
+
+  .center-col .panel + .panel {
+    border-top: none;
+  }
+
+  .panel.flex-grow { flex: 1; min-height: 0; }
+</style>
+</head>
+<body>
+
+<!-- ALERT BANNER -->
+<div class="alert-banner" id="alertBanner">
+  <div class="banner-icon">🚨</div>
+  <div class="banner-text">
+    <div class="banner-title" id="bannerTitle">STREET TAKEOVER DETECTED</div>
+    <div class="banner-sub" id="bannerSub">Sustained high-RPM signature · Multi-sensor triangulation active · Notifying patrol units</div>
+  </div>
+  <button class="banner-close" onclick="dismissAlert()">DISMISS</button>
+</div>
+
+<header>
+  <div class="logo-block">
+    <div class="logo-icon">⬡</div>
+    <div class="logo-text">
+      <h1>STDS</h1>
+      <p>STREET TAKEOVER DETECTION SYSTEM · v2.4.1</p>
+    </div>
+  </div>
+  <div class="header-status">
+    <div class="status-pill" id="micStatus" style="border-color:var(--dim);color:var(--dim)">
+      <div class="status-dot gray" id="micDot"></div>
+      <span id="micText">MIC OFFLINE</span>
+    </div>
+    <div class="status-pill online">
+      <div class="status-dot green"></div>
+      <span>NETWORK ONLINE</span>
+    </div>
+    <div class="clock" id="clock">--:--:--</div>
+  </div>
+</header>
+
+<div class="main" style="display:grid;grid-template-columns:320px 1fr 300px;height:calc(100vh - 77px)">
+
+  <!-- LEFT PANEL -->
+  <div class="left-panel panel" style="display:flex;flex-direction:column;overflow:hidden">
+    <div class="panel-header">
+      <span class="panel-title">ACOUSTIC SENSOR</span>
+      <span class="panel-badge">NODE-01 · LIVE</span>
+    </div>
+
+    <!-- RPM GAUGE -->
+    <div class="rpm-section">
+      <div class="gauge-container">
+        <canvas id="gaugeCanvas" width="220" height="130" class="gauge-canvas"></canvas>
+        <div class="rpm-readout">
+          <div class="rpm-number" id="rpmDisplay">0</div>
+          <div class="rpm-label">RPM DETECTED</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MINI STATS -->
+    <div class="grid-3">
+      <div class="mini-stat">
+        <div class="mini-val" id="peakRpm">0</div>
+        <div class="mini-lbl">PEAK RPM</div>
+      </div>
+      <div class="mini-stat">
+        <div class="mini-val" id="sustainSec">0s</div>
+        <div class="mini-lbl">SUSTAINED</div>
+      </div>
+      <div class="mini-stat">
+        <div class="mini-val" id="dbLevel">0</div>
+        <div class="mini-lbl">dB LEVEL</div>
+      </div>
+    </div>
+
+    <!-- THRESHOLD BARS -->
+    <div class="threshold-display">
+      <div class="threshold-row">
+        <div class="threshold-label">IDLE ZONE</div>
+        <div class="threshold-bar-wrap">
+          <div class="threshold-bar-fill" id="bar0" style="width:0%;background:var(--green)"></div>
+        </div>
+        <div class="threshold-value" style="color:var(--green)">800</div>
+      </div>
+      <div class="threshold-row">
+        <div class="threshold-label">NORMAL</div>
+        <div class="threshold-bar-wrap">
+          <div class="threshold-bar-fill" id="bar1" style="width:0%;background:var(--accent)"></div>
+        </div>
+        <div class="threshold-value" style="color:var(--accent)">3500</div>
+      </div>
+      <div class="threshold-row">
+        <div class="threshold-label">⚠ WATCH</div>
+        <div class="threshold-bar-wrap">
+          <div class="threshold-bar-fill" id="bar2" style="width:0%;background:var(--yellow)"></div>
+        </div>
+        <div class="threshold-value" style="color:var(--yellow)">4000</div>
+      </div>
+      <div class="threshold-row">
+        <div class="threshold-label">🔴 ALERT</div>
+        <div class="threshold-bar-wrap">
+          <div class="threshold-bar-fill" id="bar3" style="width:0%;background:var(--red)"></div>
+        </div>
+        <div class="threshold-value" style="color:var(--red)">6000</div>
+      </div>
+    </div>
+
+    <div class="sep"></div>
+
+    <!-- FREQUENCY BANDS -->
+    <div class="panel-header" style="border-top:1px solid var(--border)">
+      <span class="panel-title">FREQUENCY BANDS</span>
+      <span class="panel-badge">ENGINE SIGNATURE</span>
+    </div>
+    <div class="freq-section" id="freqBands">
+      <!-- populated by JS -->
+    </div>
+
+    <!-- CONFIDENCE -->
+    <div class="confidence-section">
+      <div class="conf-label">
+        <span style="color:var(--dim)">DETECTION CONFIDENCE</span>
+        <span id="confPct" style="color:var(--accent);font-family:'Share Tech Mono',monospace">0%</span>
+      </div>
+      <div class="conf-bar-wrap">
+        <div class="conf-bar-fill" id="confBar" style="width:0%;background:var(--green)"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CENTER COLUMN -->
+  <div class="center-col" style="display:flex;flex-direction:column;min-height:0">
+
+    <!-- SPECTROGRAM -->
+    <div class="panel" style="border-left:1px solid var(--border);border-right:1px solid var(--border);flex-shrink:0">
+      <div class="panel-header">
+        <span class="panel-title">REAL-TIME SPECTROGRAM</span>
+        <div style="display:flex;gap:12px;align-items:center">
+          <span class="panel-badge" id="freqRangeLabel">20Hz — 20kHz</span>
+          <div class="zone-legend">
+            <div class="legend-item"><div class="legend-dot" style="background:var(--green)"></div>IDLE</div>
+            <div class="legend-item"><div class="legend-dot" style="background:var(--yellow)"></div>WATCH</div>
+            <div class="legend-item"><div class="legend-dot" style="background:var(--red)"></div>ALERT</div>
+          </div>
+        </div>
+      </div>
+      <div class="spectrogram-wrap">
+        <canvas id="spectroCanvas" width="800" height="110" class="spectrogram-canvas"></canvas>
+        <div class="spec-label-row">
+          <span class="spec-label">0 Hz</span>
+          <span class="spec-label">500 Hz</span>
+          <span class="spec-label">1 kHz</span>
+          <span class="spec-label">2 kHz</span>
+          <span class="spec-label">4 kHz</span>
+          <span class="spec-label">8 kHz</span>
+          <span class="spec-label">20 kHz</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- RPM TIMELINE -->
+    <div class="panel flex-grow" style="border-left:1px solid var(--border);border-right:1px solid var(--border);border-top:1px solid var(--border)">
+      <div class="panel-header">
+        <span class="panel-title">RPM TIMELINE · 60s WINDOW</span>
+        <div class="zone-legend">
+          <div class="legend-item"><div class="legend-dot" style="background:var(--yellow)"></div>4000 RPM THRESHOLD</div>
+          <div class="legend-item"><div class="legend-dot" style="background:var(--red)"></div>6000 RPM THRESHOLD</div>
+        </div>
+      </div>
+      <div class="timeline-section" style="flex:1;min-height:0">
+        <canvas id="timelineCanvas" class="timeline-canvas" style="flex:1;min-height:80px;max-height:200px"></canvas>
+      </div>
+    </div>
+
+    <!-- BOTTOM ALERT LOG -->
+    <div class="panel" style="border-left:1px solid var(--border);border-right:1px solid var(--border);border-top:1px solid var(--border);height:200px;display:flex;flex-direction:column;flex-shrink:0">
+      <div class="panel-header">
+        <span class="panel-title">INCIDENT LOG</span>
+        <span class="panel-badge" id="logCount">0 EVENTS</span>
+      </div>
+      <div class="alert-section" id="alertLog">
+        <div class="alert-item info">
+          <div class="alert-time">SYSTEM BOOT</div>
+          <div class="alert-msg">Street Takeover Detection System online</div>
+          <div class="alert-detail">Acoustic sensors initializing · Awaiting microphone authorization</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT PANEL -->
+  <div class="right-panel panel" style="display:flex;flex-direction:column;overflow:hidden">
+    <div class="panel-header">
+      <span class="panel-title">SENSOR NETWORK</span>
+      <span class="panel-badge">8 NODES</span>
+    </div>
+
+    <!-- STATS -->
+    <div class="stat-grid">
+      <div class="stat-cell">
+        <div class="stat-number" id="critCount">0</div>
+        <div class="stat-label">CRITICAL</div>
+      </div>
+      <div class="stat-cell">
+        <div class="stat-number" id="warnCount">0</div>
+        <div class="stat-label">WARNINGS</div>
+      </div>
+      <div class="stat-cell">
+        <div class="stat-number" id="sessionTime">0m</div>
+        <div class="stat-label">SESSION</div>
+      </div>
+      <div class="stat-cell">
+        <div class="stat-number" id="totalScanned">0</div>
+        <div class="stat-label">ANALYZED</div>
+      </div>
+    </div>
+
+    <!-- SENSOR NODES -->
+    <div class="sensor-map" style="overflow-y:auto" id="sensorMap">
+      <!-- populated by JS -->
+    </div>
+
+    <div class="sep"></div>
+
+    <!-- CONTROLS -->
+    <div class="controls">
+      <button class="btn btn-primary" id="startBtn" onclick="toggleMic()">▶ START MONITORING</button>
+      <button class="btn btn-secondary" onclick="runDemo()">⬡ RUN SIMULATION</button>
+      <button class="btn btn-danger" onclick="triggerAlert('MANUAL TEST ALERT', 'Manual trigger via operator console', 5800)">⚠ TEST ALERT</button>
+    </div>
+  </div>
+</div>
+
+<div class="demo-badge">PROOF-OF-CONCEPT · AUDIO DETECTION ENGINE</div>
+
+<script>
+// ============================================================
+// STDS — Street Takeover Detection System
+// Audio Engine + Visualization
+// ============================================================
+
+const SAMPLE_RATE = 44100;
+const FFT_SIZE = 4096;
+const RPM_LOW = 4000;
+const RPM_HIGH = 6000;
+const SUSTAIN_THRESHOLD_SEC = 3; // seconds sustained to trigger alert
+const NODES = [
+  { id:'N1', name:'KINSMAN RD', addr:'E 93rd & Kinsman', db:62, lat:41.451, lon:-81.631 },
+  { id:'N2', name:'MLK BLVD', addr:'MLK & E 105th', db:58, lat:41.503, lon:-81.619 },
+  { id:'N3', name:'BROADWAY AVE', addr:'Broadway & E 71st', db:71, lat:41.461, lon:-81.649 },
+  { id:'N4', name:'ST CLAIR AVE', addr:'St Clair & E 79th', db:55, lat:41.510, lon:-81.641 },
+  { id:'N5', name:'CEDAR RD', addr:'Cedar & E 125th', db:49, lat:41.498, lon:-81.598 },
+  { id:'N6', name:'WOODLAND AVE', addr:'Woodland & E 116th', db:63, lat:41.474, lon:-81.607 },
+  { id:'N7', name:'UNION AVE', addr:'Union & E 55th', db:44, lat:41.480, lon:-81.665 },
+  { id:'N8', name:'SUPERIOR AVE', addr:'Superior & E 99th', db:59, lat:41.507, lon:-81.626 },
+];
+
+let audioCtx = null, analyser = null, micStream = null;
+let isListening = false;
+let rpmHistory = new Array(60).fill(0);
+let currentRpm = 0, peakRpm = 0;
+let sustainedSec = 0, lastAlertTime = 0;
+let critCount = 0, warnCount = 0;
+let totalScanned = 0;
+let sessionStart = Date.now();
+let animFrame = null;
+let demoMode = false;
+let demoTimer = null;
+let logCount = 0;
+let triggeredNodes = new Set();
+
+// ─── CLOCK ───────────────────────────────────────────────
+function updateClock() {
+  const now = new Date();
+  document.getElementById('clock').textContent =
+    now.toLocaleTimeString('en-US', { hour12: false });
+}
+setInterval(updateClock, 1000);
+updateClock();
+
+// ─── SENSOR NODE RENDER ───────────────────────────────────
+function renderNodes() {
+  const map = document.getElementById('sensorMap');
+  map.innerHTML = NODES.map(n => `
+    <div class="sensor-node ${triggeredNodes.has(n.id) ? 'triggered' : ''}" id="node-${n.id}">
+      <div class="node-icon">📡</div>
+      <div class="node-info">
+        <div class="node-name">${n.name}</div>
+        <div class="node-addr">${n.addr}</div>
+      </div>
+      <div class="node-db" id="nodedb-${n.id}">${n.db} dB</div>
+    </div>
+  `).join('');
+}
+renderNodes();
+
+function setNodeTriggered(id, triggered) {
+  if (triggered) triggeredNodes.add(id);
+  else triggeredNodes.delete(id);
+  renderNodes();
+}
+
+// ─── FREQUENCY BANDS ─────────────────────────────────────
+const FREQ_BANDS = [
+  { name:'Engine Idle', range:'50–100 Hz', min:50, max:100, color:'#00ff88' },
+  { name:'Low-RPM Rumble', range:'100–300 Hz', min:100, max:300, color:'#00d4ff' },
+  { name:'Mid-RPM Core', range:'300–600 Hz', min:300, max:600, color:'#ffaa00' },
+  { name:'High-RPM Signature', range:'600–1200 Hz', min:600, max:1200, color:'#ff4400' },
+  { name:'Exhaust Harmonics', range:'1.2–3 kHz', min:1200, max:3000, color:'#ff2244' },
+  { name:'Tire Screech', range:'3–6 kHz', min:3000, max:6000, color:'#cc00ff' },
+];
+
+function renderFreqBands(levels) {
+  const container = document.getElementById('freqBands');
+  container.innerHTML = FREQ_BANDS.map((b, i) => {
+    const lvl = levels ? levels[i] : 0;
+    const pct = Math.round(lvl);
+    const isAlert = b.min >= 600 && lvl > 60;
+    const isActive = lvl > 20;
+    return `
+      <div class="freq-band ${isAlert ? 'alert' : isActive ? 'active' : ''}">
+        <div class="freq-dot"></div>
+        <div class="freq-info">
+          <div class="freq-name">${b.name}</div>
+          <div class="freq-range">${b.range}</div>
+        </div>
+        <div class="freq-level">${pct}%</div>
+      </div>
+    `;
+  }).join('');
+}
+renderFreqBands(null);
+
+// ─── GAUGE CANVAS ─────────────────────────────────────────
+const gaugeCvs = document.getElementById('gaugeCanvas');
+const gctx = gaugeCvs.getContext('2d');
+
+function drawGauge(rpm) {
+  const W = 220, H = 130;
+  const cx = W / 2, cy = H - 20;
+  const R = 100;
+  gctx.clearRect(0, 0, W, H);
+
+  // Background arc
+  gctx.beginPath();
+  gctx.arc(cx, cy, R, Math.PI, 0);
+  gctx.strokeStyle = 'rgba(255,255,255,0.05)';
+  gctx.lineWidth = 14;
+  gctx.stroke();
+
+  // Color zones
+  const zones = [
+    { from: 0, to: 2000, color: '#00ff8840' },
+    { from: 2000, to: 4000, color: '#00d4ff40' },
+    { from: 4000, to: 6000, color: '#ffcc0070' },
+    { from: 6000, to: 8000, color: '#ff224470' },
+  ];
+  const maxRPM = 8000;
+  zones.forEach(z => {
+    const a1 = Math.PI + (z.from / maxRPM) * Math.PI;
+    const a2 = Math.PI + (z.to / maxRPM) * Math.PI;
+    gctx.beginPath();
+    gctx.arc(cx, cy, R, a1, a2);
+    gctx.strokeStyle = z.color;
+    gctx.lineWidth = 14;
+    gctx.stroke();
+  });
+
+  // Active arc
+  const pct = Math.min(rpm / maxRPM, 1);
+  const endAngle = Math.PI + pct * Math.PI;
+  let arcColor = '#00d4ff';
+  if (rpm >= 6000) arcColor = '#ff2244';
+  else if (rpm >= 4000) arcColor = '#ffcc00';
+
+  if (rpm > 0) {
+    gctx.beginPath();
+    gctx.arc(cx, cy, R, Math.PI, endAngle);
+    gctx.strokeStyle = arcColor;
+    gctx.lineWidth = 14;
+    gctx.lineCap = 'round';
+    gctx.shadowBlur = 16;
+    gctx.shadowColor = arcColor;
+    gctx.stroke();
+    gctx.shadowBlur = 0;
+  }
+
+  // Tick marks
+  for (let i = 0; i <= 8; i++) {
+    const angle = Math.PI + (i / 8) * Math.PI;
+    const isMajor = i % 2 === 0;
+    const r1 = R - (isMajor ? 18 : 10);
+    const r2 = R - 2;
+    gctx.beginPath();
+    gctx.moveTo(cx + r1 * Math.cos(angle), cy + r1 * Math.sin(angle));
+    gctx.lineTo(cx + r2 * Math.cos(angle), cy + r2 * Math.sin(angle));
+    gctx.strokeStyle = isMajor ? 'rgba(255,255,255,0.3)' : 'rgba(255,255,255,0.1)';
+    gctx.lineWidth = isMajor ? 2 : 1;
+    gctx.stroke();
+
+    if (isMajor) {
+      const lr = R - 26;
+      const val = (i / 8) * 8;
+      gctx.fillStyle = 'rgba(200,220,232,0.5)';
+      gctx.font = '9px Share Tech Mono, monospace';
+      gctx.textAlign = 'center';
+      gctx.fillText(val + 'k', cx + lr * Math.cos(angle), cy + lr * Math.sin(angle) + 3);
+    }
+  }
+
+  // Needle
+  const needleAngle = Math.PI + pct * Math.PI;
+  gctx.save();
+  gctx.translate(cx, cy);
+  gctx.rotate(needleAngle);
+  gctx.beginPath();
+  gctx.moveTo(-8, 0);
+  gctx.lineTo(R - 20, 0);
+  gctx.strokeStyle = arcColor;
+  gctx.lineWidth = 2.5;
+  gctx.shadowBlur = 10;
+  gctx.shadowColor = arcColor;
+  gctx.stroke();
+  gctx.shadowBlur = 0;
+  gctx.restore();
+
+  // Center dot
+  gctx.beginPath();
+  gctx.arc(cx, cy, 6, 0, Math.PI * 2);
+  gctx.fillStyle = arcColor;
+  gctx.shadowBlur = 12;
+  gctx.shadowColor = arcColor;
+  gctx.fill();
+  gctx.shadowBlur = 0;
+}
+
+// ─── SPECTROGRAM ─────────────────────────────────────────
+const specCvs = document.getElementById('spectroCanvas');
+const sctx = specCvs.getContext('2d');
+let spectroBuffer = [];
+const SPECTRO_COLS = 400;
+
+function drawSpectrogram(freqData) {
+  const W = specCvs.width, H = specCvs.height;
+  const bins = freqData ? freqData.length : 128;
+
+  // Store column
+  spectroBuffer.push(freqData ? Array.from(freqData) : new Array(bins).fill(128));
+  if (spectroBuffer.length > SPECTRO_COLS) spectroBuffer.shift();
+
+  sctx.clearRect(0, 0, W, H);
+
+  const colW = W / SPECTRO_COLS;
+  spectroBuffer.forEach((col, xi) => {
+    col.forEach((val, yi) => {
+      const norm = (255 - val) / 255; // analyser gives 0=loud, 255=silent
+      const x = xi * colW;
+      const y = (1 - yi / col.length) * H;
+      const h = H / col.length + 1;
+
+      let r = 0, g = 0, b = 0;
+      if (norm < 0.33) { r = 0; g = norm * 3 * 255; b = 136; }
+      else if (norm < 0.66) { r = (norm - 0.33) * 3 * 255; g = 212; b = 255 - (norm - 0.33) * 3 * 255; }
+      else { r = 255; g = 255 - (norm - 0.66) * 3 * 255; b = 0; }
+
+      sctx.fillStyle = `rgba(${Math.round(r)},${Math.round(g)},${Math.round(b)},${0.3 + norm * 0.7})`;
+      sctx.fillRect(x, y, colW + 1, h + 1);
+    });
+  });
+
+  // Threshold lines (engine RPM frequency ranges)
+  // 4000 RPM fundamental ~67Hz, with harmonics up to 400Hz
+  const drawFreqLine = (freq, color, label) => {
+    const nyquist = SAMPLE_RATE / 2;
+    const yPos = (1 - freq / nyquist) * H;
+    sctx.strokeStyle = color;
+    sctx.lineWidth = 1;
+    sctx.setLineDash([4, 4]);
+    sctx.beginPath();
+    sctx.moveTo(0, yPos);
+    sctx.lineTo(W, yPos);
+    sctx.stroke();
+    sctx.setLineDash([]);
+    sctx.fillStyle = color;
+    sctx.font = '9px Share Tech Mono, monospace';
+    sctx.fillText(label, 4, yPos - 2);
+  };
+  drawFreqLine(133, 'rgba(255,204,0,0.7)', '4k RPM 2nd harmonic');
+  drawFreqLine(200, 'rgba(255,34,68,0.7)', '6k RPM 2nd harmonic');
+}
+
+// ─── TIMELINE ─────────────────────────────────────────────
+const tlCvs = document.getElementById('timelineCanvas');
+const tctx = tlCvs.getContext('2d');
+
+function drawTimeline() {
+  const W = tlCvs.offsetWidth || 600;
+  const H = tlCvs.offsetHeight || 140;
+  tlCvs.width = W;
+  tlCvs.height = H;
+
+  tctx.clearRect(0, 0, W, H);
+
+  // Grid
+  tctx.strokeStyle = 'rgba(26,58,92,0.5)';
+  tctx.lineWidth = 1;
+  [2000, 4000, 6000, 8000].forEach(rpm => {
+    const y = H - (rpm / 8000) * H;
+    tctx.beginPath();
+    tctx.moveTo(0, y); tctx.lineTo(W, y);
+    tctx.stroke();
+    tctx.fillStyle = 'rgba(74,106,128,0.6)';
+    tctx.font = '9px Share Tech Mono, monospace';
+    tctx.fillText(rpm, 4, y - 3);
+  });
+
+  // Threshold zones
+  tctx.fillStyle = 'rgba(255,204,0,0.05)';
+  const y4k = H - (4000 / 8000) * H;
+  const y6k = H - (6000 / 8000) * H;
+  tctx.fillRect(0, y6k, W, y4k - y6k);
+
+  tctx.fillStyle = 'rgba(255,34,68,0.08)';
+  tctx.fillRect(0, 0, W, y6k);
+
+  // Threshold lines
+  tctx.strokeStyle = 'rgba(255,204,0,0.6)';
+  tctx.lineWidth = 1;
+  tctx.setLineDash([6, 4]);
+  tctx.beginPath(); tctx.moveTo(0, y4k); tctx.lineTo(W, y4k); tctx.stroke();
+
+  tctx.strokeStyle = 'rgba(255,34,68,0.6)';
+  tctx.beginPath(); tctx.moveTo(0, y6k); tctx.lineTo(W, y6k); tctx.stroke();
+  tctx.setLineDash([]);
+
+  // RPM Line
+  if (rpmHistory.length < 2) return;
+  const step = W / (rpmHistory.length - 1);
+
+  // Gradient fill
+  const grad = tctx.createLinearGradient(0, 0, 0, H);
+  grad.addColorStop(0, 'rgba(255,34,68,0.4)');
+  grad.addColorStop(0.4, 'rgba(255,204,0,0.2)');
+  grad.addColorStop(1, 'rgba(0,212,255,0.05)');
+
+  tctx.beginPath();
+  tctx.moveTo(0, H);
+  rpmHistory.forEach((r, i) => {
+    tctx.lineTo(i * step, H - (r / 8000) * H);
+  });
+  tctx.lineTo((rpmHistory.length - 1) * step, H);
+  tctx.closePath();
+  tctx.fillStyle = grad;
+  tctx.fill();
+
+  // Line
+  tctx.beginPath();
+  rpmHistory.forEach((r, i) => {
+    const x = i * step;
+    const y = H - (r / 8000) * H;
+    if (i === 0) tctx.moveTo(x, y);
+    else tctx.lineTo(x, y);
+  });
+  const lastRpm = rpmHistory[rpmHistory.length - 1];
+  let lineColor = '#00d4ff';
+  if (lastRpm >= 6000) lineColor = '#ff2244';
+  else if (lastRpm >= 4000) lineColor = '#ffcc00';
+  tctx.strokeStyle = lineColor;
+  tctx.lineWidth = 2;
+  tctx.shadowBlur = 8;
+  tctx.shadowColor = lineColor;
+  tctx.stroke();
+  tctx.shadowBlur = 0;
+}
+
+// ─── RPM FROM AUDIO ───────────────────────────────────────
+function getRpmFromAnalyser() {
+  if (!analyser) return 0;
+  const bufLen = analyser.frequencyBinCount;
+  const data = new Uint8Array(bufLen);
+  analyser.getByteFrequencyData(data);
+
+  // Engine fundamental frequency = RPM / 60 * (cylinders/2)
+  // For a 4-cyl: RPM/60 * 2 = RPM/30
+  // 4000 RPM → ~133 Hz, 6000 RPM → ~200 Hz
+  // We scan the 60–300 Hz range for dominant frequency
+
+  const binHz = (SAMPLE_RATE / 2) / bufLen;
+  let maxVal = 0, maxBin = 0;
+
+  // Search primary engine frequency band (60–400 Hz)
+  const minBin = Math.floor(60 / binHz);
+  const maxBinSearch = Math.floor(400 / binHz);
+
+  for (let i = minBin; i <= maxBinSearch && i < bufLen; i++) {
+    if (data[i] > maxVal) {
+      maxVal = data[i];
+      maxBin = i;
+    }
+  }
+
+  const dominantHz = maxBin * binHz;
+
+  // Convert Hz to RPM (4-cylinder assumption: fundamental = RPM/30)
+  // Also check for 2nd order (×2), pick whichever gives RPM in plausible range
+  let estimatedRpm = dominantHz * 30;
+
+  // Clamp noise floor
+  if (maxVal < 20) return 0;
+
+  // Scale by amplitude to give "confidence" weight
+  const ampFactor = maxVal / 255;
+  estimatedRpm = estimatedRpm * (0.4 + ampFactor * 0.6);
+
+  // Clamp to realistic range
+  return Math.max(0, Math.min(8000, Math.round(estimatedRpm)));
+}
+
+function getFreqBandLevels() {
+  if (!analyser) return FREQ_BANDS.map(() => 0);
+  const bufLen = analyser.frequencyBinCount;
+  const data = new Uint8Array(bufLen);
+  analyser.getByteFrequencyData(data);
+  const binHz = (SAMPLE_RATE / 2) / bufLen;
+
+  return FREQ_BANDS.map(b => {
+    const lo = Math.floor(b.min / binHz);
+    const hi = Math.floor(b.max / binHz);
+    let sum = 0, count = 0;
+    for (let i = lo; i <= hi && i < bufLen; i++) { sum += data[i]; count++; }
+    return count > 0 ? (sum / count / 255) * 100 : 0;
+  });
+}
+
+// ─── ALERT SYSTEM ─────────────────────────────────────────
+function addLog(type, title, detail) {
+  const log = document.getElementById('alertLog');
+  const now = new Date().toLocaleTimeString('en-US', { hour12: false });
+  const el = document.createElement('div');
+  el.className = `alert-item ${type}`;
+  el.innerHTML = `
+    <div class="alert-time">${now}</div>
+    <div class="alert-msg">${title}</div>
+    ${detail ? `<div class="alert-detail">${detail}</div>` : ''}
+  `;
+  log.prepend(el);
+  logCount++;
+  document.getElementById('logCount').textContent = `${logCount} EVENTS`;
+  // Keep max 50 entries
+  while (log.children.length > 50) log.removeChild(log.lastChild);
+}
+
+function triggerAlert(title, detail, rpm) {
+  critCount++;
+  document.getElementById('critCount').textContent = critCount;
+  const banner = document.getElementById('alertBanner');
+  document.getElementById('bannerTitle').textContent = title || 'STREET TAKEOVER DETECTED';
+  document.getElementById('bannerSub').textContent = detail || `${rpm} RPM sustained · Multi-sensor triangulation active`;
+  banner.classList.add('show');
+  addLog('critical', title || 'STREET TAKEOVER DETECTED', detail);
+
+  // Trigger nearby nodes
+  const nearby = ['N1', 'N3', 'N6'].slice(0, Math.floor(Math.random() * 2) + 1);
+  nearby.forEach(id => {
+    setNodeTriggered(id, true);
+    setTimeout(() => setNodeTriggered(id, false), 15000);
+  });
+
+  lastAlertTime = Date.now();
+}
+
+function dismissAlert() {
+  document.getElementById('alertBanner').classList.remove('show');
+}
+
+// ─── MAIN LOOP ────────────────────────────────────────────
+let sustainStart = null;
+
+function mainLoop() {
+  animFrame = requestAnimationFrame(mainLoop);
+
+  // Get audio data
+  let freqData = null;
+  if (analyser && !demoMode) {
+    const bufLen = analyser.frequencyBinCount;
+    freqData = new Uint8Array(bufLen);
+    analyser.getByteFrequencyData(freqData);
+    currentRpm = getRpmFromAnalyser();
+  } else if (!demoMode) {
+    currentRpm = 0;
+  }
+
+  // Update RPM history (1 sample/frame, we'll trim to 60 points)
+  rpmHistory.push(currentRpm);
+  if (rpmHistory.length > 60) rpmHistory.shift();
+
+  // Peak
+  if (currentRpm > peakRpm) peakRpm = currentRpm;
+
+  // Sustain tracking
+  if (currentRpm >= RPM_LOW) {
+    if (!sustainStart) sustainStart = Date.now();
+    sustainedSec = (Date.now() - sustainStart) / 1000;
+  } else {
+    sustainStart = null;
+    sustainedSec = 0;
+  }
+
+  // Auto alert
+  const now = Date.now();
+  if (sustainedSec >= SUSTAIN_THRESHOLD_SEC && (now - lastAlertTime) > 20000) {
+    if (currentRpm >= RPM_HIGH) {
+      triggerAlert(
+        'STREET TAKEOVER DETECTED',
+        `${Math.round(currentRpm)} RPM sustained for ${Math.round(sustainedSec)}s · Possible burnout/racing activity`,
+        currentRpm
+      );
+    } else if (currentRpm >= RPM_LOW) {
+      warnCount++;
+      document.getElementById('warnCount').textContent = warnCount;
+      addLog('warning', 'HIGH-RPM WARNING', `${Math.round(currentRpm)} RPM · ${Math.round(sustainedSec)}s duration`);
+      lastAlertTime = now;
+    }
+  }
+
+  // Confidence
+  let confidence = 0;
+  if (currentRpm >= RPM_LOW && currentRpm <= RPM_HIGH) {
+    confidence = Math.min(100, (sustainedSec / SUSTAIN_THRESHOLD_SEC) * 100);
+  } else if (currentRpm > RPM_HIGH) {
+    confidence = Math.min(100, 70 + (sustainedSec / SUSTAIN_THRESHOLD_SEC) * 30);
+  }
+
+  // Update counters
+  totalScanned++;
+  document.getElementById('totalScanned').textContent = totalScanned;
+  const sessionMin = Math.floor((Date.now() - sessionStart) / 60000);
+  document.getElementById('sessionTime').textContent = sessionMin + 'm';
+
+  // Update UI
+  const rpmEl = document.getElementById('rpmDisplay');
+  rpmEl.textContent = Math.round(currentRpm).toLocaleString();
+  rpmEl.className = 'rpm-number' + (currentRpm >= RPM_HIGH ? ' danger' : currentRpm >= RPM_LOW ? ' warning' : '');
+
+  document.getElementById('peakRpm').textContent = Math.round(peakRpm).toLocaleString();
+  document.getElementById('sustainSec').textContent = Math.round(sustainedSec) + 's';
+
+  const bands = getFreqBandLevels();
+  renderFreqBands(bands);
+
+  // dB estimate
+  const db = analyser ? (() => {
+    const d = new Uint8Array(analyser.frequencyBinCount);
+    analyser.getByteFrequencyData(d);
+    const avg = d.reduce((a, b) => a + b, 0) / d.length;
+    return Math.round(20 + (avg / 255) * 80);
+  })() : (demoMode ? Math.round(55 + Math.random() * 25) : 0);
+  document.getElementById('dbLevel').textContent = db;
+
+  // Threshold bars
+  const pct = (rpm, max) => Math.min(100, (rpm / max) * 100);
+  document.getElementById('bar0').style.width = pct(Math.min(currentRpm, 800), 800) + '%';
+  document.getElementById('bar1').style.width = pct(Math.min(currentRpm, 3500), 3500) + '%';
+  document.getElementById('bar2').style.width = (currentRpm >= 4000 ? pct(Math.min(currentRpm - 4000, 2000), 2000) : 0) + '%';
+  document.getElementById('bar3').style.width = (currentRpm >= 6000 ? 100 : 0) + '%';
+
+  // Confidence
+  const confEl = document.getElementById('confBar');
+  document.getElementById('confPct').textContent = Math.round(confidence) + '%';
+  confEl.style.width = confidence + '%';
+  confEl.style.background = confidence > 80 ? 'var(--red)' : confidence > 40 ? 'var(--yellow)' : 'var(--green)';
+
+  // Draw
+  drawGauge(currentRpm);
+  drawSpectrogram(freqData);
+  drawTimeline();
+}
+
+// ─── MIC ──────────────────────────────────────────────────
+async function toggleMic() {
+  if (isListening) {
+    stopMic();
+  } else {
+    await startMic();
+  }
+}
+
+async function startMic() {
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)({ sampleRate: SAMPLE_RATE });
+    analyser = audioCtx.createAnalyser();
+    analyser.fftSize = FFT_SIZE;
+    analyser.smoothingTimeConstant = 0.8;
+    const source = audioCtx.createMediaStreamSource(stream);
+    source.connect(analyser);
+    micStream = stream;
+    isListening = true;
+    demoMode = false;
+    if (demoTimer) { clearInterval(demoTimer); demoTimer = null; }
+
+    document.getElementById('micStatus').className = 'status-pill online';
+    document.getElementById('micDot').className = 'status-dot green';
+    document.getElementById('micText').textContent = 'MIC ACTIVE';
+    document.getElementById('startBtn').textContent = '■ STOP MONITORING';
+    document.getElementById('startBtn').className = 'btn btn-danger';
+
+    addLog('info', 'Microphone activated', 'Live acoustic monitoring enabled · Point microphone toward suspected area');
+
+    if (!animFrame) mainLoop();
+  } catch (e) {
+    addLog('warning', 'Microphone access denied', 'Run Simulation mode available · Check browser permissions');
+    alert('Microphone access required. Please allow microphone permissions and try again.\n\nUse "RUN SIMULATION" to test with synthetic data.');
+  }
+}
+
+function stopMic() {
+  if (micStream) micStream.getTracks().forEach(t => t.stop());
+  if (audioCtx) audioCtx.close();
+  analyser = null; audioCtx = null; micStream = null;
+  isListening = false;
+  currentRpm = 0;
+
+  document.getElementById('micStatus').style.borderColor = 'var(--dim)';
+  document.getElementById('micStatus').style.color = 'var(--dim)';
+  document.getElementById('micDot').className = 'status-dot gray';
+  document.getElementById('micText').textContent = 'MIC OFFLINE';
+  document.getElementById('startBtn').textContent = '▶ START MONITORING';
+  document.getElementById('startBtn').className = 'btn btn-primary';
+  addLog('info', 'Monitoring stopped', 'Microphone deactivated');
+}
+
+// ─── DEMO / SIMULATION ────────────────────────────────────
+let demoPhase = 0, demoT = 0;
+
+function runDemo() {
+  if (demoMode) {
+    demoMode = false;
+    clearInterval(demoTimer);
+    demoTimer = null;
+    currentRpm = 0;
+    addLog('info', 'Simulation ended', 'Synthetic data stream stopped');
+    return;
+  }
+
+  if (isListening) stopMic();
+
+  demoMode = true;
+  demoPhase = 0;
+  demoT = 0;
+  sustainStart = null;
+  sustainedSec = 0;
+  peakRpm = 0;
+  rpmHistory = new Array(60).fill(0);
+
+  addLog('info', 'Simulation started', 'Synthetic street takeover scenario loading…');
+
+  const scenario = [
+    { label: 'Vehicles arriving, idle', duration: 4, rpmRange: [700, 1200] },
+    { label: 'Engines revving up', duration: 3, rpmRange: [1200, 4500] },
+    { label: '⚠ High-RPM sustained', duration: 8, rpmRange: [4500, 6200] },
+    { label: 'Burnout sequence', duration: 5, rpmRange: [5500, 7200] },
+    { label: 'Vehicles dispersing', duration: 4, rpmRange: [1000, 3000] },
+    { label: 'Idle', duration: 3, rpmRange: [700, 1000] },
+  ];
+
+  let phaseIdx = 0;
+  let phaseElapsed = 0;
+
+  demoTimer = setInterval(() => {
+    if (!demoMode) { clearInterval(demoTimer); return; }
+
+    const phase = scenario[phaseIdx];
+    const [lo, hi] = phase.rpmRange;
+    const base = lo + (hi - lo) * (phaseElapsed / phase.duration);
+    const noise = (Math.random() - 0.5) * 300;
+    currentRpm = Math.max(0, Math.min(8000, Math.round(base + noise)));
+
+    phaseElapsed += 0.1;
+    if (phaseElapsed >= phase.duration) {
+      phaseElapsed = 0;
+      phaseIdx++;
+      if (phaseIdx >= scenario.length) {
+        phaseIdx = 0;
+        addLog('info', 'Simulation loop restarting', 'Replaying takeover scenario');
+      } else {
+        addLog(phaseIdx >= 2 && phaseIdx <= 4 ? 'warning' : 'info',
+          `Scenario: ${scenario[phaseIdx].label}`, null);
+      }
+    }
+  }, 100);
+
+  if (!animFrame) mainLoop();
+}
+
+// ─── INIT ──────────────────────────────────────────────────
+drawGauge(0);
+drawSpectrogram(null);
+drawTimeline();
+mainLoop();
+
+addLog('info', 'Sensor network online', '8 acoustic nodes synchronized · Cleveland deployment active');
+</script>
+</body>
+</html>
